@@ -26,19 +26,228 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - Utility classes (container-fluid, shadow-custom, link-muted)
 - Consistent typography system
 
-## Phase 2: Backend & Data Management (In Progress)
-✅ **Completed:**
-- Supabase Cloud integration
-- Contact form submissions (via Formspree)
-- Newsletter subscribers database with RLS policies
-- Row Level Security (RLS) policies for all tables
+## Phase 2: Admin Dashboard & Content Management (Current Focus)
 
-📋 **Next Steps:**
-- Admin dashboard for managing inquiries and newsletter subscribers
-- Email notification system via Resend for contact form
-- Customer relationship management (CRM) features
-- Project tracking system
-- Quote management system
+### Phase 2A: Admin Authentication & Foundation 🔄
+**Priority: HIGH - Required for all admin features**
+
+📋 **Database Schema:**
+- `user_roles` table: Admin role management
+  - Columns: id, user_id (FK to auth.users), role (enum: admin/moderator/user)
+  - Security definer function for role checking
+  - RLS policies to prevent privilege escalation
+- `app_role` enum type: Define user role levels
+
+🔐 **Authentication Requirements:**
+- Admin login page (/admin/login)
+- Secure authentication flow with Supabase Auth
+- Protected admin routes with role verification
+- Session management and auto-logout
+- **SECURITY:** Server-side role validation (never client-side)
+
+### Phase 2B: Newsletter Management 📧
+**Estimated: 1-2 days**
+
+✅ **Database Already Ready:**
+- `newsletter_subscribers` table exists with RLS
+
+🎯 **Admin Features:**
+- View all newsletter subscribers (paginated table)
+- Search and filter subscribers by email, date
+- Export subscribers to CSV
+- View subscription metrics (total, new this week/month)
+- Manual subscriber removal (with confirmation)
+- Subscriber status management (active/inactive)
+
+📊 **UI Components:**
+- Data table with sorting and pagination
+- Search bar with real-time filtering
+- Export button (CSV download)
+- Metrics cards showing key stats
+
+### Phase 2C: Form Submissions Management 📝
+**Estimated: 1-2 days**
+
+📋 **Database Schema:**
+- `contacts` table already exists (needs review)
+- Consider adding: status field (new/contacted/closed), priority, notes
+
+🎯 **Admin Features:**
+- View all contact submissions (paginated)
+- Filter by service type, date range, status
+- Mark submissions as read/contacted/closed
+- Add internal notes to submissions
+- Quick actions: email, call, archive
+- Export submissions to CSV
+- Submission metrics and trends
+
+📊 **UI Components:**
+- Advanced data table with status badges
+- Filter dropdowns and search
+- Modal for viewing full submission details
+- Note-taking interface
+- Status update workflow
+
+### Phase 2D: Gallery Image Management 🖼️
+**Estimated: 2-3 days**
+
+📋 **Database Schema:**
+- `gallery_images` table:
+  - id, created_at, updated_at
+  - image_url (Supabase Storage reference)
+  - title, alt_text, description
+  - category (residential/commercial/outdoor/etc)
+  - featured (boolean), order_index
+  - seo_keywords, seo_title, seo_description
+  - project_details (JSON: client, location, year, etc)
+  - is_published (boolean)
+
+💾 **Storage Setup:**
+- Supabase Storage bucket: `gallery-images`
+- Public bucket with CDN
+- Image optimization (resize, compress on upload)
+- Supported formats: JPG, PNG, WEBP
+
+🎯 **Admin Features:**
+- Drag-and-drop image upload (multiple files)
+- Image preview before upload
+- Bulk upload capability
+- SEO metadata form for each image:
+  - Title, alt text, description
+  - Keywords, category
+  - Project details
+- Image editing: crop, resize, optimize
+- Reorder images (drag-and-drop)
+- Delete images (with confirmation)
+- Publish/unpublish toggle
+- Featured image selection
+
+📊 **UI Components:**
+- Upload dropzone with progress bars
+- Grid view of uploaded images
+- Image detail editor modal
+- SEO optimization checklist
+- Category management
+
+### Phase 2E: Blog Content Management ✍️
+**Estimated: 3-4 days**
+
+📋 **Database Schema:**
+- `blog_posts` table:
+  - id, created_at, updated_at, published_at
+  - author_id (FK to auth.users)
+  - title, slug (unique), excerpt
+  - content (markdown or rich text)
+  - featured_image_url
+  - category, tags (array)
+  - status (draft/scheduled/published)
+  - seo_title, seo_description, seo_keywords
+  - view_count, reading_time
+  - is_featured
+- `blog_categories` table: Predefined categories
+- `blog_tags` table: Tag management
+
+🎯 **Admin Features:**
+- Rich text editor (TipTap or similar)
+- Markdown support
+- Image embedding with upload
+- Draft/publish/schedule workflow
+- SEO optimization panel
+- Preview before publish
+- Slug auto-generation from title
+- Category and tag management
+- Featured post selection
+- Analytics per post (views, engagement)
+
+📊 **UI Components:**
+- Rich text editor with toolbar
+- Media library integration
+- SEO optimization sidebar
+- Publish scheduling calendar
+- Post list with filters (status, category, author)
+- Post preview modal
+
+### Phase 2F: Analytics Dashboard 📊
+**Estimated: 2-3 days**
+
+🎯 **Analytics Features:**
+
+**Internal Database Analytics:**
+- Newsletter subscriber growth over time
+- Contact form submission trends
+- Most requested services
+- Response time metrics
+- Conversion funnel visualization
+
+**Lovable Analytics Integration (if available):**
+- Page views and unique visitors
+- Traffic sources
+- Popular pages
+- Device/browser breakdown
+- Geographic data
+
+**Gallery Analytics:**
+- Most viewed gallery images
+- Popular project categories
+- Image engagement metrics
+
+**Blog Analytics:**
+- Post views and reading time
+- Popular posts and categories
+- Reader engagement metrics
+- SEO performance
+
+📊 **UI Components:**
+- Summary cards (KPIs)
+- Line charts (trends over time)
+- Bar charts (comparisons)
+- Pie charts (distributions)
+- Date range selector
+- Export reports functionality
+
+### Phase 2G: Admin Dashboard Layout & Navigation
+**Estimated: 1 day**
+
+🎨 **Layout Requirements:**
+- Sidebar navigation with collapsible menu
+- Sections:
+  - Dashboard (overview)
+  - Newsletter Subscribers
+  - Form Submissions
+  - Gallery Management
+  - Blog Posts
+  - Analytics
+  - Settings (future)
+- Top bar: User profile, notifications, logout
+- Responsive design (mobile-friendly)
+- Theme toggle (inherit from main site)
+
+## Technical Implementation Plan
+
+### Database Migrations Order:
+1. User roles and authentication setup
+2. Gallery images table and storage bucket
+3. Blog posts, categories, and tags tables
+4. Update contacts table with additional fields
+5. Create security definer functions for role checks
+
+### Component Architecture:
+- `/admin` - Protected layout wrapper
+- `/admin/dashboard` - Overview page
+- `/admin/newsletters` - Newsletter management
+- `/admin/submissions` - Form submissions
+- `/admin/gallery` - Image management
+- `/admin/blog` - Blog CMS
+- `/admin/analytics` - Analytics dashboard
+
+### Security Checklist:
+- ✅ Server-side role validation
+- ✅ RLS policies on all admin tables
+- ✅ Security definer functions for role checks
+- ✅ Protected routes with auth guards
+- ✅ Input validation and sanitization
+- ✅ CSRF protection
+- ✅ Rate limiting on sensitive operations
 
 ## Phase 3: Enhanced Features
 🎯 **Planned:**
@@ -85,30 +294,44 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - `contacts` table: Store customer inquiries (with RLS policies)
 - `newsletter_subscribers` table: Email list with subscription tracking (with RLS policies)
 
-📋 **Future tables:**
-  - `projects`: Track sauna projects
-  - `quotes`: Manage price quotes
-  - `testimonials`: Customer reviews
-  - `blog_posts`: Content management
-  - `users`: Admin users and roles
+🔄 **Admin Dashboard (Phase 2):**
+- `user_roles` table: Admin role management with security definer
+- `app_role` enum: User role types (admin/moderator/user)
+- `gallery_images` table: Gallery management with SEO metadata
+- `blog_posts` table: Blog content management
+- `blog_categories` table: Blog categorization
+- `blog_tags` table: Blog tagging system
+- Storage bucket: `gallery-images` (public, CDN-enabled)
+
+📋 **Future tables (Phase 3+):**
+- `projects`: Track sauna projects
+- `quotes`: Manage price quotes
+- `testimonials`: Customer reviews and ratings
+- `project_photos`: Link photos to projects
 
 ## Key Priorities
 
-### Immediate (1-2 weeks):
+### Immediate (Current Sprint - 2-3 weeks):
 1. ✅ Complete cost calculator
 2. ✅ Database integration for contacts
 3. ✅ Newsletter subscription system
 4. ✅ Modular navigation with search
-5. 🔄 Admin dashboard for viewing submissions and newsletter subscribers
-6. 🔄 Email automation via Resend for contact form and newsletters
-7. Image optimization and CDN setup
+5. 🔄 **Phase 2A: Admin authentication & role system** (2-3 days)
+6. 🔄 **Phase 2B: Newsletter management interface** (1-2 days)
+7. 🔄 **Phase 2C: Form submissions management** (1-2 days)
+8. 🔄 **Phase 2D: Gallery image upload & SEO** (2-3 days)
+9. 🔄 **Phase 2E: Blog CMS implementation** (3-4 days)
+10. 🔄 **Phase 2F: Analytics dashboard** (2-3 days)
+11. 🔄 **Phase 2G: Admin layout & navigation** (1 day)
+12. Image optimization and CDN setup
 
 ### Short-term (1-3 months):
-1. Project management system
-2. Quote generation and tracking
-3. Customer portal
-4. Enhanced analytics
-5. Blog/content system
+1. Email automation via Resend for contact form and newsletters
+2. Project management system
+3. Quote generation and tracking
+4. Customer portal
+5. Public blog display pages
+6. Testimonial submission and approval system
 
 ### Long-term (3-6 months):
 1. 3D visualization tools
@@ -143,6 +366,13 @@ This document outlines the development roadmap and strategic plan for the Saunas
 
 ## Recent Updates (Latest First)
 
+### January 2025 - Admin Dashboard Planning
+- 📋 Detailed admin dashboard roadmap created
+- 📋 Database schema designed for admin features
+- 📋 Security architecture planned (roles, RLS)
+- 📋 Feature breakdown: newsletters, forms, gallery, blog, analytics
+- 📋 Implementation timeline: 2-3 weeks for full admin system
+
 ### January 2025 - Navigation & Newsletter System
 - ✅ Rebuilt navigation system with modular components
 - ✅ Added fuzzy search functionality across site
@@ -161,4 +391,4 @@ This document outlines the development roadmap and strategic plan for the Saunas
 ---
 
 *Last Updated: January 2025*  
-*Version: 2.1*
+*Version: 2.2 - Admin Dashboard Planning*
