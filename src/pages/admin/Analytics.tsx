@@ -3,11 +3,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Mail, MessageSquare, Image, Star, TrendingUp, Users, Download, Calendar } from 'lucide-react';
+import { Mail, MessageSquare, Image, Star, TrendingUp, Users, Download, Calendar, Eye, Activity } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import { useToast } from '@/hooks/use-toast';
 import { format, subDays, subMonths, startOfDay, endOfDay } from 'date-fns';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { fetchWebsiteAnalytics, type WebsiteAnalytics } from '@/utils/websiteAnalytics';
 
 interface AnalyticsData {
   totalSubscribers: number;
@@ -30,6 +31,7 @@ const COLORS = ['#D2691E', '#B85A13', '#E8A87C', '#F5C99B', '#FDE8D7', '#C0504D'
 const Analytics = () => {
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [websiteAnalytics, setWebsiteAnalytics] = useState<WebsiteAnalytics | null>(null);
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | 'all'>('30d');
   const { toast } = useToast();
 
@@ -55,6 +57,11 @@ const Analytics = () => {
     try {
       setLoading(true);
       const startDate = getDateFilter();
+      const endDate = new Date();
+
+      // Fetch website analytics
+      const webAnalytics = await fetchWebsiteAnalytics(startDate, endDate);
+      setWebsiteAnalytics(webAnalytics);
 
       // Fetch total counts
       const [subscribersRes, submissionsRes, imagesRes, reviewsRes] = await Promise.all([
@@ -258,6 +265,129 @@ const Analytics = () => {
         </div>
       </div>
 
+      {/* Website Analytics */}
+      {websiteAnalytics && (
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold">Website Analytics</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-2">
+                <Users className="h-8 w-8 text-blue-500" />
+              </div>
+              <p className="text-2xl font-bold">{websiteAnalytics.totalVisitors.toLocaleString()}</p>
+              <p className="text-sm text-muted-foreground">Total Visitors</p>
+            </Card>
+
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-2">
+                <Eye className="h-8 w-8 text-green-500" />
+              </div>
+              <p className="text-2xl font-bold">{websiteAnalytics.totalPageviews.toLocaleString()}</p>
+              <p className="text-sm text-muted-foreground">Page Views</p>
+            </Card>
+
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-2">
+                <Activity className="h-8 w-8 text-purple-500" />
+              </div>
+              <p className="text-2xl font-bold">{websiteAnalytics.avgPageviewsPerVisit}</p>
+              <p className="text-sm text-muted-foreground">Pages per Visit</p>
+            </Card>
+
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-2">
+                <TrendingUp className="h-8 w-8 text-orange-500" />
+              </div>
+              <p className="text-2xl font-bold">{websiteAnalytics.avgSessionDuration}s</p>
+              <p className="text-sm text-muted-foreground">Avg Session</p>
+            </Card>
+
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-2">
+                <Activity className="h-8 w-8 text-red-500" />
+              </div>
+              <p className="text-2xl font-bold">{websiteAnalytics.bounceRate}%</p>
+              <p className="text-sm text-muted-foreground">Bounce Rate</p>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Visitors Over Time</h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={websiteAnalytics.visitorsData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="count" stroke="#3B82F6" strokeWidth={2} name="Visitors" />
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">Page Views Over Time</h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={websiteAnalytics.pageviewsData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="count" stroke="#10B981" strokeWidth={2} name="Page Views" />
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+          </div>
+
+          {websiteAnalytics.topPages.length > 0 && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Top Pages</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={websiteAnalytics.topPages} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="page" type="category" width={150} />
+                    <Tooltip />
+                    <Bar dataKey="views" fill="#8B5CF6" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Card>
+
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Traffic Sources</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={websiteAnalytics.topSources}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ source, visits }) => `${source}: ${visits}`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="visits"
+                    >
+                      {websiteAnalytics.topSources.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </Card>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Admin Data Analytics */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold">Admin Data</h2>
+
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-6">
@@ -413,6 +543,7 @@ const Analytics = () => {
           </ResponsiveContainer>
         </Card>
       )}
+      </div>
     </div>
   );
 };
