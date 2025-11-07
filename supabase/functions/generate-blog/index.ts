@@ -73,7 +73,14 @@ serve(async (req) => {
 
     // Step 2: Generate unique topic
     await updateLog('Generating Topic', 3);
-    const topicPrompt = settings.topic_prompt.replace('[EXISTING_TOPICS]', existingTopics);
+    const topicPrompt = settings.topic_prompt.replace('[EXISTING_TOPICS]', existingTopics) + 
+      '\n\nIMPORTANT: Return ONLY a valid JSON object with this exact structure, no markdown formatting, no explanations:\n' +
+      '{\n' +
+      '  "title": "Blog post title here",\n' +
+      '  "category": "Category name",\n' +
+      '  "target_keyword": "primary keyword phrase",\n' +
+      '  "search_intent": "informational"\n' +
+      '}';
     
     const topicResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -94,8 +101,25 @@ serve(async (req) => {
 
     const topicData = await topicResponse.json();
     const topicText = topicData.choices[0].message.content.trim();
-    const topicJsonMatch = topicText.match(/\{[\s\S]*\}/);
-    const topic = JSON.parse(topicJsonMatch ? topicJsonMatch[0] : topicText);
+    
+    // Extract JSON from markdown code blocks if present
+    let topic;
+    try {
+      // Try to find JSON in markdown code blocks first
+      const jsonMatch = topicText.match(/```json\s*([\s\S]*?)\s*```/) || 
+                       topicText.match(/```\s*([\s\S]*?)\s*```/) ||
+                       topicText.match(/\{[\s\S]*\}/);
+      
+      if (jsonMatch) {
+        const jsonStr = jsonMatch[1] || jsonMatch[0];
+        topic = JSON.parse(jsonStr);
+      } else {
+        topic = JSON.parse(topicText);
+      }
+    } catch (parseError) {
+      console.error('Failed to parse topic JSON:', topicText);
+      throw new Error(`Invalid topic JSON response: ${parseError instanceof Error ? parseError.message : 'Parse failed'}`);
+    }
     
     await updateLog('Generating Topic', 3, topic);
 
@@ -123,7 +147,13 @@ serve(async (req) => {
     await updateLog('Creating Outline', 5);
     const outlinePrompt = settings.outline_prompt
       .replace('[TOPIC]', topic.title)
-      .replace('[RESEARCH]', researchText);
+      .replace('[RESEARCH]', researchText) +
+      '\n\nIMPORTANT: Return ONLY a valid JSON object with this structure, no markdown formatting:\n' +
+      '{\n' +
+      '  "outline": [{"heading": "H2 text", "subheadings": ["H3 text"], "key_points": ["point"]}],\n' +
+      '  "introduction_hook": "Opening sentence",\n' +
+      '  "conclusion_cta": "Call to action"\n' +
+      '}';
     
     const outlineResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -139,8 +169,24 @@ serve(async (req) => {
 
     const outlineData = await outlineResponse.json();
     const outlineText = outlineData.choices[0].message.content.trim();
-    const outlineJsonMatch = outlineText.match(/\{[\s\S]*\}/);
-    const outline = JSON.parse(outlineJsonMatch ? outlineJsonMatch[0] : outlineText);
+    
+    // Extract JSON from markdown code blocks if present
+    let outline;
+    try {
+      const jsonMatch = outlineText.match(/```json\s*([\s\S]*?)\s*```/) || 
+                       outlineText.match(/```\s*([\s\S]*?)\s*```/) ||
+                       outlineText.match(/\{[\s\S]*\}/);
+      
+      if (jsonMatch) {
+        const jsonStr = jsonMatch[1] || jsonMatch[0];
+        outline = JSON.parse(jsonStr);
+      } else {
+        outline = JSON.parse(outlineText);
+      }
+    } catch (parseError) {
+      console.error('Failed to parse outline JSON:', outlineText);
+      throw new Error(`Invalid outline JSON response: ${parseError instanceof Error ? parseError.message : 'Parse failed'}`);
+    }
     
     await updateLog('Creating Outline', 5, outline);
 
@@ -299,7 +345,15 @@ serve(async (req) => {
     // Step 10: Generate SEO metadata
     const seoPrompt = settings.seo_prompt
       .replace('[TITLE]', topic.title)
-      .replace('[CONTENT_PREVIEW]', content.substring(0, 500));
+      .replace('[CONTENT_PREVIEW]', content.substring(0, 500)) +
+      '\n\nIMPORTANT: Return ONLY a valid JSON object, no markdown formatting:\n' +
+      '{\n' +
+      '  "seo_title": "SEO title",\n' +
+      '  "seo_description": "Meta description",\n' +
+      '  "seo_keywords": "keyword1, keyword2",\n' +
+      '  "excerpt": "Brief excerpt",\n' +
+      '  "tags": ["tag1", "tag2"]\n' +
+      '}';
 
     const seoResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -315,8 +369,24 @@ serve(async (req) => {
 
     const seoData = await seoResponse.json();
     const seoText = seoData.choices[0].message.content.trim();
-    const seoJsonMatch = seoText.match(/\{[\s\S]*\}/);
-    const seo = JSON.parse(seoJsonMatch ? seoJsonMatch[0] : seoText);
+    
+    // Extract JSON from markdown code blocks if present
+    let seo;
+    try {
+      const jsonMatch = seoText.match(/```json\s*([\s\S]*?)\s*```/) || 
+                       seoText.match(/```\s*([\s\S]*?)\s*```/) ||
+                       seoText.match(/\{[\s\S]*\}/);
+      
+      if (jsonMatch) {
+        const jsonStr = jsonMatch[1] || jsonMatch[0];
+        seo = JSON.parse(jsonStr);
+      } else {
+        seo = JSON.parse(seoText);
+      }
+    } catch (parseError) {
+      console.error('Failed to parse SEO JSON:', seoText);
+      throw new Error(`Invalid SEO JSON response: ${parseError instanceof Error ? parseError.message : 'Parse failed'}`);
+    }
 
     // Calculate reading time
     const readingTimeMinutes = Math.ceil(wordCount / 200);
