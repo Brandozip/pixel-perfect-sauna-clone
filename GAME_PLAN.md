@@ -478,6 +478,15 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - Maintenance guide: `SITEMAP_MAINTENANCE.md`
 - Auto-update ready for blog posts (Phase 2E)
 
+✅ **Structured Data (Schema.org JSON-LD):**
+- LocalBusiness schema on homepage
+- Organization schema on homepage
+- WebSite schema with search action
+- Service schema component for service pages
+- Breadcrumb schema component
+- Guide: `SCHEMA_MARKUP_GUIDE.md`
+- Example implementation on Custom Sauna Design page
+
 📋 **Enhancements Needed:**
 
 **1. Advanced Meta Tags:**

@@ -8,10 +8,14 @@ import { Newsletter } from "@/components/Newsletter";
 import { CTASection } from "@/components/CTASection";
 import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "next-themes";
+import { LocalBusinessSchema, OrganizationSchema, WebsiteSchema } from "@/components/seo/StructuredData";
 
 const Index = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <LocalBusinessSchema />
+      <OrganizationSchema />
+      <WebsiteSchema />
       <div className="min-h-screen">
         <CleanNavbar />
         <Hero />
