@@ -7,7 +7,17 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { LogOut, Search, Download, Mail, TrendingUp, Users, Calendar } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { LogOut, Search, Download, Mail, TrendingUp, Users, Calendar, Trash2 } from 'lucide-react';
 import { format, subDays, isAfter } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 
@@ -40,6 +50,8 @@ export default function Newsletters() {
     thisMonth: 0,
     active: 0,
   });
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [subscriberToDelete, setSubscriberToDelete] = useState<Subscriber | null>(null);
   
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -109,6 +121,41 @@ export default function Newsletters() {
     );
     setFilteredSubscribers(filtered);
     setCurrentPage(1); // Reset to first page when searching
+  };
+
+  const handleDeleteClick = (subscriber: Subscriber) => {
+    setSubscriberToDelete(subscriber);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!subscriberToDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscribers')
+        .delete()
+        .eq('id', subscriberToDelete.id);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'Subscriber removed successfully',
+      });
+
+      // Refresh the list
+      fetchSubscribers();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setDeleteDialogOpen(false);
+      setSubscriberToDelete(null);
+    }
   };
 
   const exportToCSV = () => {
@@ -260,6 +307,7 @@ export default function Newsletters() {
                         <TableHead>Email</TableHead>
                         <TableHead>Subscribed At</TableHead>
                         <TableHead>Status</TableHead>
+                        <TableHead className="w-[100px]">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -273,6 +321,16 @@ export default function Newsletters() {
                             <Badge variant={subscriber.is_active ? 'default' : 'secondary'}>
                               {subscriber.is_active ? 'Active' : 'Inactive'}
                             </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteClick(subscriber)}
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -335,6 +393,29 @@ export default function Newsletters() {
           </CardContent>
         </Card>
       </main>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently remove{' '}
+              <span className="font-semibold">{subscriberToDelete?.email}</span> from your
+              newsletter list. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
