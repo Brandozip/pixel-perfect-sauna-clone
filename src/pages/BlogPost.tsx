@@ -165,32 +165,32 @@ export default function BlogPost() {
 
       <div className="min-h-screen bg-background">
         <CleanNavbar />
-        <div className="container mx-auto px-4 py-8">
-          <Button variant="ghost" onClick={() => navigate('/blog')} className="mb-6">
+        <div className="container mx-auto px-4 py-12">
+          <Button variant="ghost" onClick={() => navigate('/blog')} className="mb-8 hover:bg-muted">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Blog
           </Button>
 
           <article className="max-w-4xl mx-auto">
             {/* Header */}
-            <header className="mb-8">
+            <header className="mb-12">
               {post.category && (
-                <Badge className="mb-4">{post.category}</Badge>
+                <Badge className="mb-4 bg-primary text-primary-foreground">{post.category}</Badge>
               )}
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
+              <h1 className="heading-2 mb-6">{post.title}</h1>
               
-              <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-6">
+              <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-8 pb-6 border-b border-border">
                 <div className="flex items-center gap-2">
                   {post.author_avatar_url && (
                     <img 
                       src={post.author_avatar_url} 
                       alt={post.author_name}
-                      className="w-10 h-10 rounded-full"
+                      className="w-10 h-10 rounded-full object-cover"
                     />
                   )}
                   <div className="flex items-center gap-1">
                     <User className="h-4 w-4" />
-                    {post.author_name}
+                    <span className="font-medium">{post.author_name}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -203,13 +203,14 @@ export default function BlogPost() {
                     {post.reading_time_minutes} min read
                   </div>
                 )}
-                <Button variant="outline" size="sm" onClick={handleShare}>
-                  <Share2 className="h-4 w-4" />
+                <Button variant="outline" size="sm" onClick={handleShare} className="ml-auto">
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Share
                 </Button>
               </div>
 
               {post.featured_image_url && (
-                <div className="rounded-lg overflow-hidden mb-8">
+                <div className="rounded-lg overflow-hidden mb-8 shadow-custom">
                   <img 
                     src={post.featured_image_url} 
                     alt={post.title}
@@ -220,13 +221,14 @@ export default function BlogPost() {
             </header>
 
             {/* Content */}
-            <div className="prose prose-lg max-w-none mb-12">
+            <div className="prose prose-lg max-w-none mb-12 text-foreground">
               {renderContent(post.content)}
             </div>
 
             {/* Tags */}
             {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-12">
+              <div className="flex flex-wrap gap-2 mb-12 pb-12 border-b border-border">
+                <span className="text-sm font-medium text-muted-foreground mr-2">Tags:</span>
                 {post.tags.map(tag => (
                   <Badge key={tag} variant="secondary">{tag}</Badge>
                 ))}
@@ -235,13 +237,13 @@ export default function BlogPost() {
 
             {/* Related Posts */}
             {relatedPosts.length > 0 && (
-              <div className="mt-16">
-                <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
+              <div className="mt-16 pt-8 border-t border-border">
+                <h2 className="heading-3 mb-8">Related Articles</h2>
                 <div className="grid md:grid-cols-3 gap-6">
                   {relatedPosts.map((related) => (
                     <Card 
                       key={related.id}
-                      className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                      className="overflow-hidden hover:shadow-elevated transition-all cursor-pointer border-border flex flex-col"
                       onClick={() => navigate(`/blog/${related.slug}`)}
                     >
                       {related.featured_image_url && (
@@ -249,15 +251,15 @@ export default function BlogPost() {
                           <img 
                             src={related.featured_image_url} 
                             alt={related.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                           />
                         </div>
                       )}
-                      <div className="p-4">
-                        <h3 className="font-bold mb-2 line-clamp-2">{related.title}</h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {related.excerpt}
-                        </p>
+                      <div className="p-4 flex-1 flex flex-col">
+                        <h3 className="heading-4 mb-2 line-clamp-2">{related.title}</h3>
+                        {related.excerpt && (
+                          <p className="body-md text-muted-foreground line-clamp-2 flex-1">{related.excerpt}</p>
+                        )}
                       </div>
                     </Card>
                   ))}

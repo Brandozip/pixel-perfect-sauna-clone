@@ -9,8 +9,8 @@ const NewsletterSignup: React.FC = () => {
 
   return (
     <div>
-      <h3 className="text-lg font-heading font-semibold mb-4 text-foreground">Newsletter</h3>
-      <p className="mb-4 text-muted-foreground">
+      <h3 className="text-lg font-heading font-semibold mb-4 text-background">Newsletter</h3>
+      <p className="mb-4 text-background/90 leading-relaxed">
         Subscribe to our newsletter for wellness tips, exclusive offers, and the latest in sauna innovation.
       </p>
       <form onSubmit={subscribe} className="flex flex-col sm:flex-row gap-2">
@@ -21,12 +21,12 @@ const NewsletterSignup: React.FC = () => {
             placeholder="Your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="pl-10"
+            className="pl-10 bg-background text-foreground border-border"
             disabled={isLoading}
             required
           />
         </div>
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit" disabled={isLoading} className="bg-primary hover:bg-primary-emphasis text-primary-foreground">
           {isLoading ? 'Subscribing...' : 'Subscribe'}
         </Button>
       </form>

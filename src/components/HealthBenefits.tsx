@@ -37,11 +37,11 @@ const benefits = [
 
 export const HealthBenefits = () => {
   return (
-    <section className="py-20">
+    <section className="py-20 bg-background">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">Health Benefits of Regular Sauna Use</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <h2 className="heading-2 mb-4">Health Benefits of Regular Sauna Use</h2>
+          <p className="body-lg text-muted-foreground max-w-3xl mx-auto">
             Experience the numerous health and wellness advantages that come with incorporating saunas into your lifestyle.
           </p>
         </div>
@@ -50,23 +50,23 @@ export const HealthBenefits = () => {
           {benefits.map((benefit, index) => {
             const Icon = benefit.icon;
             return (
-              <div key={index} className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 text-accent mb-4">
+              <div key={index} className="text-center p-6 rounded-lg hover:bg-primary-muted/50 transition-colors">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
                   <Icon className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">{benefit.title}</h3>
-                <p className="text-muted-foreground">{benefit.description}</p>
+                <h3 className="heading-4 mb-2">{benefit.title}</h3>
+                <p className="body-md text-muted-foreground">{benefit.description}</p>
               </div>
             );
           })}
         </div>
         
         <div className="text-center">
-          <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
+          <p className="body-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
             Discover how regular sauna sessions can significantly improve your overall wellbeing and quality of life.
           </p>
           <Link to="/health-benefits">
-            <Button variant="outline" size="lg" className="text-lg">
+            <Button variant="outline" size="lg" className="border-2">
               Explore All Health Benefits
             </Button>
           </Link>

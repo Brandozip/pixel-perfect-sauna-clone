@@ -91,10 +91,10 @@ export default function Blog() {
       <div className="min-h-screen bg-background">
         <CleanNavbar />
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-primary/10 to-primary/5 py-16">
+        <section className="bg-gradient-to-br from-primary/5 via-background to-primary/5 py-20 border-b border-border">
           <div className="container mx-auto px-4">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Sauna Insights & Wellness</h1>
-            <p className="text-xl text-muted-foreground max-w-2xl">
+            <h1 className="heading-2 mb-4 text-center">Sauna Insights & Wellness</h1>
+            <p className="body-lg text-muted-foreground max-w-2xl mx-auto text-center">
               Expert advice on sauna health benefits, installation guides, and wellness tips from Atlanta's leading sauna specialists.
             </p>
           </div>
@@ -103,22 +103,22 @@ export default function Blog() {
         <div className="container mx-auto px-4 py-12">
           {/* Featured Post */}
           {featuredPost && (
-            <Card className="mb-12 overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(`/blog/${featuredPost.slug}`)}>
-              <div className="grid md:grid-cols-2 gap-6">
+            <Card className="mb-12 overflow-hidden hover:shadow-elevated transition-all cursor-pointer border-border" onClick={() => navigate(`/blog/${featuredPost.slug}`)}>
+              <div className="grid md:grid-cols-2 gap-0">
                 {featuredPost.featured_image_url && (
-                  <div className="h-80 md:h-auto">
+                  <div className="h-80 md:h-auto overflow-hidden">
                     <img 
                       src={featuredPost.featured_image_url} 
                       alt={featuredPost.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 )}
                 <CardContent className={`p-8 flex flex-col justify-center ${!featuredPost.featured_image_url ? 'md:col-span-2' : ''}`}>
-                  <Badge className="w-fit mb-4">Featured</Badge>
-                  <h2 className="text-3xl font-bold mb-4">{featuredPost.title}</h2>
+                  <Badge className="w-fit mb-4 bg-primary text-primary-foreground">Featured</Badge>
+                  <h2 className="heading-4 mb-4">{featuredPost.title}</h2>
                   {featuredPost.excerpt && (
-                    <p className="text-muted-foreground mb-6">{featuredPost.excerpt}</p>
+                    <p className="body-md text-muted-foreground mb-6 line-clamp-3">{featuredPost.excerpt}</p>
                   )}
                   <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-6">
                     <div className="flex items-center gap-1">
@@ -136,7 +136,7 @@ export default function Blog() {
                       </div>
                     )}
                   </div>
-                  <Button>
+                  <Button className="bg-primary hover:bg-primary-emphasis w-fit">
                     Read More <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </CardContent>
@@ -176,7 +176,7 @@ export default function Blog() {
 
           {/* Blog Grid */}
           {filteredPosts.length === 0 ? (
-            <Card className="p-12 text-center">
+            <Card className="p-12 text-center border-border">
               <p className="text-muted-foreground">No articles found</p>
             </Card>
           ) : (
@@ -184,7 +184,7 @@ export default function Blog() {
               {filteredPosts.map((post) => (
                 <Card 
                   key={post.id} 
-                  className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                  className="overflow-hidden hover:shadow-elevated transition-all cursor-pointer border-border flex flex-col"
                   onClick={() => navigate(`/blog/${post.slug}`)}
                 >
                   {post.featured_image_url && (
@@ -196,15 +196,15 @@ export default function Blog() {
                       />
                     </div>
                   )}
-                  <CardContent className="p-6">
+                  <CardContent className="p-6 flex-1 flex flex-col">
                     {post.category && (
-                      <Badge variant="secondary" className="mb-3">{post.category}</Badge>
+                      <Badge variant="secondary" className="mb-3 w-fit">{post.category}</Badge>
                     )}
-                    <h3 className="text-xl font-bold mb-2 line-clamp-2">{post.title}</h3>
+                    <h3 className="heading-4 mb-2 line-clamp-2">{post.title}</h3>
                     {post.excerpt && (
-                      <p className="text-muted-foreground mb-4 line-clamp-3">{post.excerpt}</p>
+                      <p className="body-md text-muted-foreground mb-4 line-clamp-3 flex-1">{post.excerpt}</p>
                     )}
-                    <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+                    <div className="flex flex-wrap gap-3 text-sm text-muted-foreground pt-4 border-t border-border mt-auto">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {format(new Date(post.published_at), 'MMM dd')}

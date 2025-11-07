@@ -6,11 +6,11 @@ export const Newsletter = () => {
   const { email, setEmail, isLoading, subscribe } = useNewsletterSignup();
 
   return (
-    <section className="py-20 bg-accent text-accent-foreground">
+    <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-primary/5">
       <div className="container">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Join the Wellness Revolution</h2>
-          <p className="text-lg mb-8 text-accent-foreground/90">
+          <h2 className="heading-3 mb-4">Join the Wellness Revolution</h2>
+          <p className="body-lg text-muted-foreground mb-8">
             Get expert sauna tips, health insights, and exclusive offers delivered monthly to your inbox.
           </p>
           
@@ -22,14 +22,14 @@ export const Newsletter = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isLoading}
-              className="bg-white text-foreground border-none"
+              className="bg-background border-input"
             />
-            <Button type="submit" variant="secondary" className="whitespace-nowrap" disabled={isLoading}>
+            <Button type="submit" className="whitespace-nowrap bg-primary hover:bg-primary-emphasis" disabled={isLoading}>
               {isLoading ? 'Subscribing...' : 'Subscribe'}
             </Button>
           </form>
           
-          <p className="text-sm mt-4 text-accent-foreground/80">
+          <p className="text-sm mt-4 text-muted-foreground">
             We respect your privacy. Unsubscribe at any time.
           </p>
         </div>

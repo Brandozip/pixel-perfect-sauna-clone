@@ -13,8 +13,8 @@ export const Logo = ({ className = '', size = 'md' }: LogoProps) => {
   };
 
   return (
-    <Link to="/" className={`flex items-center ${className}`}>
-      <span className={`${sizeClasses[size]} font-heading font-semibold text-foreground`}>
+    <Link to="/" className="flex items-center">
+      <span className={`${sizeClasses[size]} font-heading font-semibold ${className}`}>
         Saunas<span className="text-primary">Plus</span>
       </span>
     </Link>
