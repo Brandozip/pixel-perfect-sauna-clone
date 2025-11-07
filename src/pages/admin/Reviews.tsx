@@ -36,6 +36,7 @@ interface Review {
 const Reviews = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
@@ -84,6 +85,62 @@ const Reviews = () => {
   useEffect(() => {
     fetchReviews();
   }, [fetchReviews]);
+
+  const handleCreateNew = () => {
+    setSelectedReview(null);
+    setFormData({
+      author_name: '',
+      author_location: '',
+      author_avatar_url: '',
+      rating: 5,
+      review_text: '',
+      project_type: '',
+      project_date: '',
+      status: 'pending',
+      is_published: false,
+      is_featured: false,
+      admin_notes: '',
+      source: 'website'
+    });
+    setCreateDialogOpen(true);
+  };
+
+  const handleCreate = async () => {
+    if (!formData.author_name || !formData.author_location || !formData.review_text) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fill in all required fields',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('reviews')
+        .insert([{
+          ...formData,
+          published_at: formData.is_published && formData.status === 'approved' ? new Date().toISOString() : null
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'Review created successfully'
+      });
+
+      setCreateDialogOpen(false);
+      fetchReviews();
+    } catch (error) {
+      console.error('Create failed:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to create review',
+        variant: 'destructive'
+      });
+    }
+  };
 
   const handleEdit = (review: Review) => {
     setSelectedReview(review);
@@ -281,10 +338,16 @@ const Reviews = () => {
           <h1 className="text-3xl font-bold">Review Management</h1>
           <p className="text-muted-foreground">Manage customer reviews and testimonials</p>
         </div>
-        <Button onClick={handleExportCSV} variant="outline">
-          <Download className="mr-2 h-4 w-4" />
-          Export CSV
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={handleCreateNew}>
+            <Star className="mr-2 h-4 w-4" />
+            Add Review
+          </Button>
+          <Button onClick={handleExportCSV} variant="outline">
+            <Download className="mr-2 h-4 w-4" />
+            Export CSV
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -471,6 +534,159 @@ const Reviews = () => {
           </div>
         )}
       </Card>
+
+      {/* Create Dialog */}
+      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Add New Review</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="create-author_name">Author Name*</Label>
+                <Input
+                  id="create-author_name"
+                  value={formData.author_name}
+                  onChange={(e) => setFormData({ ...formData, author_name: e.target.value })}
+                  placeholder="John Doe"
+                />
+              </div>
+              <div>
+                <Label htmlFor="create-author_location">Location*</Label>
+                <Input
+                  id="create-author_location"
+                  value={formData.author_location}
+                  onChange={(e) => setFormData({ ...formData, author_location: e.target.value })}
+                  placeholder="Atlanta, GA"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="create-author_avatar_url">Avatar URL (optional)</Label>
+              <Input
+                id="create-author_avatar_url"
+                value={formData.author_avatar_url}
+                onChange={(e) => setFormData({ ...formData, author_avatar_url: e.target.value })}
+                placeholder="/assets/avatar.png"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="create-rating">Rating*</Label>
+              <StarRating
+                rating={formData.rating}
+                interactive
+                size="lg"
+                onChange={(rating) => setFormData({ ...formData, rating })}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="create-review_text">Review Text*</Label>
+              <Textarea
+                id="create-review_text"
+                value={formData.review_text}
+                onChange={(e) => setFormData({ ...formData, review_text: e.target.value })}
+                rows={5}
+                placeholder="Write the customer's review..."
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="create-project_type">Project Type</Label>
+                <Input
+                  id="create-project_type"
+                  value={formData.project_type}
+                  onChange={(e) => setFormData({ ...formData, project_type: e.target.value })}
+                  placeholder="e.g., Residential Sauna"
+                />
+              </div>
+              <div>
+                <Label htmlFor="create-project_date">Project Date</Label>
+                <Input
+                  id="create-project_date"
+                  type="date"
+                  value={formData.project_date}
+                  onChange={(e) => setFormData({ ...formData, project_date: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="create-status">Status*</Label>
+                <select
+                  id="create-status"
+                  value={formData.status}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+              <div>
+                <Label htmlFor="create-source">Source</Label>
+                <select
+                  id="create-source"
+                  value={formData.source}
+                  onChange={(e) => setFormData({ ...formData, source: e.target.value })}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="website">Website</option>
+                  <option value="google">Google</option>
+                  <option value="facebook">Facebook</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="create-admin_notes">Admin Notes</Label>
+              <Textarea
+                id="create-admin_notes"
+                value={formData.admin_notes}
+                onChange={(e) => setFormData({ ...formData, admin_notes: e.target.value })}
+                rows={3}
+                placeholder="Internal notes about this review"
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="create-is_published"
+                  checked={formData.is_published}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_published: checked })}
+                />
+                <Label htmlFor="create-is_published">Published</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="create-is_featured"
+                  checked={formData.is_featured}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
+                />
+                <Label htmlFor="create-is_featured">Featured</Label>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreate}>
+              Create Review
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
