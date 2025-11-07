@@ -3,40 +3,62 @@ import { Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 
 const NewsletterSignup: React.FC = () => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !email.includes('@')) {
-      toast.error('Please enter a valid email address');
+      toast({
+        title: 'Invalid Email',
+        description: 'Please enter a valid email address',
+        variant: 'destructive',
+      });
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const { error } = await supabase
+      console.log('Attempting to insert email:', email);
+      
+      const { data, error } = await supabase
         .from('newsletter_subscribers')
-        .insert([{ email }]);
+        .insert([{ email }])
+        .select();
+
+      console.log('Insert result:', { data, error });
 
       if (error) {
         if (error.code === '23505') {
-          toast.error('This email is already subscribed!');
+          toast({
+            title: 'Already Subscribed',
+            description: 'This email is already subscribed!',
+            variant: 'destructive',
+          });
         } else {
+          console.error('Supabase error:', error);
           throw error;
         }
       } else {
-        toast.success('Successfully subscribed to newsletter!');
+        toast({
+          title: 'Success!',
+          description: 'Successfully subscribed to newsletter!',
+        });
         setEmail('');
       }
     } catch (error) {
       console.error('Newsletter signup error:', error);
-      toast.error('Failed to subscribe. Please try again.');
+      toast({
+        title: 'Error',
+        description: 'Failed to subscribe. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIsLoading(false);
     }
