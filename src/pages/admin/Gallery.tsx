@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useGalleryUpload } from '@/hooks/useGalleryUpload';
+import { migrateGalleryImages } from '@/utils/migrateGalleryImages';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,8 +11,9 @@ import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Upload, X, Edit, Trash2, Eye, EyeOff, Image as ImageIcon, Star } from 'lucide-react';
+import { Upload, X, Edit, Trash2, Eye, EyeOff, Image as ImageIcon, Star, Download } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
+import { useToast } from '@/hooks/use-toast';
 
 interface GalleryImage {
   id: string;
@@ -37,12 +39,15 @@ const Gallery = () => {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [imageToDelete, setImageToDelete] = useState<GalleryImage | null>(null);
   const [dragActive, setDragActive] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [migrating, setMigrating] = useState(false);
+  const [migrationProgress, setMigrationProgress] = useState({ current: 0, total: 0, message: '' });
 
   const { uploading, uploadImage, deleteImage, updateImage } = useGalleryUpload();
+  const { toast } = useToast();
 
   // Form state for upload/edit
   const [formData, setFormData] = useState({
@@ -92,41 +97,91 @@ const Gallery = () => {
     e.stopPropagation();
     setDragActive(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileSelect(e.dataTransfer.files[0]);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileSelect(Array.from(e.dataTransfer.files));
     }
   };
 
-  const handleFileSelect = (file: File) => {
-    if (!file.type.startsWith('image/')) {
-      return;
-    }
+  const handleFileSelect = (files: File[]) => {
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    
+    if (imageFiles.length === 0) return;
 
-    setSelectedFile(file);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreviewUrl(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    setSelectedFiles(imageFiles);
+    
+    // Create preview URLs for all files
+    const urls: string[] = [];
+    imageFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        urls.push(reader.result as string);
+        if (urls.length === imageFiles.length) {
+          setPreviewUrls(urls);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+    
     setUploadDialogOpen(true);
   };
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      handleFileSelect(e.target.files[0]);
+    if (e.target.files && e.target.files.length > 0) {
+      handleFileSelect(Array.from(e.target.files));
     }
   };
 
   const handleUpload = async () => {
-    if (!selectedFile) return;
+    if (selectedFiles.length === 0) return;
 
     try {
-      await uploadImage(selectedFile, formData);
+      // Upload all files
+      for (const file of selectedFiles) {
+        await uploadImage(file, formData);
+      }
+      
+      toast({
+        title: 'Upload Complete',
+        description: `Successfully uploaded ${selectedFiles.length} image${selectedFiles.length > 1 ? 's' : ''}`,
+      });
+      
       setUploadDialogOpen(false);
       resetForm();
       fetchImages();
     } catch (error) {
       console.error('Upload failed:', error);
+    }
+  };
+
+  const handleMigration = async () => {
+    setMigrating(true);
+    
+    try {
+      const results = await migrateGalleryImages((current, total, message) => {
+        setMigrationProgress({ current, total, message });
+      });
+
+      toast({
+        title: 'Migration Complete',
+        description: `Successfully migrated ${results.success} images. ${results.failed > 0 ? `Failed: ${results.failed}` : ''}`,
+        variant: results.failed > 0 ? 'destructive' : 'default',
+      });
+
+      if (results.errors.length > 0) {
+        console.error('Migration errors:', results.errors);
+      }
+
+      fetchImages();
+    } catch (error) {
+      console.error('Migration failed:', error);
+      toast({
+        title: 'Migration Failed',
+        description: 'Failed to migrate images. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setMigrating(false);
+      setMigrationProgress({ current: 0, total: 0, message: '' });
     }
   };
 
@@ -186,8 +241,8 @@ const Gallery = () => {
       is_published: true,
       featured: false,
     });
-    setSelectedFile(null);
-    setPreviewUrl(null);
+    setSelectedFiles([]);
+    setPreviewUrls([]);
     setSelectedImage(null);
   };
 
@@ -221,10 +276,27 @@ const Gallery = () => {
           <h1 className="text-3xl font-bold">Gallery Management</h1>
           <p className="text-muted-foreground">Upload and manage gallery images with SEO optimization</p>
         </div>
-        <Button onClick={() => setUploadDialogOpen(true)}>
-          <Upload className="mr-2 h-4 w-4" />
-          Upload Image
-        </Button>
+        <div className="flex gap-2">
+          {images.length === 0 && (
+            <Button onClick={handleMigration} disabled={migrating} variant="outline">
+              {migrating ? (
+                <>
+                  <LoadingSpinner size="sm" className="mr-2" />
+                  Migrating {migrationProgress.current}/{migrationProgress.total}
+                </>
+              ) : (
+                <>
+                  <Download className="mr-2 h-4 w-4" />
+                  Migrate Existing Images
+                </>
+              )}
+            </Button>
+          )}
+          <Button onClick={() => setUploadDialogOpen(true)}>
+            <Upload className="mr-2 h-4 w-4" />
+            Upload Images
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -345,7 +417,7 @@ const Gallery = () => {
             <DialogTitle>Upload Image</DialogTitle>
           </DialogHeader>
           
-          {!selectedFile ? (
+          {!selectedFiles.length ? (
             <div
               className={`border-2 border-dashed rounded-lg p-12 text-center ${
                 dragActive ? 'border-primary bg-primary/5' : 'border-muted'
@@ -356,39 +428,63 @@ const Gallery = () => {
               onDrop={handleDrop}
             >
               <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-lg mb-2">Drag and drop an image here</p>
+              <p className="text-lg mb-2">Drag and drop images here</p>
+              <p className="text-sm text-muted-foreground mb-2">Supports multiple file upload</p>
               <p className="text-sm text-muted-foreground mb-4">or</p>
               <label htmlFor="file-upload">
                 <Button type="button" onClick={() => document.getElementById('file-upload')?.click()}>
-                  Choose File
+                  Choose Files
                 </Button>
               </label>
               <input
                 id="file-upload"
                 type="file"
                 accept="image/*"
+                multiple
                 onChange={handleFileInput}
                 className="hidden"
               />
             </div>
           ) : (
             <div className="space-y-4">
-              {previewUrl && (
-                <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
-                  <img src={previewUrl} alt="Preview" className="w-full h-full object-contain" />
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    className="absolute top-2 right-2"
-                    onClick={() => {
-                      setSelectedFile(null);
-                      setPreviewUrl(null);
-                    }}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">
+                  {selectedFiles.length} image{selectedFiles.length > 1 ? 's' : ''} selected
+                </p>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    setSelectedFiles([]);
+                    setPreviewUrls([]);
+                  }}
+                >
+                  <X className="h-4 w-4 mr-1" />
+                  Clear All
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-[300px] overflow-y-auto">
+                {previewUrls.map((url, index) => (
+                  <div key={index} className="relative aspect-square bg-muted rounded-lg overflow-hidden">
+                    <img src={url} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="absolute top-2 right-2"
+                      onClick={() => {
+                        setSelectedFiles(files => files.filter((_, i) => i !== index));
+                        setPreviewUrls(urls => urls.filter((_, i) => i !== index));
+                      }}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t pt-4 space-y-4">
+                <p className="text-sm font-medium">Apply to all images:</p>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -467,6 +563,7 @@ const Gallery = () => {
                   <Label htmlFor="featured">Featured</Label>
                 </div>
               </div>
+              </div>
             </div>
           )}
 
@@ -477,14 +574,14 @@ const Gallery = () => {
             }}>
               Cancel
             </Button>
-            <Button onClick={handleUpload} disabled={!selectedFile || uploading}>
+            <Button onClick={handleUpload} disabled={selectedFiles.length === 0 || uploading}>
               {uploading ? (
                 <>
                   <LoadingSpinner size="sm" className="mr-2" />
                   Uploading...
                 </>
               ) : (
-                'Upload'
+                `Upload ${selectedFiles.length} Image${selectedFiles.length > 1 ? 's' : ''}`
               )}
             </Button>
           </DialogFooter>
