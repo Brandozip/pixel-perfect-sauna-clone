@@ -190,6 +190,14 @@
     <priority>0.5</priority>
   </url>
 
+  <!-- Blog -->
+  <url>
+    <loc>https://www.saunasplus.com/blog</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- Legal Pages -->
   <url>
     <loc>https://www.saunasplus.com/privacy-policy</loc>
@@ -205,20 +213,19 @@
   </url>
 
   <!-- 
-    FUTURE PAGES (To be added when implemented):
+    DYNAMIC CONTENT:
     
-    Blog Pages (Phase 2E):
-    - /blog (priority: 0.9, changefreq: daily)
-    - /blog/[slug] (priority: 0.6, changefreq: weekly)
-    - /blog/category/[category] (priority: 0.5, changefreq: weekly)
-    - /blog/tag/[tag] (priority: 0.4, changefreq: weekly)
+    Blog Posts:
+    - Blog posts are now automatically added via the generate-sitemap edge function
+    - Access the dynamic sitemap at: https://www.saunasplus.com/functions/v1/generate-sitemap
+    - Individual blog posts: /blog/[slug] (priority: 0.6, changefreq: weekly)
     
     Customer Portal (Phase 3):
     - /portal (priority: 0.5, changefreq: weekly)
     (Portal pages don't need to be in sitemap as they're auth-protected)
     
-    Note: When blog is implemented, use the dynamic sitemap edge function
-    at /functions/v1/generate-sitemap for automatic updates
+    Note: To use the dynamic sitemap that includes blog posts, update robots.txt to point to:
+    Sitemap: https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap
   -->
 
 </urlset>

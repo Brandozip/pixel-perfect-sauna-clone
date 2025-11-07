@@ -75,30 +75,30 @@ Deno.serve(async (req) => {
     // Fetch dynamic content from database
     const dynamicUrls: SitemapUrl[] = [];
 
-    // Future: Add blog posts when blog is implemented (Phase 2E)
-    // const { data: blogPosts } = await supabase
-    //   .from('blog_posts')
-    //   .select('slug, updated_at')
-    //   .eq('status', 'published')
-    //   .order('updated_at', { ascending: false });
-    // 
-    // if (blogPosts) {
-    //   blogPosts.forEach(post => {
-    //     dynamicUrls.push({
-    //       loc: `/blog/${post.slug}`,
-    //       lastmod: post.updated_at.split('T')[0],
-    //       changefreq: 'weekly',
-    //       priority: 0.6
-    //     });
-    //   });
-    // }
+    // Fetch published blog posts
+    const { data: blogPosts } = await supabase
+      .from('blog_posts')
+      .select('slug, updated_at')
+      .eq('status', 'published')
+      .order('updated_at', { ascending: false });
+    
+    if (blogPosts) {
+      blogPosts.forEach(post => {
+        dynamicUrls.push({
+          loc: `/blog/${post.slug}`,
+          lastmod: post.updated_at.split('T')[0],
+          changefreq: 'weekly',
+          priority: 0.6
+        });
+      });
+    }
 
-    // Add blog main page when implemented
-    // dynamicUrls.push({
-    //   loc: '/blog',
-    //   changefreq: 'daily',
-    //   priority: 0.9
-    // });
+    // Add blog main page
+    dynamicUrls.push({
+      loc: '/blog',
+      changefreq: 'daily',
+      priority: 0.9
+    });
 
     // Fetch published gallery images for image sitemap (optional)
     const { data: galleryImages } = await supabase

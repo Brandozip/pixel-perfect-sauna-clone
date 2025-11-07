@@ -17,5 +17,5 @@ Allow: /
 Disallow: /admin/
 Disallow: /portal/
 
-# Sitemap location
-Sitemap: https://www.saunasplus.com/sitemap.xml
+# Sitemap location (dynamic sitemap includes blog posts)
+Sitemap: https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap
