@@ -77,6 +77,7 @@ export function useContactForm() {
     try {
       console.log('Submitting contact form:', formData);
 
+      // Submit to Supabase database for admin panel
       const { data, error } = await supabase
         .from('contacts')
         .insert([{
@@ -94,6 +95,22 @@ export function useContactForm() {
         console.error('Supabase error:', error);
         throw error;
       }
+
+      // Also submit to Formspree for client email notifications
+      const formspreeData = new FormData();
+      formspreeData.append('name', formData.name);
+      formspreeData.append('email', formData.email);
+      if (formData.phone) formspreeData.append('phone', formData.phone);
+      if (formData.service_interested_in) formspreeData.append('service', formData.service_interested_in);
+      formspreeData.append('message', formData.message);
+
+      await fetch('https://formspree.io/f/mkgrprdn', {
+        method: 'POST',
+        body: formspreeData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
 
       toast({
         title: 'Message Sent!',
