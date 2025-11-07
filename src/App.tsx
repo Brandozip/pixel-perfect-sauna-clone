@@ -14,6 +14,12 @@ import CustomSaunaDesign from "./pages/services/CustomSaunaDesign";
 import SteamShowerInstallation from "./pages/services/SteamShowerInstallation";
 import ResidentialSaunaBuilds from "./pages/services/ResidentialSaunaBuilds";
 import OutdoorSaunaKits from "./pages/services/OutdoorSaunaKits";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import AntiAging from "./pages/health-benefits/AntiAging";
+import Cardiovascular from "./pages/health-benefits/Cardiovascular";
+import ChronicPainRelief from "./pages/health-benefits/ChronicPainRelief";
+import CommercialProjects from "./pages/CommercialProjects";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,10 +38,16 @@ const App = () => (
           <Route path="/services/residential-sauna-builds" element={<ResidentialSaunaBuilds />} />
           <Route path="/services/outdoor-sauna-kits" element={<OutdoorSaunaKits />} />
           <Route path="/health-benefits" element={<HealthBenefits />} />
+          <Route path="/health-benefits/anti-aging" element={<AntiAging />} />
+          <Route path="/health-benefits/cardiovascular" element={<Cardiovascular />} />
+          <Route path="/health-benefits/chronic-pain-relief" element={<ChronicPainRelief />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/about" element={<About />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/commercial-projects" element={<CommercialProjects />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

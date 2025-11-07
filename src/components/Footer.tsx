@@ -25,16 +25,25 @@ export const Footer = () => {
               <li><Link to="/about" className="text-primary-foreground/80 hover:text-accent transition-colors">About</Link></li>
               <li><Link to="/faq" className="text-primary-foreground/80 hover:text-accent transition-colors">FAQ</Link></li>
               <li><Link to="/contact" className="text-primary-foreground/80 hover:text-accent transition-colors">Contact</Link></li>
+              <li><Link to="/commercial-projects" className="text-primary-foreground/80 hover:text-accent transition-colors">Commercial</Link></li>
             </ul>
           </div>
           
           <div>
             <h4 className="font-bold mb-4">Services</h4>
             <ul className="space-y-2">
-              <li><Link to="/services" className="text-primary-foreground/80 hover:text-accent transition-colors">Custom Sauna Design</Link></li>
-              <li><Link to="/services" className="text-primary-foreground/80 hover:text-accent transition-colors">Steam Shower Installation</Link></li>
-              <li><Link to="/services" className="text-primary-foreground/80 hover:text-accent transition-colors">Residential Sauna Builds</Link></li>
-              <li><Link to="/services" className="text-primary-foreground/80 hover:text-accent transition-colors">Outdoor Sauna Kits</Link></li>
+              <li><Link to="/services/custom-sauna-design" className="text-primary-foreground/80 hover:text-accent transition-colors">Custom Sauna Design</Link></li>
+              <li><Link to="/services/steam-shower-installation" className="text-primary-foreground/80 hover:text-accent transition-colors">Steam Shower Installation</Link></li>
+              <li><Link to="/services/residential-sauna-builds" className="text-primary-foreground/80 hover:text-accent transition-colors">Residential Sauna Builds</Link></li>
+              <li><Link to="/services/outdoor-sauna-kits" className="text-primary-foreground/80 hover:text-accent transition-colors">Outdoor Sauna Kits</Link></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 className="font-bold mb-4">Legal</h4>
+            <ul className="space-y-2">
+              <li><Link to="/privacy-policy" className="text-primary-foreground/80 hover:text-accent transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms-of-service" className="text-primary-foreground/80 hover:text-accent transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
           
