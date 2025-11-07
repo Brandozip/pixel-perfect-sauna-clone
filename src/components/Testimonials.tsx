@@ -30,17 +30,17 @@ export const Testimonials = () => {
     <section className="py-20">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">What Our Clients Say</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <h2 className="heading-2 mb-4">What Our Clients Say</h2>
+          <p className="body-lg text-muted-foreground max-w-3xl mx-auto">
             Hear directly from homeowners who have transformed their spaces with our custom sauna solutions.
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="p-6 hover:shadow-xl transition-shadow">
-              <Quote className="h-10 w-10 text-accent mb-4" />
-              <blockquote className="text-muted-foreground mb-6 italic">
+            <Card key={index} className="card-elevated card-content">
+              <Quote className="h-10 w-10 text-primary mb-4" />
+              <blockquote className="text-muted-foreground mb-6 italic leading-relaxed">
                 "{testimonial.quote}"
               </blockquote>
               <div className="flex items-center gap-4">
@@ -50,7 +50,7 @@ export const Testimonials = () => {
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div>
-                  <div className="font-bold">{testimonial.author}</div>
+                  <div className="font-heading font-semibold">{testimonial.author}</div>
                   <div className="text-sm text-muted-foreground">{testimonial.location}</div>
                 </div>
               </div>

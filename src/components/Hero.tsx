@@ -14,16 +14,16 @@ export const Hero = () => {
       }}
     >
       <div className="container relative z-10 text-center max-w-4xl">
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+        <h1 className="heading-1 text-white mb-6">
           Elevate Your Wellness Journey with Custom Saunas
         </h1>
-        <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-3xl mx-auto">
+        <p className="body-lg text-white/90 max-w-3xl mx-auto mb-8">
           Transform your space with premium custom sauna solutions designed for health, relaxation, and luxury. Experience the ultimate in wellness.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           <Link to="/contact">
-            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground text-lg px-8 py-6">
+            <Button size="lg" className="bg-primary hover:bg-primary-emphasis text-primary-foreground text-lg px-8 py-6 shadow-elevated">
               Free Consultation
             </Button>
           </Link>
@@ -36,15 +36,15 @@ export const Hero = () => {
         
         <div className="flex flex-wrap justify-center gap-6 md:gap-8">
           <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
-            <CheckCircle2 className="h-5 w-5 text-accent" />
+            <CheckCircle2 className="h-5 w-5 text-primary" />
             <span className="font-medium">Licensed & Insured</span>
           </div>
           <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
-            <CheckCircle2 className="h-5 w-5 text-accent" />
+            <CheckCircle2 className="h-5 w-5 text-primary" />
             <span className="font-medium">20+ Years Experience</span>
           </div>
           <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
-            <CheckCircle2 className="h-5 w-5 text-accent" />
+            <CheckCircle2 className="h-5 w-5 text-primary" />
             <span className="font-medium">5-Star Rated</span>
           </div>
         </div>

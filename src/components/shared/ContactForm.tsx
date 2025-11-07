@@ -15,7 +15,7 @@ const ContactForm: React.FC = () => {
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="name" className="block text-sm font-medium mb-1">
             Full Name*
           </label>
           <Input
@@ -25,12 +25,12 @@ const ContactForm: React.FC = () => {
             onChange={handleChange}
             required
             placeholder="John Doe"
-            className="w-full"
+            className="form-input"
           />
         </div>
         
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="email" className="block text-sm font-medium mb-1">
             Email Address*
           </label>
           <Input
@@ -41,14 +41,14 @@ const ContactForm: React.FC = () => {
             onChange={handleChange}
             required
             placeholder="your@email.com"
-            className="w-full"
+            className="form-input"
           />
         </div>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="phone" className="block text-sm font-medium mb-1">
             Phone Number
           </label>
           <Input
@@ -58,12 +58,12 @@ const ContactForm: React.FC = () => {
             value={formData.phone}
             onChange={handleChange}
             placeholder="(123) 456-7890"
-            className="w-full"
+            className="form-input"
           />
         </div>
         
         <div>
-          <label htmlFor="service_interested_in" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="service_interested_in" className="block text-sm font-medium mb-1">
             Service Interested In
           </label>
           <select
@@ -71,7 +71,7 @@ const ContactForm: React.FC = () => {
             name="service_interested_in"
             value={formData.service_interested_in}
             onChange={handleChange}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="form-input"
           >
             <option value="">Select a Service</option>
             <option value="Traditional Finnish Sauna">Traditional Finnish Sauna</option>
@@ -87,7 +87,7 @@ const ContactForm: React.FC = () => {
       </div>
       
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label htmlFor="message" className="block text-sm font-medium mb-1">
           Message*
         </label>
         <Textarea
@@ -97,13 +97,13 @@ const ContactForm: React.FC = () => {
           onChange={handleChange}
           required
           placeholder="Tell us about your project..."
-          className="w-full min-h-[120px]"
+          className="form-input min-h-[120px]"
         />
       </div>
       
       <Button 
         type="submit" 
-        className="w-full font-medium"
+        className="w-full font-medium bg-primary hover:bg-primary-emphasis text-primary-foreground"
         disabled={isSubmitting}
       >
         {isSubmitting ? (
@@ -116,7 +116,7 @@ const ContactForm: React.FC = () => {
         )}
       </Button>
       
-      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+      <p className="text-xs text-muted-foreground mt-2">
         By submitting this form, you agree to our privacy policy and terms of service.
       </p>
     </form>

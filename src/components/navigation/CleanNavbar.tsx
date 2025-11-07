@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { Menu, X, Moon, Sun } from "lucide-react";
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -10,6 +9,7 @@ import DesktopNav from './DesktopNav';
 import MobileNav from './MobileNav';
 import NavActions from './NavActions';
 import { navigationLinks } from './navigation-data';
+import { Logo } from '../branding/Logo';
 
 const CleanNavbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,11 +42,7 @@ const CleanNavbar: React.FC = () => {
       <div className="container-fluid">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-heading font-bold text-foreground">
-              Saunas<span className="text-primary">Plus</span>
-            </span>
-          </Link>
+          <Logo />
 
           {/* Desktop Navigation */}
           <DesktopNav 

@@ -26,11 +26,11 @@ const features = [
 
 export const WhyChooseUs = () => {
   return (
-    <section className="py-20 bg-secondary/30">
+    <section className="py-20 bg-primary-muted">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">Why Choose Saunas Plus?</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <h2 className="heading-2 mb-4">Why Choose Saunas Plus?</h2>
+          <p className="body-lg text-muted-foreground max-w-3xl mx-auto">
             With decades of experience and a passion for quality, we deliver sauna solutions that exceed expectations. Our commitment to craftsmanship and customer satisfaction sets us apart.
           </p>
         </div>
@@ -40,11 +40,11 @@ export const WhyChooseUs = () => {
             const Icon = feature.icon;
             return (
               <div key={index} className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 text-accent mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
                   <Icon className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
+                <h3 className="heading-4 mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
               </div>
             );
           })}
@@ -58,7 +58,7 @@ export const WhyChooseUs = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
             <div className="p-8 text-white">
-              <p className="text-2xl md:text-3xl font-medium italic">
+              <p className="text-2xl md:text-3xl font-heading font-medium italic">
                 "Our mission is to bring the authentic sauna experience into homes and businesses across the country."
               </p>
             </div>
