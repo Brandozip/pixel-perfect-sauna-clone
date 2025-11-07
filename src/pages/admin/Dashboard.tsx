@@ -229,7 +229,10 @@ export default function AdminDashboard() {
           </Card>
 
           {/* Blog Management */}
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Card 
+            className="hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => window.location.href = '/admin/blog'}
+          >
             <CardHeader>
               <div className="flex items-center justify-between">
                 <PenSquare className="w-8 h-8 text-primary" />
@@ -240,8 +243,8 @@ export default function AdminDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full" disabled>
-                Coming Soon
+              <Button variant="outline" className="w-full">
+                Manage Blog
               </Button>
             </CardContent>
           </Card>

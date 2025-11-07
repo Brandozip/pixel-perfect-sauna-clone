@@ -20,7 +20,7 @@ const items = [
   { title: 'Gallery', url: '/admin/gallery', icon: Image },
   { title: 'Reviews', url: '/admin/reviews', icon: Star },
   { title: 'Analytics', url: '/admin/analytics', icon: BarChart3 },
-  { title: 'Blog', url: '/admin/blog', icon: FileText, disabled: true },
+  { title: 'Blog', url: '/admin/blog', icon: FileText },
 ];
 
 export function AdminSidebar() {
@@ -41,23 +41,16 @@ export function AdminSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild disabled={item.disabled}>
-                    {item.disabled ? (
-                      <div className="cursor-not-allowed opacity-50">
-                        <item.icon className="h-4 w-4" />
-                        {state !== "collapsed" && <span>{item.title}</span>}
-                      </div>
-                    ) : (
-                      <NavLink
-                        to={item.url}
-                        end
-                        className="hover:bg-muted/50"
-                        activeClassName="bg-muted text-primary font-medium"
-                      >
-                        <item.icon className="h-4 w-4" />
-                        {state !== "collapsed" && <span>{item.title}</span>}
-                      </NavLink>
-                    )}
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to={item.url}
+                      end
+                      className="hover:bg-muted/50"
+                      activeClassName="bg-muted text-primary font-medium"
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {state !== "collapsed" && <span>{item.title}</span>}
+                    </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

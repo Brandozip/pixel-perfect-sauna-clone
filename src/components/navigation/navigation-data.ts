@@ -26,6 +26,7 @@ export const navigationLinks = [
     ]
   },
   { name: 'Gallery', path: '/gallery' },
+  { name: 'Blog', path: '/blog' },
   { name: 'About', path: '/about' },
   { name: 'FAQ', path: '/faq' },
   { name: 'Contact', path: '/contact' },

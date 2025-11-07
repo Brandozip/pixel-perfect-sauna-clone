@@ -37,6 +37,10 @@ import AdminSubmissions from "./pages/admin/Submissions";
 import AdminGallery from "./pages/admin/Gallery";
 import AdminReviews from "./pages/admin/Reviews";
 import AdminAnalytics from "./pages/admin/Analytics";
+import AdminBlogPosts from "./pages/admin/BlogPosts";
+import AdminBlogEditor from "./pages/admin/BlogEditor";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import { AdminAuthProvider } from "./hooks/useAdminAuth";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { AdminLayout } from "./components/admin/AdminLayout";
@@ -77,6 +81,11 @@ const App = () => (
           <Route path="/outdoor-sauna-landing" element={<OutdoorSaunaLanding />} />
           <Route path="/fast-track" element={<FastTrackLanding />} />
           <Route path="/cost-calculator" element={<CostCalculator />} />
+          
+          {/* Blog Routes */}
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route 
@@ -135,6 +144,26 @@ const App = () => (
               <ProtectedRoute>
                 <AdminLayout>
                   <AdminAnalytics />
+                </AdminLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/blog" 
+            element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <AdminBlogPosts />
+                </AdminLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/blog/:id" 
+            element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <AdminBlogEditor />
                 </AdminLayout>
               </ProtectedRoute>
             } 
