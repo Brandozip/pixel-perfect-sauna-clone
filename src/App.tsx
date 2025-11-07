@@ -30,6 +30,10 @@ import OutdoorSaunaLanding from "./pages/OutdoorSaunaLanding";
 import FastTrackLanding from "./pages/FastTrackLanding";
 import CostCalculator from "./pages/CostCalculator";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/admin/Login";
+import AdminDashboard from "./pages/admin/Dashboard";
+import { AdminAuthProvider } from "./hooks/useAdminAuth";
+import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -39,7 +43,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
+        <AdminAuthProvider>
+          <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/custom-sauna-design" element={<CustomSaunaDesign />} />
@@ -66,9 +71,20 @@ const App = () => (
           <Route path="/outdoor-sauna-landing" element={<OutdoorSaunaLanding />} />
           <Route path="/fast-track" element={<FastTrackLanding />} />
           <Route path="/cost-calculator" element={<CostCalculator />} />
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route 
+            path="/admin/dashboard" 
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
-        </Routes>
+          </Routes>
+        </AdminAuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
