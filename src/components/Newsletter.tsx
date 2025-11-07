@@ -1,20 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useNewsletterSignup } from "@/hooks/useNewsletterSignup";
 
 export const Newsletter = () => {
-  const [email, setEmail] = useState("");
-  const { toast } = useToast();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Thank you for subscribing!",
-      description: "You'll receive our wellness tips and exclusive offers.",
-    });
-    setEmail("");
-  };
+  const { email, setEmail, isLoading, subscribe } = useNewsletterSignup();
 
   return (
     <section className="py-20 bg-accent text-accent-foreground">
@@ -25,17 +14,18 @@ export const Newsletter = () => {
             Get expert sauna tips, health insights, and exclusive offers delivered monthly to your inbox.
           </p>
           
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+          <form onSubmit={subscribe} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <Input 
               type="email" 
               placeholder="Enter your email" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={isLoading}
               className="bg-white text-foreground border-none"
             />
-            <Button type="submit" variant="secondary" className="whitespace-nowrap">
-              Subscribe
+            <Button type="submit" variant="secondary" className="whitespace-nowrap" disabled={isLoading}>
+              {isLoading ? 'Subscribing...' : 'Subscribe'}
             </Button>
           </form>
           
