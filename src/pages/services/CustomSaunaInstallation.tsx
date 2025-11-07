@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Phone } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
+import { ServiceSchema, BreadcrumbSchema } from "@/components/seo/ServiceSchema";
 import heroImage from "@/assets/residential-sauna.png";
 
 const processSteps = [
@@ -63,6 +64,29 @@ const whyChoose = [
 const CustomSaunaInstallation = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <ServiceSchema
+        name="Custom Sauna Installation"
+        description="Professional sauna installation services for residential and commercial properties. Expert craftsmanship and code-compliant work."
+        url="https://www.saunasplus.com/services/custom-sauna-installation"
+        serviceType="Professional Installation Service"
+        areaServed={["Atlanta, GA", "Georgia", "Southeastern United States"]}
+        additionalInfo={{
+          features: [
+            "Licensed and insured installers",
+            "Electrical code compliance",
+            "Moisture barrier installation",
+            "System testing and training"
+          ],
+          priceRange: "Contact for quote"
+        }}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "https://www.saunasplus.com/" },
+          { name: "Services", url: "https://www.saunasplus.com/services" },
+          { name: "Custom Sauna Installation", url: "https://www.saunasplus.com/services/custom-sauna-installation" }
+        ]}
+      />
       <div className="min-h-screen">
         <CleanNavbar />
         

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Phone, Zap, Thermometer, Waves } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
+import { ServiceSchema, BreadcrumbSchema } from "@/components/seo/ServiceSchema";
 import heroImage from "@/assets/luxury-sauna.jpg";
 
 const benefits = [
@@ -54,6 +55,29 @@ const features = [
 const IndoorInfraredSauna = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <ServiceSchema
+        name="Indoor Infrared Sauna"
+        description="Modern infrared sauna installation for health and wellness. Experience the therapeutic benefits of infrared technology."
+        url="https://www.saunasplus.com/services/indoor-infrared-sauna"
+        serviceType="Home Wellness Service"
+        areaServed={["Atlanta, GA", "Georgia", "Southeastern United States"]}
+        additionalInfo={{
+          features: [
+            "Lower operating temperatures",
+            "Deeper tissue penetration",
+            "Energy efficiency",
+            "Multiple infrared wavelength options"
+          ],
+          priceRange: "Contact for quote"
+        }}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "https://www.saunasplus.com/" },
+          { name: "Services", url: "https://www.saunasplus.com/services" },
+          { name: "Indoor Infrared Sauna", url: "https://www.saunasplus.com/services/indoor-infrared-sauna" }
+        ]}
+      />
       <div className="min-h-screen">
         <CleanNavbar />
         

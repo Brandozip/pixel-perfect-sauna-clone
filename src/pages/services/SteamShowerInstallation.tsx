@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Phone } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
+import { ServiceSchema, BreadcrumbSchema } from "@/components/seo/ServiceSchema";
 import heroImage from "@/assets/service-detail-hero.png";
 import customerImage from "@/assets/testimonial-customer.png";
 
@@ -76,6 +77,29 @@ const processSteps = [
 const SteamShowerInstallation = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <ServiceSchema
+        name="Steam Shower Installation"
+        description="Transform your bathroom into a spa-like retreat with professional steam shower installation services."
+        url="https://www.saunasplus.com/services/steam-shower-installation"
+        serviceType="Bathroom Remodeling Service"
+        areaServed={["Atlanta, GA", "Georgia", "Southeastern United States"]}
+        additionalInfo={{
+          features: [
+            "Commercial-grade steam generators",
+            "Waterproof construction",
+            "Digital controls & aromatherapy",
+            "Lifetime warranty on installation"
+          ],
+          priceRange: "Contact for quote"
+        }}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "https://www.saunasplus.com/" },
+          { name: "Services", url: "https://www.saunasplus.com/services" },
+          { name: "Steam Shower Installation", url: "https://www.saunasplus.com/services/steam-shower-installation" }
+        ]}
+      />
       <div className="min-h-screen">
         <CleanNavbar />
         

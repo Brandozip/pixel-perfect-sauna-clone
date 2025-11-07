@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Phone } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
+import { ServiceSchema, BreadcrumbSchema } from "@/components/seo/ServiceSchema";
 import heroImage from "@/assets/service-detail-hero.png";
 import customerImage from "@/assets/testimonial-customer.png";
 import gallery1 from "@/assets/testimonial-nick.png";
@@ -81,6 +82,29 @@ const processSteps = [
 const OutdoorSaunaKits = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <ServiceSchema
+        name="Outdoor Sauna Kits"
+        description="Pre-built sauna kits designed for easy installation in your backyard or garden. Weather-resistant, premium quality outdoor saunas."
+        url="https://www.saunasplus.com/services/outdoor-sauna-kits"
+        serviceType="Outdoor Living Product"
+        areaServed={["Atlanta, GA", "Georgia", "Southeastern United States"]}
+        additionalInfo={{
+          features: [
+            "Weather-resistant construction",
+            "Pre-fabricated components",
+            "Installation support",
+            "Multiple size options"
+          ],
+          priceRange: "Contact for quote"
+        }}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "https://www.saunasplus.com/" },
+          { name: "Services", url: "https://www.saunasplus.com/services" },
+          { name: "Outdoor Sauna Kits", url: "https://www.saunasplus.com/services/outdoor-sauna-kits" }
+        ]}
+      />
       <div className="min-h-screen">
         <CleanNavbar />
         
