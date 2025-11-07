@@ -467,6 +467,16 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - ✅ Mobile-responsive design
 - ✅ Fast loading with Vite optimization
 - ✅ Image alt attributes throughout site
+- ✅ **XML Sitemap (static and dynamic)**
+- ✅ **robots.txt with sitemap reference**
+- ✅ **Disallow rules for admin pages**
+
+✅ **XML Sitemap Implementation:**
+- Static sitemap: `public/sitemap.xml` (30 URLs)
+- Dynamic edge function: `supabase/functions/generate-sitemap/index.ts`
+- Updated robots.txt with sitemap URL
+- Maintenance guide: `SITEMAP_MAINTENANCE.md`
+- Auto-update ready for blog posts (Phase 2E)
 
 📋 **Enhancements Needed:**
 

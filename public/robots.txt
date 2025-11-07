@@ -12,3 +12,10 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Disallow admin and portal pages from crawling
+Disallow: /admin/
+Disallow: /portal/
+
+# Sitemap location
+Sitemap: https://www.saunasplus.com/sitemap.xml

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  
+  <!-- 
+    Saunas Plus - XML Sitemap
+    Last Updated: 2024-01-07
+    
+    Priority Guide:
+    1.0 = Homepage
+    0.9 = Main category pages (Services, Health Benefits)
+    0.8 = Important pages (Contact, About, Gallery)
+    0.7 = Service detail pages
+    0.6 = Health benefit detail pages
+    0.5 = Utility and landing pages
+    0.4 = Legal pages
+    
+    Change Frequency Guide:
+    daily = Homepage, Gallery (frequently updated content)
+    weekly = Main sections (Services, Health Benefits, About)
+    monthly = Detail pages (individual services, benefits)
+    yearly = Legal pages (rarely change)
+  -->
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://www.saunasplus.com/</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Main Service Pages -->
+  <url>
+    <loc>https://www.saunasplus.com/services</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Service Detail Pages -->
+  <url>
+    <loc>https://www.saunasplus.com/services/custom-sauna-design</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/services/custom-sauna-installation</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/services/steam-shower-installation</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/services/residential-sauna-builds</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/services/outdoor-sauna-kits</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/services/indoor-infrared-sauna</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Main Health Benefits Page -->
+  <url>
+    <loc>https://www.saunasplus.com/health-benefits</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Health Benefit Detail Pages -->
+  <url>
+    <loc>https://www.saunasplus.com/health-benefits/detoxification</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/health-benefits/mental-health</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/health-benefits/cardiovascular</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/health-benefits/muscle-recovery</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/health-benefits/immune-system</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/health-benefits/anti-aging</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/health-benefits/chronic-pain-relief</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Gallery -->
+  <url>
+    <loc>https://www.saunasplus.com/gallery</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- About & Company Info -->
+  <url>
+    <loc>https://www.saunasplus.com/about</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- FAQ -->
+  <url>
+    <loc>https://www.saunasplus.com/faq</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Contact -->
+  <url>
+    <loc>https://www.saunasplus.com/contact</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Utility Pages -->
+  <url>
+    <loc>https://www.saunasplus.com/cost-calculator</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/commercial-projects</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Landing Pages -->
+  <url>
+    <loc>https://www.saunasplus.com/outdoor-sauna-landing</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/fast-track</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Legal Pages -->
+  <url>
+    <loc>https://www.saunasplus.com/privacy-policy</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://www.saunasplus.com/terms-of-service</loc>
+    <lastmod>2024-01-07</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- 
+    FUTURE PAGES (To be added when implemented):
+    
+    Blog Pages (Phase 2E):
+    - /blog (priority: 0.9, changefreq: daily)
+    - /blog/[slug] (priority: 0.6, changefreq: weekly)
+    - /blog/category/[category] (priority: 0.5, changefreq: weekly)
+    - /blog/tag/[tag] (priority: 0.4, changefreq: weekly)
+    
+    Customer Portal (Phase 3):
+    - /portal (priority: 0.5, changefreq: weekly)
+    (Portal pages don't need to be in sitemap as they're auth-protected)
+    
+    Note: When blog is implemented, use the dynamic sitemap edge function
+    at /functions/v1/generate-sitemap for automatic updates
+  -->
+
+</urlset>
