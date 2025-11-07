@@ -1,4 +1,4 @@
-import { Navigation } from "@/components/Navigation";
+import CleanNavbar from "@/components/navigation/CleanNavbar";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -55,7 +55,7 @@ const IndoorInfraredSauna = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
       <div className="min-h-screen">
-        <Navigation />
+        <CleanNavbar />
         
         <section className="py-20 bg-gradient-to-b from-secondary/30 to-background">
           <div className="container max-w-4xl">

@@ -39,6 +39,29 @@ All colors MUST be HSL.
     --radius: 0.5rem;
     
     --hero-gradient: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%);
+    
+    /* Sauna custom colors */
+    --sauna-50: 24 100% 97%;
+    --sauna-100: 24 95% 92%;
+    --sauna-200: 24 90% 85%;
+    --sauna-300: 24 85% 75%;
+    --sauna-400: 24 87% 65%;
+    --sauna-500: 24 87% 50%;
+    --sauna-600: 24 85% 42%;
+    --sauna-700: 24 80% 35%;
+    --sauna-800: 24 75% 28%;
+    --sauna-900: 24 70% 22%;
+    
+    /* Wood tones */
+    --wood-50: 30 60% 97%;
+    --wood-100: 30 55% 90%;
+    --wood-200: 30 50% 80%;
+    --wood-300: 30 45% 70%;
+    --wood-400: 30 40% 60%;
+    --wood-500: 30 35% 50%;
+    
+    /* Custom shadows */
+    --shadow-custom: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
     --sidebar-background: 0 0% 98%;
 
@@ -85,6 +108,17 @@ All colors MUST be HSL.
     --border: 30 8% 25%;
     --input: 30 8% 25%;
     --ring: 27 87% 55%;
+    
+    /* Sauna colors for dark mode */
+    --sauna-400: 24 87% 65%;
+    --sauna-500: 24 87% 50%;
+    
+    /* Wood tones dark */
+    --wood-100: 30 20% 20%;
+    
+    /* Custom shadows dark */
+    --shadow-custom: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -103,5 +137,25 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .container-fluid {
+    @apply w-full px-4 mx-auto;
+    max-width: 1400px;
+  }
+  
+  .shadow-custom {
+    box-shadow: var(--shadow-custom);
+  }
+  
+  .link-muted {
+    @apply text-muted-foreground hover:text-foreground transition-colors;
+  }
+  
+  .font-heading {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 600;
   }
 }

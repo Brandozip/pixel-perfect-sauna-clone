@@ -1,4 +1,4 @@
-import { Navigation } from "@/components/Navigation";
+import CleanNavbar from "@/components/navigation/CleanNavbar";
 import { Hero } from "@/components/Hero";
 import { Services } from "@/components/Services";
 import { HealthBenefits } from "@/components/HealthBenefits";
@@ -13,7 +13,7 @@ const Index = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
       <div className="min-h-screen">
-        <Navigation />
+        <CleanNavbar />
         <Hero />
         <Services />
         <HealthBenefits />
