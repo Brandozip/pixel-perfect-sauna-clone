@@ -41,10 +41,15 @@ const Gallery = () => {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [imageMetadata, setImageMetadata] = useState<Record<number, any>>({});
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [migrating, setMigrating] = useState(false);
   const [migrationProgress, setMigrationProgress] = useState({ current: 0, total: 0, message: '' });
+  const [generatingBatch, setGeneratingBatch] = useState(false);
+  const [batchProgress, setBatchProgress] = useState<Record<number, 'pending' | 'generating' | 'complete' | 'error'>>({});
+  const [showBatchProgress, setShowBatchProgress] = useState(false);
 
   const { uploading, generatingMetadata, uploadImage, deleteImage, updateImage, generateMetadata } = useGalleryUpload();
   const { toast } = useToast();
@@ -134,10 +139,13 @@ const Gallery = () => {
   const handleGenerateMetadata = async () => {
     if (selectedFiles.length === 0) return;
 
-    // Generate metadata for the first image only
-    const metadata = await generateMetadata(selectedFiles[0]);
+    const metadata = await generateMetadata(selectedFiles[currentImageIndex]);
     
     if (metadata) {
+      setImageMetadata(prev => ({
+        ...prev,
+        [currentImageIndex]: metadata
+      }));
       setFormData({
         ...formData,
         title: metadata.title,
@@ -151,13 +159,123 @@ const Gallery = () => {
     }
   };
 
+  const handleGenerateAllMetadata = async () => {
+    if (selectedFiles.length === 0) return;
+
+    setGeneratingBatch(true);
+    setShowBatchProgress(true);
+
+    // Initialize progress for all images
+    const initialProgress: Record<number, 'pending' | 'generating' | 'complete' | 'error'> = {};
+    selectedFiles.forEach((_, index) => {
+      initialProgress[index] = 'pending';
+    });
+    setBatchProgress(initialProgress);
+
+    // Generate metadata for each image sequentially
+    for (let i = 0; i < selectedFiles.length; i++) {
+      setBatchProgress(prev => ({ ...prev, [i]: 'generating' }));
+
+      try {
+        const metadata = await generateMetadata(selectedFiles[i]);
+        
+        if (metadata) {
+          setImageMetadata(prev => ({
+            ...prev,
+            [i]: metadata
+          }));
+          setBatchProgress(prev => ({ ...prev, [i]: 'complete' }));
+        } else {
+          setBatchProgress(prev => ({ ...prev, [i]: 'error' }));
+        }
+      } catch (error) {
+        console.error(`Failed to generate metadata for image ${i}:`, error);
+        setBatchProgress(prev => ({ ...prev, [i]: 'error' }));
+      }
+
+      // Small delay between requests to avoid rate limiting
+      if (i < selectedFiles.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
+    setGeneratingBatch(false);
+    
+    toast({
+      title: 'Batch Generation Complete',
+      description: `Generated metadata for ${Object.values(batchProgress).filter(s => s === 'complete').length} images`,
+    });
+  };
+
+  const handleNextImage = () => {
+    if (currentImageIndex < selectedFiles.length - 1) {
+      // Save current form data to metadata
+      setImageMetadata(prev => ({
+        ...prev,
+        [currentImageIndex]: formData
+      }));
+      
+      const nextIndex = currentImageIndex + 1;
+      setCurrentImageIndex(nextIndex);
+      
+      // Load metadata for next image if it exists
+      if (imageMetadata[nextIndex]) {
+        setFormData(imageMetadata[nextIndex]);
+      } else {
+        resetFormToDefaults();
+      }
+    }
+  };
+
+  const handlePrevImage = () => {
+    if (currentImageIndex > 0) {
+      // Save current form data to metadata
+      setImageMetadata(prev => ({
+        ...prev,
+        [currentImageIndex]: formData
+      }));
+      
+      const prevIndex = currentImageIndex - 1;
+      setCurrentImageIndex(prevIndex);
+      
+      // Load metadata for previous image
+      if (imageMetadata[prevIndex]) {
+        setFormData(imageMetadata[prevIndex]);
+      } else {
+        resetFormToDefaults();
+      }
+    }
+  };
+
+  const resetFormToDefaults = () => {
+    setFormData({
+      title: '',
+      alt_text: '',
+      description: '',
+      category: 'residential',
+      seo_keywords: '',
+      seo_title: '',
+      seo_description: '',
+      is_published: true,
+      featured: false,
+    });
+  };
+
   const handleUpload = async () => {
     if (selectedFiles.length === 0) return;
 
     try {
-      // Upload all files
-      for (const file of selectedFiles) {
-        await uploadImage(file, formData);
+      // Save current form data for current image
+      const finalMetadata = {
+        ...imageMetadata,
+        [currentImageIndex]: formData
+      };
+
+      // Upload all files with their respective metadata
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        const metadata = finalMetadata[i] || formData; // Use saved metadata or current form
+        await uploadImage(file, metadata);
       }
       
       toast({
@@ -264,6 +382,10 @@ const Gallery = () => {
     setSelectedFiles([]);
     setPreviewUrls([]);
     setSelectedImage(null);
+    setCurrentImageIndex(0);
+    setImageMetadata({});
+    setShowBatchProgress(false);
+    setBatchProgress({});
   };
 
   const filteredImages = images.filter(image => {
@@ -467,151 +589,226 @@ const Gallery = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
-                  {selectedFiles.length} image{selectedFiles.length > 1 ? 's' : ''} selected
-                </p>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => {
-                    setSelectedFiles([]);
-                    setPreviewUrls([]);
-                  }}
-                >
-                  <X className="h-4 w-4 mr-1" />
-                  Clear All
-                </Button>
-              </div>
+              {!showBatchProgress ? (
+                <>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">
+                      Image {currentImageIndex + 1} of {selectedFiles.length}
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handlePrevImage}
+                        disabled={currentImageIndex === 0}
+                      >
+                        Previous
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleNextImage}
+                        disabled={currentImageIndex === selectedFiles.length - 1}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-[300px] overflow-y-auto">
-                {previewUrls.map((url, index) => (
-                  <div key={index} className="relative aspect-square bg-muted rounded-lg overflow-hidden">
-                    <img src={url} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
+                  <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
+                    <img 
+                      src={previewUrls[currentImageIndex]} 
+                      alt={`Preview ${currentImageIndex + 1}`} 
+                      className="w-full h-full object-contain" 
+                    />
+                    {imageMetadata[currentImageIndex] && (
+                      <Badge className="absolute top-2 right-2 bg-green-500">
+                        <Star className="h-3 w-3 mr-1" />
+                        AI Generated
+                      </Badge>
+                    )}
+                  </div>
+
+                  <div className="border-t pt-4 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium">Metadata for this image:</p>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={handleGenerateMetadata}
+                          disabled={generatingMetadata}
+                        >
+                          {generatingMetadata ? (
+                            <>
+                              <LoadingSpinner size="sm" className="mr-2" />
+                              Analyzing...
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="h-4 w-4 mr-2" />
+                              Generate AI Metadata
+                            </>
+                          )}
+                        </Button>
+                        {selectedFiles.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="default"
+                            size="sm"
+                            onClick={handleGenerateAllMetadata}
+                            disabled={generatingBatch}
+                          >
+                            {generatingBatch ? (
+                              <>
+                                <LoadingSpinner size="sm" className="mr-2" />
+                                Generating All...
+                              </>
+                            ) : (
+                              <>
+                                <Sparkles className="h-4 w-4 mr-2" />
+                                Generate All ({selectedFiles.length})
+                              </>
+                            )}
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="title">Title*</Label>
+                        <Input
+                          id="title"
+                          value={formData.title}
+                          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                          placeholder="Beautiful Sauna Installation"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="category">Category*</Label>
+                        <select
+                          id="category"
+                          value={formData.category}
+                          onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                        >
+                          <option value="residential">Residential</option>
+                          <option value="commercial">Commercial</option>
+                          <option value="outdoor">Outdoor</option>
+                          <option value="infrared">Infrared</option>
+                          <option value="traditional">Traditional</option>
+                          <option value="steam">Steam Room</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="alt_text">Alt Text (SEO)*</Label>
+                      <Input
+                        id="alt_text"
+                        value={formData.alt_text}
+                        onChange={(e) => setFormData({ ...formData, alt_text: e.target.value })}
+                        placeholder="Describe the image for accessibility and SEO"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="description">Description</Label>
+                      <Textarea
+                        id="description"
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        placeholder="Detailed description of the project"
+                        rows={3}
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="seo_keywords">SEO Keywords</Label>
+                      <Input
+                        id="seo_keywords"
+                        value={formData.seo_keywords}
+                        onChange={(e) => setFormData({ ...formData, seo_keywords: e.target.value })}
+                        placeholder="sauna, residential, luxury, custom"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          id="published"
+                          checked={formData.is_published}
+                          onCheckedChange={(checked) => setFormData({ ...formData, is_published: checked })}
+                        />
+                        <Label htmlFor="published">Published</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          id="featured"
+                          checked={formData.featured}
+                          onCheckedChange={(checked) => setFormData({ ...formData, featured: checked })}
+                        />
+                        <Label htmlFor="featured">Featured</Label>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">Batch Generation Progress</h3>
                     <Button
                       size="sm"
-                      variant="destructive"
-                      className="absolute top-2 right-2"
-                      onClick={() => {
-                        setSelectedFiles(files => files.filter((_, i) => i !== index));
-                        setPreviewUrls(urls => urls.filter((_, i) => i !== index));
-                      }}
+                      variant="outline"
+                      onClick={() => setShowBatchProgress(false)}
                     >
-                      <X className="h-3 w-3" />
+                      Back to Edit
                     </Button>
                   </div>
-                ))}
-              </div>
 
-              <div className="border-t pt-4 space-y-4">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium">Metadata for all images:</p>
-                  {selectedFiles.length === 1 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleGenerateMetadata}
-                      disabled={generatingMetadata}
-                    >
-                      {generatingMetadata ? (
-                        <>
-                          <LoadingSpinner size="sm" className="mr-2" />
-                          Analyzing...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="h-4 w-4 mr-2" />
-                          Generate with AI
-                        </>
-                      )}
-                    </Button>
-                  )}
+                  <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                    {selectedFiles.map((file, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
+                        <div className="relative w-16 h-16 flex-shrink-0">
+                          <img 
+                            src={previewUrls[index]} 
+                            alt={`Preview ${index + 1}`}
+                            className="w-full h-full object-cover rounded"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{file.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {imageMetadata[index]?.title || 'No metadata yet'}
+                          </p>
+                        </div>
+                        <div className="flex-shrink-0">
+                          {batchProgress[index] === 'pending' && (
+                            <Badge variant="secondary">Pending</Badge>
+                          )}
+                          {batchProgress[index] === 'generating' && (
+                            <div className="flex items-center gap-2">
+                              <LoadingSpinner size="sm" />
+                              <Badge variant="secondary">Generating...</Badge>
+                            </div>
+                          )}
+                          {batchProgress[index] === 'complete' && (
+                            <Badge className="bg-green-500">
+                              <Star className="h-3 w-3 mr-1" />
+                              Complete
+                            </Badge>
+                          )}
+                          {batchProgress[index] === 'error' && (
+                            <Badge variant="destructive">Error</Badge>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                {selectedFiles.length > 1 && (
-                  <p className="text-xs text-muted-foreground">
-                    Note: AI metadata generation is only available for single image uploads. For multiple images, the same metadata will be applied to all.
-                  </p>
-                )}
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="title">Title*</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    placeholder="Beautiful Sauna Installation"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="category">Category*</Label>
-                  <select
-                    id="category"
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  >
-                    <option value="residential">Residential</option>
-                    <option value="commercial">Commercial</option>
-                    <option value="outdoor">Outdoor</option>
-                    <option value="infrared">Infrared</option>
-                    <option value="traditional">Traditional</option>
-                    <option value="steam">Steam Room</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="alt_text">Alt Text (SEO)*</Label>
-                <Input
-                  id="alt_text"
-                  value={formData.alt_text}
-                  onChange={(e) => setFormData({ ...formData, alt_text: e.target.value })}
-                  placeholder="Describe the image for accessibility and SEO"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Detailed description of the project"
-                  rows={3}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="seo_keywords">SEO Keywords</Label>
-                <Input
-                  id="seo_keywords"
-                  value={formData.seo_keywords}
-                  onChange={(e) => setFormData({ ...formData, seo_keywords: e.target.value })}
-                  placeholder="sauna, residential, luxury, custom"
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="published"
-                    checked={formData.is_published}
-                    onCheckedChange={(checked) => setFormData({ ...formData, is_published: checked })}
-                  />
-                  <Label htmlFor="published">Published</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="featured"
-                    checked={formData.featured}
-                    onCheckedChange={(checked) => setFormData({ ...formData, featured: checked })}
-                  />
-                  <Label htmlFor="featured">Featured</Label>
-                </div>
-              </div>
-              </div>
+              )}
             </div>
           )}
 
