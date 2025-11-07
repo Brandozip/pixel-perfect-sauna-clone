@@ -527,6 +527,7 @@ This document outlines the development roadmap and strategic plan for the Saunas
   - Service type, provider, area served, price range
 - Product schema for sauna products/kits
 - Review/Rating schema for testimonials ✅ (5.0 stars, 47 reviews)
+- ImageObject schema for gallery images ✅ (with photographer credits and licensing)
 - FAQPage schema for FAQ pages
 - BreadcrumbList schema for navigation
 - Organization schema for brand identity

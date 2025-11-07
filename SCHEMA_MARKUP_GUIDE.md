@@ -198,6 +198,50 @@ const faqs = [
 
 ---
 
+### 8. ImageObject Schema ✅
+**Location:** Gallery page (`src/pages/Gallery.tsx`)  
+**Component:** `<ImageObjectSchema />`
+
+**What it includes:**
+- Individual ImageObject for each gallery image
+- ImageGallery wrapper for collections
+- Content URL, name, description, caption
+- Creator/photographer attribution
+- Copyright and license information
+- Upload date and keywords
+- Link to license acquisition page
+- Publisher information (Saunas Plus)
+
+**Purpose:**
+- Image search visibility in Google Images
+- Proper attribution and copyright display
+- License information for potential users
+- Enhanced image SEO with rich metadata
+
+**Example Implementation:**
+```tsx
+<ImageObjectSchema 
+  images={filteredImages.map(img => ({
+    url: img.image_url,
+    title: img.title,
+    description: img.description,
+    alt_text: img.alt_text,
+    photographer_credit: img.photographer_credit,
+    license_info: img.license_info,
+    category: img.category,
+    uploadDate: img.created_at
+  }))}
+/>
+```
+
+**SEO Benefits:**
+- Images appear in Google Images with proper attribution
+- License information helps with content discovery
+- Photographer credits improve professional credibility
+- Better image ranking in search results
+
+---
+
 ## Future Schema Types (Planned)
 
 ### 6. FAQPage Schema (Phase 4B)
@@ -383,7 +427,8 @@ src/components/seo/
 ├── StructuredData.tsx     # Business, Organization, Website schemas
 ├── ServiceSchema.tsx      # Service and Breadcrumb schemas
 ├── FAQSchema.tsx          # FAQPage schema
-└── ReviewSchema.tsx       # Review and AggregateRating schemas
+├── ReviewSchema.tsx       # Review and AggregateRating schemas
+└── ImageObjectSchema.tsx  # ImageObject and ImageGallery schemas
 ```
 
 ### How It Works:

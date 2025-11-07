@@ -27,6 +27,8 @@ interface GalleryImage {
   seo_keywords: string | null;
   seo_title: string | null;
   seo_description: string | null;
+  photographer_credit: string | null;
+  license_info: string | null;
   created_at: string;
 }
 
@@ -63,6 +65,8 @@ const Gallery = () => {
     seo_keywords: '',
     seo_title: '',
     seo_description: '',
+    photographer_credit: 'Saunas Plus',
+    license_info: 'All Rights Reserved',
     is_published: true,
     featured: false,
   });
@@ -256,6 +260,8 @@ const Gallery = () => {
       seo_keywords: '',
       seo_title: '',
       seo_description: '',
+      photographer_credit: 'Saunas Plus',
+      license_info: 'All Rights Reserved',
       is_published: true,
       featured: false,
     });
@@ -347,6 +353,8 @@ const Gallery = () => {
       seo_keywords: image.seo_keywords || '',
       seo_title: image.seo_title || '',
       seo_description: image.seo_description || '',
+      photographer_credit: image.photographer_credit || 'Saunas Plus',
+      license_info: image.license_info || 'All Rights Reserved',
       is_published: image.is_published,
       featured: image.featured,
     });
@@ -390,6 +398,8 @@ const Gallery = () => {
       seo_keywords: '',
       seo_title: '',
       seo_description: '',
+      photographer_credit: 'Saunas Plus',
+      license_info: 'All Rights Reserved',
       is_published: true,
       featured: false,
     });
@@ -749,6 +759,33 @@ const Gallery = () => {
                       />
                     </div>
 
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="photographer_credit">Photographer Credit</Label>
+                        <Input
+                          id="photographer_credit"
+                          value={formData.photographer_credit}
+                          onChange={(e) => setFormData({ ...formData, photographer_credit: e.target.value })}
+                          placeholder="Saunas Plus"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="license_info">License</Label>
+                        <select
+                          id="license_info"
+                          value={formData.license_info}
+                          onChange={(e) => setFormData({ ...formData, license_info: e.target.value })}
+                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                        >
+                          <option value="All Rights Reserved">All Rights Reserved</option>
+                          <option value="CC BY 4.0">CC BY 4.0</option>
+                          <option value="CC BY-SA 4.0">CC BY-SA 4.0</option>
+                          <option value="CC BY-NC 4.0">CC BY-NC 4.0</option>
+                          <option value="Public Domain">Public Domain</option>
+                        </select>
+                      </div>
+                    </div>
+
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <Switch
@@ -914,6 +951,33 @@ const Gallery = () => {
                 value={formData.seo_keywords}
                 onChange={(e) => setFormData({ ...formData, seo_keywords: e.target.value })}
               />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit-photographer">Photographer Credit</Label>
+                <Input
+                  id="edit-photographer"
+                  value={formData.photographer_credit}
+                  onChange={(e) => setFormData({ ...formData, photographer_credit: e.target.value })}
+                  placeholder="Saunas Plus"
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-license">License</Label>
+                <select
+                  id="edit-license"
+                  value={formData.license_info}
+                  onChange={(e) => setFormData({ ...formData, license_info: e.target.value })}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="All Rights Reserved">All Rights Reserved</option>
+                  <option value="CC BY 4.0">CC BY 4.0</option>
+                  <option value="CC BY-SA 4.0">CC BY-SA 4.0</option>
+                  <option value="CC BY-NC 4.0">CC BY-NC 4.0</option>
+                  <option value="Public Domain">Public Domain</option>
+                </select>
+              </div>
             </div>
 
             <div className="flex items-center justify-between">

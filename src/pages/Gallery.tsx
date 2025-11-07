@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ThemeProvider } from "next-themes";
 import { SocialMetaTags, galleryPageMeta } from "@/components/seo/SocialMetaTags";
+import { ImageObjectSchema } from "@/components/seo/ImageObjectSchema";
 import { supabase } from '@/integrations/supabase/client';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import { Link } from 'react-router-dom';
@@ -17,6 +18,9 @@ interface GalleryImage {
   description: string | null;
   category: string;
   project_details: any;
+  photographer_credit: string | null;
+  license_info: string | null;
+  created_at: string;
 }
 
 const Gallery = () => {
@@ -64,6 +68,18 @@ const Gallery = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
       <SocialMetaTags {...galleryPageMeta} />
+      <ImageObjectSchema 
+        images={filteredImages.map(img => ({
+          url: img.image_url,
+          title: img.title,
+          description: img.description,
+          alt_text: img.alt_text,
+          photographer_credit: img.photographer_credit,
+          license_info: img.license_info,
+          category: img.category,
+          uploadDate: img.created_at
+        }))}
+      />
       <div className="min-h-screen">
         <CleanNavbar />
         
@@ -111,6 +127,11 @@ const Gallery = () => {
                       )}
                       {image.description && (
                         <p className="text-muted-foreground">{image.description}</p>
+                      )}
+                      {image.photographer_credit && (
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Photo by: {image.photographer_credit}
+                        </p>
                       )}
                     </div>
                   </Card>

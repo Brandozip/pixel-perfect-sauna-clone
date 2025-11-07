@@ -66,7 +66,9 @@ export type Database = {
           id: string
           image_url: string
           is_published: boolean
+          license_info: string | null
           order_index: number
+          photographer_credit: string | null
           project_details: Json | null
           seo_description: string | null
           seo_keywords: string | null
@@ -83,7 +85,9 @@ export type Database = {
           id?: string
           image_url: string
           is_published?: boolean
+          license_info?: string | null
           order_index?: number
+          photographer_credit?: string | null
           project_details?: Json | null
           seo_description?: string | null
           seo_keywords?: string | null
@@ -100,7 +104,9 @@ export type Database = {
           id?: string
           image_url?: string
           is_published?: boolean
+          license_info?: string | null
           order_index?: number
+          photographer_credit?: string | null
           project_details?: Json | null
           seo_description?: string | null
           seo_keywords?: string | null
