@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { ThemeProvider } from "next-themes";
+import { Link } from "react-router-dom";
 import customSaunaDesign from "@/assets/custom-sauna-design.png";
 import steamShower from "@/assets/steam-shower.png";
 import residentialSauna from "@/assets/residential-sauna.png";
@@ -97,9 +98,11 @@ const Services = () => {
                           </li>
                         ))}
                       </ul>
-                      <Button className="bg-accent hover:bg-accent/90 text-accent-foreground w-fit">
-                        Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
+                      <a href={service.link}>
+                        <Button className="bg-primary hover:bg-primary-emphasis text-primary-foreground w-fit">
+                          Learn More <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                      </a>
                     </div>
                   </div>
                 </Card>
@@ -107,13 +110,15 @@ const Services = () => {
             </div>
             
             <div className="text-center mt-16">
-              <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-              <p className="text-lg text-muted-foreground mb-8">
+              <h2 className="heading-2 mb-4">Ready to Get Started?</h2>
+              <p className="body-lg text-muted-foreground mb-8">
                 Contact us today for a free consultation and quote
               </p>
-              <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                Get Free Consultation
-              </Button>
+              <Link to="/contact">
+                <Button size="lg" className="bg-primary hover:bg-primary-emphasis text-primary-foreground">
+                  Get Free Consultation
+                </Button>
+              </Link>
             </div>
           </div>
         </section>

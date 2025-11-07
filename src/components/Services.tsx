@@ -58,9 +58,11 @@ export const Services = () => {
               <div className="card-content">
                 <h3 className="heading-4 mb-3">{service.title}</h3>
                 <p className="text-muted-foreground mb-4">{service.description}</p>
-                <Button variant="link" className="text-primary hover:text-primary-emphasis p-0 h-auto font-semibold">
-                  Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                <Link to={service.link}>
+                  <Button variant="link" className="text-primary hover:text-primary-emphasis p-0 h-auto font-semibold">
+                    Learn More <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
               </div>
             </Card>
           ))}

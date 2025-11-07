@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Droplets, Heart, Activity, Zap, Moon, Sparkles, Brain, Shield } from "lucide-react";
 import { ThemeProvider } from "next-themes";
+import { Link } from "react-router-dom";
 
 const benefits = [
   {
@@ -138,19 +139,23 @@ const HealthBenefits = () => {
               })}
             </div>
             
-            <Card className="p-8 md:p-12 bg-accent/5 border-accent/20">
+            <Card className="card-elevated p-8 md:p-12 bg-primary-muted border-primary/20">
               <div className="max-w-3xl mx-auto text-center">
-                <h2 className="text-3xl font-bold mb-4">Start Your Wellness Journey Today</h2>
-                <p className="text-lg text-muted-foreground mb-8">
+                <h2 className="heading-2 mb-4">Start Your Wellness Journey Today</h2>
+                <p className="body-lg text-muted-foreground mb-8">
                   Discover how regular sauna sessions can significantly improve your overall wellbeing and quality of life. Our expert team is ready to help you create the perfect wellness sanctuary in your home.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                    Get Free Consultation
-                  </Button>
-                  <Button size="lg" variant="outline">
-                    View Our Services
-                  </Button>
+                  <Link to="/contact">
+                    <Button size="lg" className="bg-primary hover:bg-primary-emphasis text-primary-foreground">
+                      Get Free Consultation
+                    </Button>
+                  </Link>
+                  <Link to="/services">
+                    <Button size="lg" variant="outline" className="border-2">
+                      View Our Services
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </Card>
