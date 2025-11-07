@@ -259,22 +259,134 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - Date range selector
 - Export reports functionality
 
-### Phase 2G: Admin Dashboard Layout & Navigation
-**Estimated: 1 day**
+### Phase 2G: Admin Dashboard Layout & Navigation ✅ COMPLETE
+**Status: Fully implemented with sidebar navigation**
 
-🎨 **Layout Requirements:**
-- Sidebar navigation with collapsible menu
-- Sections:
+✅ **Layout Implementation:**
+- Created `AdminLayout` component with sidebar wrapper
+- Built `AdminSidebar` with collapsible navigation (icon mode)
+- Implemented `AdminHeader` with user info and logout
+- Wrapped all admin routes with unified layout
+- Removed standalone headers from admin pages
+
+✅ **Navigation Features:**
+- Sidebar sections:
   - Dashboard (overview)
   - Newsletter Subscribers
   - Form Submissions
   - Gallery Management
-  - Blog Posts
-  - Analytics
-  - Settings (future)
-- Top bar: User profile, notifications, logout
-- Responsive design (mobile-friendly)
-- Theme toggle (inherit from main site)
+  - Blog Posts (coming soon)
+  - Analytics (coming soon)
+- Active route highlighting using NavLink
+- Collapsible sidebar (icon/expanded modes)
+- Responsive design (drawer on mobile)
+- Persistent sidebar state
+- User profile display in header
+- Theme toggle inherited from main site
+
+✅ **Components Created:**
+- `/components/admin/AdminLayout.tsx` - Main layout wrapper
+- `/components/admin/AdminSidebar.tsx` - Sidebar navigation
+- `/components/admin/AdminHeader.tsx` - Top header bar
+- Updated all admin pages to remove duplicate headers
+
+### Phase 2H: Brand Guidelines Implementation 🎨 ✅ COMPLETE
+**Status: Complete design system overhaul with SaunasPlus branding**
+
+✅ **Typography System:**
+- Playfair Display (serif) for headings - weights 400, 500, 600, 700
+- Inter (sans-serif) for body text - weights 300-700
+- Utility classes: `heading-1`, `heading-2`, `heading-3`, `heading-4`
+- Body text classes: `body-lg`, `body-md`
+- Font families: `font-heading`, `font-body`
+
+✅ **Brand Color System (HSL):**
+- Primary: `28 65% 53%` (#D2691E - warm orange/brown)
+- Primary Muted: `28 65% 95%` (#FBF5F0 - subtle backgrounds)
+- Primary Emphasis: `28 75% 45%` (#B85A13 - hover states)
+- Secondary: `30 18% 94%` (#F5F2EF)
+- Muted: `30 10% 92%` (#ECEAE8)
+- Border: `30 15% 90%` (#E8E4E1)
+- Success: `142 76% 36%` (#16A34A)
+- Warning: `43 96% 56%` (#FACC15)
+- Destructive: `0 84% 60%` (#EF4444)
+
+✅ **Dark Mode Colors:**
+- Background: `24 20% 10%` (#1A1614)
+- Card: `24 20% 12%` (#1F1B18)
+- Adjusted all colors for dark mode
+
+✅ **Component Utilities:**
+- Card variants: `card-elevated`, `card-flat`, `card-content`
+- Alert variants: `alert-success`, `alert-error`, `alert-warning`
+- Form inputs: `form-input`
+- Shadows: `shadow-elevated`, `shadow-custom`
+- Gradients: `bg-primary-gradient`, `text-primary-gradient`
+
+✅ **Files Updated:**
+- `index.html` - Added Google Fonts (Playfair Display, Inter)
+- `src/index.css` - Complete design system with brand colors
+- `tailwind.config.ts` - Font families and color extensions
+
+📋 **Components Needing Brand Updates:**
+- 🎯 Logo component (SaunasPlus wordmark with primary color)
+- 🎯 Header/Navigation (apply new colors and typography)
+- 🎯 Hero sections (update with brand gradient and typography)
+- 🎯 CTA buttons (use primary brand color)
+- 🎯 Service cards (apply card-elevated styling)
+- 🎯 Footer (brand colors and typography)
+- 🎯 Forms (use form-input utility)
+- 🎯 Testimonials (brand styling)
+- 🎯 Gallery showcase (brand colors)
+
+### Phase 2I: Component Brand Refresh
+**Estimated: 2-3 days - Apply branding across site**
+
+🎯 **Priority Components:**
+
+**1. Logo & Navigation:**
+- Create SaunasPlus logo component
+  - "Saunas" in foreground color
+  - "Plus" in primary brand color (HSL 28 65% 53%)
+- Update CleanNavbar with brand colors
+- Apply Playfair Display to logo
+- Update navigation links with brand styling
+
+**2. Hero Sections:**
+- Apply `heading-1` typography to all hero titles
+- Use brand primary gradient for CTAs
+- Update hero backgrounds with brand overlay
+- Consistent spacing and typography hierarchy
+
+**3. Service Components:**
+- Update service cards with `card-elevated`
+- Apply brand colors to icons/graphics
+- Use `heading-3` for service titles
+- Brand-colored hover states
+
+**4. Call-to-Action Buttons:**
+- Primary buttons use brand primary color
+- Secondary buttons use secondary color
+- Consistent sizing and spacing
+- Hover states with primary-emphasis
+
+**5. Forms:**
+- Apply `form-input` utility to all inputs
+- Brand-colored focus states
+- Success/error alerts with brand colors
+- Consistent button styling
+
+**6. Footer:**
+- Brand typography (Playfair for headings, Inter for body)
+- Brand color scheme
+- Newsletter signup with brand styling
+- Consistent link styling
+
+**7. Cards & Content Blocks:**
+- Use `card-elevated` for featured content
+- `card-flat` for secondary content
+- Brand-colored badges and tags
+- Consistent shadows and spacing
 
 ## Technical Implementation Plan
 
@@ -637,11 +749,13 @@ This document outlines the development roadmap and strategic plan for the Saunas
 6. ✅ **Phase 2B: Newsletter management interface** (COMPLETE)
 7. ✅ **Phase 2C: Form submissions management** (COMPLETE)
 8. ✅ **Phase 2D: Gallery image management with AI metadata** (COMPLETE)
-9. 🔄 **Phase 2E: Blog CMS implementation** (3-4 days) ← NEXT UP
-10. 🔄 **Phase 2F: Analytics dashboard** (2-3 days)
-11. 🔄 **Phase 2G: Admin layout & navigation** (1 day)
-12. 📋 **Gallery optimization features** (bulk edit, drag-and-drop, image optimizer)
-13. 📋 **SEO enhancements** (schema markup, OG tags, performance optimization)
+9. ✅ **Phase 2G: Admin layout & navigation** (COMPLETE)
+10. ✅ **Phase 2H: Brand guidelines implementation** (COMPLETE)
+11. 🔄 **Phase 2I: Component brand refresh** (2-3 days) ← CURRENT FOCUS
+12. 🔄 **Phase 2E: Blog CMS implementation** (3-4 days)
+13. 🔄 **Phase 2F: Analytics dashboard** (2-3 days)
+14. 📋 **Gallery optimization features** (bulk edit, drag-and-drop, image optimizer)
+15. 📋 **SEO enhancements** (schema markup, OG tags, performance optimization)
 
 ### Short-term (1-3 months):
 1. Email automation via Resend for contact form and newsletters
@@ -683,6 +797,34 @@ This document outlines the development roadmap and strategic plan for the Saunas
 ---
 
 ## Recent Updates (Latest First)
+
+### January 2025 - Phase 2H: Brand Guidelines Implementation Complete ✅
+- ✅ Implemented complete SaunasPlus brand design system
+- ✅ Added Playfair Display (serif) for headings with weights 400-700
+- ✅ Added Inter (sans-serif) for body text with weights 300-700
+- ✅ Updated color system with brand primary: HSL(28 65% 53%) #D2691E
+- ✅ Created primary color variants (muted, emphasis) for design consistency
+- ✅ Implemented dark mode colors matching brand guidelines
+- ✅ Added typography utility classes (heading-1 through heading-4, body-lg, body-md)
+- ✅ Created component utilities (card-elevated, card-flat, alert variants)
+- ✅ Added form input utility (form-input) with brand styling
+- ✅ Configured Google Fonts in index.html
+- ✅ Updated tailwind.config.ts with font families
+- ✅ Comprehensive design system in index.css with HSL colors
+- 📋 Next: Apply branding to components (logo, navigation, hero sections, CTAs)
+- 🎯 Next phase: Phase 2I - Component Brand Refresh
+
+### January 2025 - Phase 2G: Admin Layout & Navigation Complete ✅
+- ✅ Created unified admin dashboard layout with sidebar navigation
+- ✅ Built AdminLayout component with SidebarProvider wrapper
+- ✅ Implemented AdminSidebar with collapsible navigation (icon mode)
+- ✅ Created AdminHeader with user info and logout button
+- ✅ Wrapped all admin routes (Dashboard, Newsletter, Submissions, Gallery) in layout
+- ✅ Removed standalone headers from all admin pages
+- ✅ Active route highlighting using NavLink component
+- ✅ Responsive design with drawer on mobile
+- ✅ Consistent admin experience across all sections
+- 🎯 Next: Phase 2H - Brand Guidelines Implementation
 
 ### January 2025 - Phase 2D: Gallery Image Management Complete ✅
 - ✅ Built complete gallery admin interface at `/admin/gallery`
@@ -761,4 +903,4 @@ This document outlines the development roadmap and strategic plan for the Saunas
 ---
 
 *Last Updated: January 2025*  
-*Version: 2.5 - Phase 2C Complete, Ready for Phase 2D*
+*Version: 2.8 - Phase 2H Complete (Brand Guidelines), Ready for Phase 2I (Component Refresh)*
