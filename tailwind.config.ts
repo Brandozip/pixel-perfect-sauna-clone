@@ -13,6 +13,12 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        heading: ['Playfair Display', 'serif'],
+        body: ['Inter', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -22,6 +28,8 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          muted: "hsl(var(--primary-muted))",
+          emphasis: "hsl(var(--primary-emphasis))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -30,6 +38,14 @@ export default {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -56,26 +72,6 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
-        },
-        sauna: {
-          "50": "hsl(var(--sauna-50))",
-          "100": "hsl(var(--sauna-100))",
-          "200": "hsl(var(--sauna-200))",
-          "300": "hsl(var(--sauna-300))",
-          "400": "hsl(var(--sauna-400))",
-          "500": "hsl(var(--sauna-500))",
-          "600": "hsl(var(--sauna-600))",
-          "700": "hsl(var(--sauna-700))",
-          "800": "hsl(var(--sauna-800))",
-          "900": "hsl(var(--sauna-900))",
-        },
-        wood: {
-          "50": "hsl(var(--wood-50))",
-          "100": "hsl(var(--wood-100))",
-          "200": "hsl(var(--wood-200))",
-          "300": "hsl(var(--wood-300))",
-          "400": "hsl(var(--wood-400))",
-          "500": "hsl(var(--wood-500))",
         },
       },
       borderRadius: {
