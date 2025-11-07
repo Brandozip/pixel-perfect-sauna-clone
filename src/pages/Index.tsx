@@ -10,6 +10,7 @@ import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "next-themes";
 import { LocalBusinessSchema, OrganizationSchema, WebsiteSchema } from "@/components/seo/StructuredData";
 import { SocialMetaTags, homePageMeta } from "@/components/seo/SocialMetaTags";
+import { ReviewSchema } from "@/components/seo/ReviewSchema";
 
 const Index = () => {
   return (
@@ -18,6 +19,7 @@ const Index = () => {
       <LocalBusinessSchema />
       <OrganizationSchema />
       <WebsiteSchema />
+      <ReviewSchema />
       <div className="min-h-screen">
         <CleanNavbar />
         <Hero />
