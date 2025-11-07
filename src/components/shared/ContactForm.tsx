@@ -1,48 +1,16 @@
-
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { trackFormSubmission } from "@/utils/analytics";
+import { useContactForm } from "@/hooks/useContactForm";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 
 const ContactForm: React.FC = () => {
-  const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    service: '',
-    message: ''
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    setIsSubmitting(true);
-    
-    // Track the form submission
-    trackFormSubmission('contact_form');
-    
-    // Form will be submitted to Formspree, this is just for handling the submitting state
-    setTimeout(() => {
-      setIsSubmitting(false);
-    }, 1000);
-  };
+  const { formData, isSubmitting, handleChange, submitForm } = useContactForm();
 
   return (
     <form 
-      action="https://formspree.io/f/mkgrprdn" 
-      method="POST"
-      onSubmit={handleSubmit} 
+      onSubmit={submitForm} 
       className="space-y-4"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -95,13 +63,13 @@ const ContactForm: React.FC = () => {
         </div>
         
         <div>
-          <label htmlFor="service" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label htmlFor="service_interested_in" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Service Interested In
           </label>
           <select
-            id="service"
-            name="service"
-            value={formData.service}
+            id="service_interested_in"
+            name="service_interested_in"
+            value={formData.service_interested_in}
             onChange={handleChange}
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >

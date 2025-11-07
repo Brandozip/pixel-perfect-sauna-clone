@@ -47,7 +47,10 @@ export default function AdminDashboard() {
           </Card>
 
           {/* Form Submissions */}
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Card 
+            className="hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => window.location.href = '/admin/submissions'}
+          >
             <CardHeader>
               <div className="flex items-center justify-between">
                 <FileText className="w-8 h-8 text-primary" />
@@ -58,8 +61,8 @@ export default function AdminDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full" disabled>
-                Coming Soon
+              <Button variant="outline" className="w-full">
+                Manage Submissions
               </Button>
             </CardContent>
           </Card>

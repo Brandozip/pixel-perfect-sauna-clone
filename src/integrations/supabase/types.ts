@@ -16,31 +16,43 @@ export type Database = {
     Tables: {
       contacts: {
         Row: {
+          admin_notes: string | null
           created_at: string | null
           email: string
           id: string
           message: string
           name: string
           phone: string | null
+          priority: string | null
           service_interested_in: string | null
+          status: string | null
+          updated_at: string | null
         }
         Insert: {
+          admin_notes?: string | null
           created_at?: string | null
           email: string
           id?: string
           message: string
           name: string
           phone?: string | null
+          priority?: string | null
           service_interested_in?: string | null
+          status?: string | null
+          updated_at?: string | null
         }
         Update: {
+          admin_notes?: string | null
           created_at?: string | null
           email?: string
           id?: string
           message?: string
           name?: string
           phone?: string | null
+          priority?: string | null
           service_interested_in?: string | null
+          status?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
