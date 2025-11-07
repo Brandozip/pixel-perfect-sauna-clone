@@ -28,6 +28,7 @@ import IndoorInfraredSauna from "./pages/services/IndoorInfraredSauna";
 import CustomSaunaInstallation from "./pages/services/CustomSaunaInstallation";
 import OutdoorSaunaLanding from "./pages/OutdoorSaunaLanding";
 import FastTrackLanding from "./pages/FastTrackLanding";
+import CostCalculator from "./pages/CostCalculator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -64,6 +65,7 @@ const App = () => (
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/outdoor-sauna-landing" element={<OutdoorSaunaLanding />} />
           <Route path="/fast-track" element={<FastTrackLanding />} />
+          <Route path="/cost-calculator" element={<CostCalculator />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
