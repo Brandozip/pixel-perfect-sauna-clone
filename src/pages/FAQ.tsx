@@ -3,6 +3,9 @@ import { Footer } from "@/components/Footer";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { ThemeProvider } from "next-themes";
+import { Link } from "react-router-dom";
+import { FAQSchema } from "@/components/seo/FAQSchema";
+import { BreadcrumbSchema } from "@/components/seo/ServiceSchema";
 
 const faqs = [
   {
@@ -58,6 +61,13 @@ const faqs = [
 const FAQ = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <FAQSchema faqs={faqs} />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "https://www.saunasplus.com/" },
+          { name: "FAQ", url: "https://www.saunasplus.com/faq" }
+        ]}
+      />
       <div className="min-h-screen">
         <CleanNavbar />
         
@@ -87,14 +97,16 @@ const FAQ = () => {
               ))}
             </Accordion>
             
-            <div className="text-center mt-16 p-8 rounded-lg bg-accent/5 border border-accent/20">
-              <h2 className="text-3xl font-bold mb-4">Still Have Questions?</h2>
-              <p className="text-lg text-muted-foreground mb-6">
+            <div className="text-center mt-16 p-8 rounded-lg bg-primary-muted border border-primary/20">
+              <h2 className="heading-2 mb-4">Still Have Questions?</h2>
+              <p className="body-lg text-muted-foreground mb-6">
                 Our team is here to help. Contact us for personalized answers to your specific questions.
               </p>
-              <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                Contact Us
-              </Button>
+              <Link to="/contact">
+                <Button size="lg" className="bg-primary hover:bg-primary-emphasis text-primary-foreground">
+                  Contact Us
+                </Button>
+              </Link>
             </div>
           </div>
         </section>

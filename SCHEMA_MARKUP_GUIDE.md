@@ -128,6 +128,43 @@ This guide documents the structured data (Schema.org JSON-LD) implementation for
 
 ---
 
+### 6. FAQPage Schema ✅
+**Location:** FAQ page (`src/pages/FAQ.tsx`)  
+**Component:** `<FAQSchema />`
+
+**What it includes:**
+- All question-answer pairs (12 FAQs)
+- Structured as Schema.org Question/Answer format
+- Link to service provider (LocalBusiness)
+- Page context and website reference
+
+**Purpose:**
+- Rich FAQ results in Google search
+- FAQ accordion display in search listings
+- Direct answers in Google's "People Also Ask"
+- Voice search optimization
+
+**Example Implementation:**
+```tsx
+const faqs = [
+  {
+    question: "How long does a sauna installation take?",
+    answer: "Most residential sauna installations take 3-7 days..."
+  },
+  // ... more FAQs
+];
+
+<FAQSchema faqs={faqs} />
+```
+
+**SEO Benefits:**
+- Featured FAQ snippets in search results
+- Increased visibility for question-based queries
+- Higher click-through rates
+- Voice assistant compatibility
+
+---
+
 ## Future Schema Types (Planned)
 
 ### 6. FAQPage Schema (Phase 4B)
