@@ -2,7 +2,7 @@ import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, FileText, Image, PenSquare, BarChart3 } from 'lucide-react';
+import { Mail, FileText, Image, PenSquare, BarChart3, Star } from 'lucide-react';
 
 export default function AdminDashboard() {
   return (
@@ -76,6 +76,48 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
+          {/* Reviews Management */}
+          <Card 
+            className="hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => window.location.href = '/admin/reviews'}
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <Star className="w-8 h-8 text-primary" />
+              </div>
+              <CardTitle className="mt-4">Reviews & Testimonials</CardTitle>
+              <CardDescription>
+                Manage customer reviews and ratings
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full">
+                Manage Reviews
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Analytics */}
+          <Card 
+            className="hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => window.location.href = '/admin/analytics'}
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <BarChart3 className="w-8 h-8 text-primary" />
+              </div>
+              <CardTitle className="mt-4">Analytics</CardTitle>
+              <CardDescription>
+                View insights and performance metrics
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full">
+                View Analytics
+              </Button>
+            </CardContent>
+          </Card>
+
           {/* Blog Management */}
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
             <CardHeader>
@@ -85,24 +127,6 @@ export default function AdminDashboard() {
               <CardTitle className="mt-4">Blog Posts</CardTitle>
               <CardDescription>
                 Create and manage blog content
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full" disabled>
-                Coming Soon
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Analytics */}
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <BarChart3 className="w-8 h-8 text-primary" />
-              </div>
-              <CardTitle className="mt-4">Analytics</CardTitle>
-              <CardDescription>
-                View site metrics and performance data
               </CardDescription>
             </CardHeader>
             <CardContent>

@@ -36,6 +36,7 @@ import AdminNewsletters from "./pages/admin/Newsletters";
 import AdminSubmissions from "./pages/admin/Submissions";
 import AdminGallery from "./pages/admin/Gallery";
 import AdminReviews from "./pages/admin/Reviews";
+import AdminAnalytics from "./pages/admin/Analytics";
 import { AdminAuthProvider } from "./hooks/useAdminAuth";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { AdminLayout } from "./components/admin/AdminLayout";
@@ -124,6 +125,16 @@ const App = () => (
               <ProtectedRoute>
                 <AdminLayout>
                   <AdminReviews />
+                </AdminLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/analytics" 
+            element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <AdminAnalytics />
                 </AdminLayout>
               </ProtectedRoute>
             } 

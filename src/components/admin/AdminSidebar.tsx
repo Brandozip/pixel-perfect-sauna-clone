@@ -19,8 +19,8 @@ const items = [
   { title: 'Submissions', url: '/admin/submissions', icon: MessageSquare },
   { title: 'Gallery', url: '/admin/gallery', icon: Image },
   { title: 'Reviews', url: '/admin/reviews', icon: Star },
+  { title: 'Analytics', url: '/admin/analytics', icon: BarChart3 },
   { title: 'Blog', url: '/admin/blog', icon: FileText, disabled: true },
-  { title: 'Analytics', url: '/admin/analytics', icon: BarChart3, disabled: true },
 ];
 
 export function AdminSidebar() {
