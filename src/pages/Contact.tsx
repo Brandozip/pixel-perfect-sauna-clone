@@ -1,86 +1,12 @@
+
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Clock, MapPin, Phone, Mail } from "lucide-react";
 import { ThemeProvider } from "next-themes";
-import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import ContactForm from '@/components/shared/ContactForm';
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    serviceInterestedIn: "",
-    message: ""
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      // Save to database
-      const { error: dbError } = await supabase
-        .from('contacts')
-        .insert([{
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          service_interested_in: formData.serviceInterestedIn || null,
-          message: formData.message,
-        }]);
-
-      if (dbError) throw dbError;
-
-      // Send email
-      const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
-        body: {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          serviceInterestedIn: formData.serviceInterestedIn,
-          message: formData.message,
-        }
-      });
-
-      if (emailError) {
-        console.error('Email error:', emailError);
-        // Don't fail the whole submission if email fails
-      }
-
-      toast({
-        title: "Message Sent!",
-        description: "Thank you for contacting us. We'll get back to you within 24 hours.",
-      });
-      
-      setFormData({ name: "", email: "", phone: "", serviceInterestedIn: "", message: "" });
-    } catch (error: any) {
-      console.error('Submission error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again or call us directly.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
-
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
       <div className="min-h-screen">
@@ -98,87 +24,7 @@ const Contact = () => {
             <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
               <Card className="p-8">
                 <h2 className="text-2xl font-bold mb-6">Send Us a Message</h2>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Name *</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="Your full name"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email *</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="your@email.com"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="(678) 245-9966"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="serviceInterestedIn">Service Interested In</Label>
-                    <select
-                      id="serviceInterestedIn"
-                      name="serviceInterestedIn"
-                      value={formData.serviceInterestedIn}
-                      onChange={handleChange}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="">Select a service</option>
-                      <option value="Traditional Finnish Sauna">Traditional Finnish Sauna</option>
-                      <option value="Infrared Sauna">Infrared Sauna</option>
-                      <option value="Custom Sauna Design">Custom Sauna Design</option>
-                      <option value="Residential Sauna">Residential Sauna</option>
-                      <option value="Commercial Sauna">Commercial Sauna</option>
-                      <option value="Outdoor Sauna">Outdoor Sauna</option>
-                      <option value="Steam Shower">Steam Shower</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Message *</Label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder="Tell us about your project..."
-                      rows={6}
-                      required
-                    />
-                  </div>
-                  
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" 
-                    size="lg"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Sending..." : "Send Message"}
-                  </Button>
-                </form>
+                <ContactForm />
               </Card>
               
               <div className="space-y-6">
