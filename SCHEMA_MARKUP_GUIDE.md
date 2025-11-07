@@ -242,18 +242,56 @@ const faqs = [
 
 ---
 
+### 9. Article/BlogPosting Schema ✅ (Prepared)
+**Location:** Blog pages (when Phase 2E implemented)  
+**Component:** `<ArticleSchema />`, `<BlogSchema />`, `<AuthorSchema />`
+
+**What it includes:**
+- Article title, description, and URL
+- Author information (name, URL, bio)
+- Publication and modification dates
+- Featured image with proper dimensions
+- Article category and tags
+- Word count and reading time
+- Publisher organization details
+- Link to blog collection
+
+**Purpose:**
+- Rich article snippets in Google search
+- Enhanced blog post visibility
+- Author attribution and credibility
+- Better content discovery
+- Voice search optimization
+
+**Example Implementation:**
+```tsx
+<ArticleSchema
+  title="The Ultimate Guide to Home Sauna Installation"
+  description="Learn everything about installing a custom sauna in your home"
+  url="https://www.saunasplus.com/blog/home-sauna-installation-guide"
+  datePublished="2024-01-15"
+  dateModified="2024-01-20"
+  authorName="Grayson Smith"
+  authorUrl="https://www.saunasplus.com/about"
+  featuredImage="https://www.saunasplus.com/images/blog/home-sauna-guide.jpg"
+  category="Installation Guides"
+  tags={["sauna", "installation", "home improvement", "wellness"]}
+  wordCount={2500}
+  readingTime={10}
+/>
+```
+
+**SEO Benefits:**
+- Article rich snippets with publish date and author
+- Better ranking for informational queries
+- Enhanced content visibility in search results
+- Author credibility signals to search engines
+
+---
+
 ## Future Schema Types (Planned)
 
-### 6. FAQPage Schema (Phase 4B)
-**Location:** FAQ page  
-**Purpose:** FAQ rich results in Google
-
-**What to include:**
-- Each question and answer pair
-- Categories of questions
-- Related services
-
-### 7. Product Schema (Phase 2E - when products added)
+### 10. Product Schema (Phase 2E - when products added)
 **Location:** Product pages  
 **Purpose:** Product rich results, shopping integration
 
@@ -263,29 +301,7 @@ const faqs = [
 - Reviews and ratings
 - SKU and brand
 
-### 8. Article/BlogPosting Schema (Phase 2E - Blog)
-**Location:** Blog posts  
-**Purpose:** Article rich results, AMP stories
-
-**What to include:**
-- Article title, author, date
-- Featured image
-- Article body (truncated)
-- Publisher information
-- Reading time
-
-### 9. Review Schema (when reviews implemented)
-**Location:** Review pages  
-**Status:** Partially implemented - testimonials have basic Review schema
-
-**Additional features to add:**
-- Verified purchase badges
-- Review images/photos
-- Helpful vote counts
-- Review responses from business
-- Review filtering and sorting
-
-### 10. VideoObject Schema (when videos added)
+### 11. VideoObject Schema (when videos added)
 **Location:** Gallery, service pages  
 **Purpose:** Video rich results, video carousel
 
@@ -428,7 +444,8 @@ src/components/seo/
 ├── ServiceSchema.tsx      # Service and Breadcrumb schemas
 ├── FAQSchema.tsx          # FAQPage schema
 ├── ReviewSchema.tsx       # Review and AggregateRating schemas
-└── ImageObjectSchema.tsx  # ImageObject and ImageGallery schemas
+├── ImageObjectSchema.tsx  # ImageObject and ImageGallery schemas
+└── ArticleSchema.tsx      # Article/BlogPosting, Blog, and Author schemas
 ```
 
 ### How It Works:

@@ -221,7 +221,64 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - Post list with filters (status, category, author)
 - Post preview modal
 
-### Phase 2F: Analytics Dashboard 📊
+✅ **Schema Preparation:**
+- ArticleSchema component created (`src/components/seo/ArticleSchema.tsx`)
+- BlogPosting schema with author info, publish dates, featured images
+- BlogSchema for blog listing page
+- AuthorSchema for author profile pages
+- Ready for implementation when blog feature is built
+
+### Phase 2F: Review & Testimonial Management 💬
+**Estimated: 2-3 days**
+
+📋 **Database Schema:**
+- `reviews` table:
+  - id, created_at, updated_at, published_at
+  - author_name, author_location
+  - author_avatar_url (optional)
+  - rating (1-5 stars)
+  - review_text
+  - project_type (service category)
+  - project_date
+  - is_published, is_featured
+  - admin_notes
+  - status (pending/approved/rejected)
+  - source (website/google/facebook)
+- Update existing testimonials to reviews table (migration)
+
+🎯 **Admin Features:**
+- View all reviews (paginated table)
+- Filter by status (pending/approved/rejected)
+- Filter by rating (1-5 stars)
+- Filter by project type
+- Search reviews by author name or content
+- Approve/reject workflow with notes
+- Edit review text and author info
+- Feature review toggle
+- Publish/unpublish toggle
+- Export reviews to CSV
+- Review metrics dashboard (average rating, total reviews, pending)
+- Bulk actions (approve/reject multiple)
+
+📊 **UI Components:**
+- Review data table with rating stars
+- Status and rating filters
+- Approval workflow modal
+- Star rating display component
+- Review metrics cards
+- Featured review selector
+- CSV export with all fields
+
+🎯 **Frontend Features:**
+- Updated Testimonials component pulling from reviews table
+- Display featured reviews on homepage
+- All reviews page with filtering
+- Star rating display
+- Review submission form for customers
+- Thank you page after submission
+- Integration with existing Review schema
+
+### Phase 2G: Analytics Dashboard 📊
 **Estimated: 2-3 days**
 
 🎯 **Analytics Features:**
@@ -251,6 +308,12 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - Reader engagement metrics
 - SEO performance
 
+**Review Analytics:**
+- Average rating over time
+- Review sentiment analysis
+- Response rate and time
+- Most reviewed services
+
 📊 **UI Components:**
 - Summary cards (KPIs)
 - Line charts (trends over time)
@@ -275,6 +338,7 @@ This document outlines the development roadmap and strategic plan for the Saunas
   - Newsletter Subscribers
   - Form Submissions
   - Gallery Management
+  - Reviews & Testimonials (coming soon)
   - Blog Posts (coming soon)
   - Analytics (coming soon)
 - Active route highlighting using NavLink
