@@ -32,6 +32,7 @@ import CostCalculator from "./pages/CostCalculator";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/Login";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminNewsletters from "./pages/admin/Newsletters";
 import { AdminAuthProvider } from "./hooks/useAdminAuth";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 
@@ -78,6 +79,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/newsletters" 
+            element={
+              <ProtectedRoute>
+                <AdminNewsletters />
               </ProtectedRoute>
             } 
           />

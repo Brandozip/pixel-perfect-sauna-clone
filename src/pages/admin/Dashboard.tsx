@@ -26,7 +26,10 @@ export default function AdminDashboard() {
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Newsletter Management */}
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Card 
+            className="hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => window.location.href = '/admin/newsletters'}
+          >
             <CardHeader>
               <div className="flex items-center justify-between">
                 <Mail className="w-8 h-8 text-primary" />
@@ -37,8 +40,8 @@ export default function AdminDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full" disabled>
-                Coming Soon
+              <Button variant="outline" className="w-full">
+                Manage Subscribers
               </Button>
             </CardContent>
           </Card>
