@@ -14,6 +14,149 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_generation_logs: {
+        Row: {
+          blog_post_id: string | null
+          clarity_edit_result: Json | null
+          completed_steps: number | null
+          content_result: Json | null
+          created_at: string
+          current_step: string | null
+          error_message: string | null
+          fact_check_result: Json | null
+          id: string
+          image_generation_result: Json | null
+          image_suggestions_result: Json | null
+          manual_trigger: boolean | null
+          outline_result: Json | null
+          research_result: Json | null
+          sentence_improve_result: Json | null
+          seo_result: Json | null
+          status: string
+          topic_result: Json | null
+          total_steps: number | null
+          total_time_seconds: number | null
+        }
+        Insert: {
+          blog_post_id?: string | null
+          clarity_edit_result?: Json | null
+          completed_steps?: number | null
+          content_result?: Json | null
+          created_at?: string
+          current_step?: string | null
+          error_message?: string | null
+          fact_check_result?: Json | null
+          id?: string
+          image_generation_result?: Json | null
+          image_suggestions_result?: Json | null
+          manual_trigger?: boolean | null
+          outline_result?: Json | null
+          research_result?: Json | null
+          sentence_improve_result?: Json | null
+          seo_result?: Json | null
+          status?: string
+          topic_result?: Json | null
+          total_steps?: number | null
+          total_time_seconds?: number | null
+        }
+        Update: {
+          blog_post_id?: string | null
+          clarity_edit_result?: Json | null
+          completed_steps?: number | null
+          content_result?: Json | null
+          created_at?: string
+          current_step?: string | null
+          error_message?: string | null
+          fact_check_result?: Json | null
+          id?: string
+          image_generation_result?: Json | null
+          image_suggestions_result?: Json | null
+          manual_trigger?: boolean | null
+          outline_result?: Json | null
+          research_result?: Json | null
+          sentence_improve_result?: Json | null
+          seo_result?: Json | null
+          status?: string
+          topic_result?: Json | null
+          total_steps?: number | null
+          total_time_seconds?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_generation_logs_blog_post_id_fkey"
+            columns: ["blog_post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blog_generator_settings: {
+        Row: {
+          clarity_edit_prompt: string
+          content_prompt: string
+          created_at: string
+          cron_expression: string
+          fact_check_prompt: string
+          generate_images: boolean
+          id: string
+          image_suggestions_prompt: string
+          max_images: number
+          outline_prompt: string
+          research_prompt: string
+          schedule_enabled: boolean
+          sentence_improve_prompt: string
+          seo_prompt: string
+          target_word_count: number
+          topic_prompt: string
+          updated_at: string
+          use_pro_for_content: boolean
+          use_pro_for_fact_check: boolean
+        }
+        Insert: {
+          clarity_edit_prompt?: string
+          content_prompt?: string
+          created_at?: string
+          cron_expression?: string
+          fact_check_prompt?: string
+          generate_images?: boolean
+          id?: string
+          image_suggestions_prompt?: string
+          max_images?: number
+          outline_prompt?: string
+          research_prompt?: string
+          schedule_enabled?: boolean
+          sentence_improve_prompt?: string
+          seo_prompt?: string
+          target_word_count?: number
+          topic_prompt?: string
+          updated_at?: string
+          use_pro_for_content?: boolean
+          use_pro_for_fact_check?: boolean
+        }
+        Update: {
+          clarity_edit_prompt?: string
+          content_prompt?: string
+          created_at?: string
+          cron_expression?: string
+          fact_check_prompt?: string
+          generate_images?: boolean
+          id?: string
+          image_suggestions_prompt?: string
+          max_images?: number
+          outline_prompt?: string
+          research_prompt?: string
+          schedule_enabled?: boolean
+          sentence_improve_prompt?: string
+          seo_prompt?: string
+          target_word_count?: number
+          topic_prompt?: string
+          updated_at?: string
+          use_pro_for_content?: boolean
+          use_pro_for_fact_check?: boolean
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           article_type: string | null

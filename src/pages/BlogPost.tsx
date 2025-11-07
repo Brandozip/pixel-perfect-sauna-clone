@@ -13,6 +13,9 @@ import CleanNavbar from '@/components/navigation/CleanNavbar';
 import { Footer } from '@/components/Footer';
 import { ThemeProvider } from 'next-themes';
 import { SocialShare } from '@/components/blog/SocialShare';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 
 interface BlogPost {
   id: string;
@@ -101,23 +104,33 @@ export default function BlogPost() {
     }
   };
 
-  // Convert markdown-like formatting to HTML
+  // Render content with proper markdown support
   const renderContent = (content: string) => {
-    return content
-      .split('\n\n')
-      .map((paragraph, index) => {
-        // Handle headings
-        if (paragraph.startsWith('# ')) {
-          return <h1 key={index} className="text-3xl font-bold mt-8 mb-4">{paragraph.substring(2)}</h1>;
-        }
-        if (paragraph.startsWith('## ')) {
-          return <h2 key={index} className="text-2xl font-bold mt-6 mb-3">{paragraph.substring(3)}</h2>;
-        }
-        if (paragraph.startsWith('### ')) {
-          return <h3 key={index} className="text-xl font-bold mt-4 mb-2">{paragraph.substring(4)}</h3>;
-        }
-        
-        // Handle lists
+    return (
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
+        components={{
+          h1: ({node, ...props}) => <h1 className="text-3xl font-bold mt-8 mb-4 text-foreground" {...props} />,
+          h2: ({node, ...props}) => <h2 className="text-2xl font-bold mt-6 mb-3 text-foreground" {...props} />,
+          h3: ({node, ...props}) => <h3 className="text-xl font-bold mt-4 mb-2 text-foreground" {...props} />,
+          p: ({node, ...props}) => <p className="mb-4 text-foreground leading-relaxed" {...props} />,
+          ul: ({node, ...props}) => <ul className="list-disc list-inside mb-4 space-y-2 text-foreground" {...props} />,
+          ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-4 space-y-2 text-foreground" {...props} />,
+          li: ({node, ...props}) => <li className="text-foreground" {...props} />,
+          a: ({node, ...props}) => <a className="text-primary hover:underline" {...props} />,
+          img: ({node, ...props}) => <img className="w-full h-auto rounded-lg my-6" {...props} />,
+          blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-primary pl-4 italic my-4 text-muted-foreground" {...props} />,
+          code: ({node, inline, ...props}: any) => 
+            inline ? 
+              <code className="bg-muted px-1 py-0.5 rounded text-sm" {...props} /> :
+              <code className="block bg-muted p-4 rounded my-4 overflow-x-auto" {...props} />,
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    );
+  };
         if (paragraph.includes('\n- ')) {
           const items = paragraph.split('\n- ').filter(Boolean);
           return (

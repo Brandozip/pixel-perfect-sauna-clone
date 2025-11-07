@@ -11,6 +11,9 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const startTime = Date.now();
+  let logId: string | null = null;
+
   try {
     console.log('🚀 Starting automated blog generation...');
 
@@ -20,51 +23,58 @@ serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Step 1: Fetch existing blog posts for duplicate prevention
-    console.log('📚 Fetching existing blog posts...');
+    // Create generation log
+    const { data: logData, error: logError } = await supabase
+      .from('blog_generation_logs')
+      .insert([{ 
+        status: 'in_progress',
+        current_step: 'initializing',
+        total_steps: 10,
+        completed_steps: 0
+      }])
+      .select()
+      .single();
+
+    if (logError) throw logError;
+    logId = logData.id;
+
+    const updateLog = async (step: string, stepNum: number, result?: any) => {
+      console.log(`📍 Step ${stepNum}/10: ${step}`);
+      await supabase
+        .from('blog_generation_logs')
+        .update({
+          current_step: step,
+          completed_steps: stepNum,
+          ...(result && { [`${step.replace(/ /g, '_').toLowerCase()}_result`]: result })
+        })
+        .eq('id', logId);
+    };
+
+    // Fetch settings
+    await updateLog('Loading Settings', 1);
+    const { data: settings, error: settingsError } = await supabase
+      .from('blog_generator_settings')
+      .select('*')
+      .single();
+
+    if (settingsError) throw settingsError;
+
+    // Step 1: Fetch existing blog posts
+    await updateLog('Analyzing Existing Content', 2);
     const { data: existingPosts, error: fetchError } = await supabase
       .from('blog_posts')
       .select('title, slug, category, tags, excerpt')
       .order('created_at', { ascending: false })
       .limit(100);
 
-    if (fetchError) {
-      console.error('Error fetching posts:', fetchError);
-      throw fetchError;
-    }
+    if (fetchError) throw fetchError;
 
-    const existingTopics = existingPosts?.map(p => ({
-      title: p.title,
-      category: p.category,
-      tags: p.tags || []
-    })) || [];
-
-    console.log(`Found ${existingTopics.length} existing posts`);
+    const existingTopics = existingPosts?.map(p => `- ${p.title} (${p.category})`).join('\n') || '';
 
     // Step 2: Generate unique topic
-    console.log('🎯 Generating unique topic...');
-    const topicPrompt = `You are a sauna industry expert content strategist. 
-
-Existing blog topics:
-${existingTopics.map(t => `- ${t.title} (${t.category})`).slice(0, 30).join('\n')}
-
-Generate 1 unique, SEO-optimized blog topic about saunas that:
-1. Has NOT been covered in the existing topics above
-2. Is highly searchable and valuable for potential sauna buyers
-3. Falls into one of these categories: Health Benefits, Installation Guide, Maintenance, Design Trends, Cost Analysis, Customer Stories, Seasonal Usage, Buying Guide, Technology, Safety
-4. Will rank well in search engines
-5. Addresses specific customer questions or pain points
-
-Focus areas: traditional saunas, infrared saunas, outdoor saunas, steam rooms, sauna installation, health benefits, maintenance, design ideas.
-
-Return ONLY a JSON object with this exact structure:
-{
-  "title": "Engaging blog post title (50-60 characters)",
-  "category": "One of the categories listed above",
-  "target_keyword": "Primary SEO keyword phrase",
-  "search_intent": "informational/commercial/transactional"
-}`;
-
+    await updateLog('Generating Topic', 3);
+    const topicPrompt = settings.topic_prompt.replace('[EXISTING_TOPICS]', existingTopics);
+    
     const topicResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -74,13 +84,11 @@ Return ONLY a JSON object with this exact structure:
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
         messages: [{ role: 'user', content: topicPrompt }],
-        temperature: 0.9,
       }),
     });
 
     if (!topicResponse.ok) {
       const errorText = await topicResponse.text();
-      console.error('Topic generation failed:', topicResponse.status, errorText);
       throw new Error(`Topic generation failed: ${errorText}`);
     }
 
@@ -89,36 +97,34 @@ Return ONLY a JSON object with this exact structure:
     const topicJsonMatch = topicText.match(/\{[\s\S]*\}/);
     const topic = JSON.parse(topicJsonMatch ? topicJsonMatch[0] : topicText);
     
-    console.log('✅ Generated topic:', topic.title);
+    await updateLog('Generating Topic', 3, topic);
 
-    // Step 3: Generate outline
-    console.log('📝 Generating outline...');
-    const outlinePrompt = `Create a detailed blog post outline for: "${topic.title}"
+    // Step 3: Research & gather information
+    await updateLog('Researching Content', 4);
+    const researchPrompt = settings.research_prompt.replace('[TOPIC]', topic.title);
+    
+    const researchResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${lovableApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [{ role: 'user', content: researchPrompt }],
+      }),
+    });
 
-Target keyword: "${topic.target_keyword}"
-Category: ${topic.category}
-Search intent: ${topic.search_intent}
+    const researchData = await researchResponse.json();
+    const researchText = researchData.choices[0].message.content.trim();
+    await updateLog('Researching Content', 4, { research: researchText.substring(0, 500) });
 
-Create a comprehensive outline with:
-- Engaging introduction (hook + problem + solution preview)
-- 5-7 main H2 sections with 2-3 H3 subsections each
-- FAQ section with 4-5 common questions
-- Conclusion with clear call-to-action
-- Target length: 1800-2200 words
-
-Return ONLY a JSON object:
-{
-  "outline": [
-    {
-      "heading": "H2 heading text",
-      "subheadings": ["H3 text", "H3 text"],
-      "key_points": ["point 1", "point 2"]
-    }
-  ],
-  "introduction_hook": "Compelling opening sentence",
-  "conclusion_cta": "Call to action text"
-}`;
-
+    // Step 4: Generate outline
+    await updateLog('Creating Outline', 5);
+    const outlinePrompt = settings.outline_prompt
+      .replace('[TOPIC]', topic.title)
+      .replace('[RESEARCH]', researchText);
+    
     const outlineResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -128,7 +134,6 @@ Return ONLY a JSON object:
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
         messages: [{ role: 'user', content: outlinePrompt }],
-        temperature: 0.7,
       }),
     });
 
@@ -137,32 +142,16 @@ Return ONLY a JSON object:
     const outlineJsonMatch = outlineText.match(/\{[\s\S]*\}/);
     const outline = JSON.parse(outlineJsonMatch ? outlineJsonMatch[0] : outlineText);
     
-    console.log('✅ Generated outline with', outline.outline.length, 'sections');
+    await updateLog('Creating Outline', 5, outline);
 
-    // Step 4: Write full blog post
-    console.log('✍️ Writing full blog post...');
-    const contentPrompt = `Write a complete, SEO-optimized blog post about: "${topic.title}"
-
-Target keyword: "${topic.target_keyword}"
-Outline: ${JSON.stringify(outline, null, 2)}
-
-Requirements:
-1. Write in markdown format
-2. 1800-2200 words total
-3. Engaging, conversational tone (professional but friendly)
-4. Include specific examples and practical advice
-5. Use target keyword naturally 3-5 times
-6. Include LSI keywords related to saunas
-7. Add internal linking suggestions [like this](/services/custom-sauna-design)
-8. Include statistics or facts where relevant
-9. Write for both beginners and experienced sauna users
-10. Add FAQ section at the end with schema-markup-friendly Q&A format
-11. End with clear call-to-action
-
-Target audience: Homeowners considering buying or installing a sauna
-
-Return ONLY the markdown content (no JSON wrapper, just the blog post content).`;
-
+    // Step 5: Write full content (use Pro if enabled)
+    await updateLog('Writing Content', 6);
+    const contentPrompt = settings.content_prompt
+      .replace('[WORD_COUNT]', settings.target_word_count.toString())
+      .replace('[OUTLINE]', JSON.stringify(outline, null, 2));
+    
+    const contentModel = settings.use_pro_for_content ? 'google/gemini-2.5-pro' : 'google/gemini-2.5-flash';
+    
     const contentResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -170,35 +159,147 @@ Return ONLY the markdown content (no JSON wrapper, just the blog post content).`
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: contentModel,
         messages: [{ role: 'user', content: contentPrompt }],
-        temperature: 0.7,
       }),
     });
 
     const contentData = await contentResponse.json();
-    const content = contentData.choices[0].message.content.trim();
-    
+    let content = contentData.choices[0].message.content.trim();
     const wordCount = content.split(/\s+/).length;
-    console.log('✅ Generated content:', wordCount, 'words');
+    
+    await updateLog('Writing Content', 6, { wordCount });
 
-    // Step 5: Generate SEO metadata
-    console.log('🔍 Generating SEO metadata...');
-    const seoPrompt = `Generate SEO metadata for this blog post:
+    // Step 6: Fact check (use Pro if enabled)
+    await updateLog('Fact Checking', 7);
+    const factCheckPrompt = settings.fact_check_prompt.replace('[CONTENT]', content);
+    const factCheckModel = settings.use_pro_for_fact_check ? 'google/gemini-2.5-pro' : 'google/gemini-2.5-flash';
+    
+    const factCheckResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${lovableApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: factCheckModel,
+        messages: [{ role: 'user', content: factCheckPrompt }],
+      }),
+    });
 
-Title: "${topic.title}"
-Content preview: ${content.substring(0, 500)}...
+    const factCheckData = await factCheckResponse.json();
+    const factCheckResult = factCheckData.choices[0].message.content.trim();
+    await updateLog('Fact Checking', 7, { summary: factCheckResult.substring(0, 500) });
 
-Generate optimized metadata:
+    // Step 7: Edit for clarity
+    await updateLog('Editing for Clarity', 8);
+    const clarityPrompt = settings.clarity_edit_prompt.replace('[CONTENT]', content);
+    
+    const clarityResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${lovableApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [{ role: 'user', content: clarityPrompt }],
+      }),
+    });
 
-Return ONLY a JSON object:
-{
-  "seo_title": "SEO-optimized title (50-60 chars, include target keyword)",
-  "seo_description": "Compelling meta description (150-160 chars)",
-  "seo_keywords": "keyword1, keyword2, keyword3, keyword4, keyword5",
-  "excerpt": "Brief 2-3 sentence excerpt for preview (120-150 chars)",
-  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
-}`;
+    const clarityData = await clarityResponse.json();
+    content = clarityData.choices[0].message.content.trim();
+    await updateLog('Editing for Clarity', 8);
+
+    // Step 8: Get image suggestions
+    await updateLog('Planning Images', 9);
+    const imagePrompt = settings.image_suggestions_prompt.replace('[CONTENT]', content);
+    
+    const imageSuggestionsResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${lovableApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [{ role: 'user', content: imagePrompt }],
+      }),
+    });
+
+    const imageSuggestionsData = await imageSuggestionsResponse.json();
+    const imageSuggestionsText = imageSuggestionsData.choices[0].message.content.trim();
+    
+    // Parse image suggestions
+    let imageSuggestions: any[] = [];
+    try {
+      const jsonMatch = imageSuggestionsText.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        imageSuggestions = JSON.parse(jsonMatch[0]);
+      }
+    } catch (e) {
+      console.log('Could not parse image suggestions as JSON, using raw text');
+    }
+
+    await updateLog('Planning Images', 9, { count: imageSuggestions.length });
+
+    // Step 9: Generate images if enabled
+    const generatedImages: string[] = [];
+    if (settings.generate_images && imageSuggestions.length > 0) {
+      await updateLog('Generating Images', 10);
+      
+      const imagesToGenerate = imageSuggestions.slice(0, settings.max_images);
+      
+      for (let i = 0; i < imagesToGenerate.length; i++) {
+        const suggestion = imagesToGenerate[i];
+        const imagePromptText = suggestion.generation_prompt || suggestion.description || 
+          `A professional photograph for a sauna blog article, showing ${suggestion.type}`;
+        
+        try {
+          const imageGenResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${lovableApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'google/gemini-2.5-flash-image',
+              messages: [{
+                role: 'user',
+                content: imagePromptText
+              }],
+              modalities: ['image', 'text']
+            }),
+          });
+
+          const imageGenData = await imageGenResponse.json();
+          const imageUrl = imageGenData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+          
+          if (imageUrl) {
+            generatedImages.push(imageUrl);
+            
+            // Insert image into content at suggested location
+            const imageMarkdown = `\n\n![${suggestion.alt_text || 'Sauna image'}](${imageUrl})\n*${suggestion.description || ''}*\n\n`;
+            
+            // Find a good place to insert (after the suggested section)
+            const sectionMatch = content.match(new RegExp(`## ${suggestion.section}[\\s\\S]*?(?=##|$)`, 'i'));
+            if (sectionMatch) {
+              const insertPos = sectionMatch.index! + sectionMatch[0].length;
+              content = content.slice(0, insertPos) + imageMarkdown + content.slice(insertPos);
+            }
+          }
+        } catch (imgError) {
+          console.error(`Failed to generate image ${i + 1}:`, imgError);
+        }
+      }
+    }
+
+    await updateLog('Generating Images', 10, { generated: generatedImages.length });
+
+    // Step 10: Generate SEO metadata
+    const seoPrompt = settings.seo_prompt
+      .replace('[TITLE]', topic.title)
+      .replace('[CONTENT_PREVIEW]', content.substring(0, 500));
 
     const seoResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -209,7 +310,6 @@ Return ONLY a JSON object:
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
         messages: [{ role: 'user', content: seoPrompt }],
-        temperature: 0.5,
       }),
     });
 
@@ -217,20 +317,17 @@ Return ONLY a JSON object:
     const seoText = seoData.choices[0].message.content.trim();
     const seoJsonMatch = seoText.match(/\{[\s\S]*\}/);
     const seo = JSON.parse(seoJsonMatch ? seoJsonMatch[0] : seoText);
-    
-    console.log('✅ Generated SEO metadata');
 
-    // Step 6: Calculate reading time
+    // Calculate reading time
     const readingTimeMinutes = Math.ceil(wordCount / 200);
 
-    // Step 7: Generate slug
+    // Generate slug
     const slug = topic.title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
 
-    // Step 8: Save to database
-    console.log('💾 Saving blog post to database...');
+    // Save blog post
     const { data: insertedPost, error: insertError } = await supabase
       .from('blog_posts')
       .insert([{
@@ -247,58 +344,31 @@ Return ONLY a JSON object:
         status: 'draft',
         author_name: 'Saunas Plus',
         article_type: 'BlogPosting',
+        featured_image_url: generatedImages[0] || null,
       }])
       .select()
       .single();
 
-    if (insertError) {
-      console.error('Error saving post:', insertError);
-      throw insertError;
-    }
+    if (insertError) throw insertError;
 
-    console.log('✅ Blog post saved as draft:', insertedPost.id);
+    // Update log with completion
+    const totalTime = Math.floor((Date.now() - startTime) / 1000);
+    await supabase
+      .from('blog_generation_logs')
+      .update({
+        status: 'completed',
+        blog_post_id: insertedPost.id,
+        total_time_seconds: totalTime,
+        image_generation_result: { count: generatedImages.length, images: generatedImages }
+      })
+      .eq('id', logId);
 
-    // Step 9: Optional - Send admin notification
-    const resendApiKey = Deno.env.get('RESEND_API_KEY');
-    if (resendApiKey) {
-      console.log('📧 Sending admin notification...');
-      try {
-        const emailResponse = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${resendApiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            from: 'Saunas Plus <onboarding@resend.dev>',
-            to: ['admin@saunasplus.com'], // Update with actual admin email
-            subject: `New Blog Post Generated: ${topic.title}`,
-            html: `
-              <h2>🎉 New Blog Post Ready for Review</h2>
-              <p>A new blog post has been automatically generated and saved as a draft.</p>
-              <h3>${topic.title}</h3>
-              <p><strong>Category:</strong> ${topic.category}</p>
-              <p><strong>Word Count:</strong> ${wordCount} words</p>
-              <p><strong>Reading Time:</strong> ${readingTimeMinutes} minutes</p>
-              <p><strong>Keywords:</strong> ${seo.seo_keywords}</p>
-              <p><strong>Excerpt:</strong> ${seo.excerpt}</p>
-              <p><a href="https://your-domain.com/admin/blog/${insertedPost.id}/edit">Edit Post</a></p>
-            `,
-          }),
-        });
-
-        if (emailResponse.ok) {
-          console.log('✅ Admin notification sent');
-        }
-      } catch (emailError) {
-        console.error('Failed to send email notification:', emailError);
-        // Don't fail the whole operation if email fails
-      }
-    }
+    console.log('✅ Blog post generated:', insertedPost.id);
 
     return new Response(
       JSON.stringify({
         success: true,
+        logId,
         post: {
           id: insertedPost.id,
           title: insertedPost.title,
@@ -306,6 +376,8 @@ Return ONLY a JSON object:
           category: insertedPost.category,
           wordCount,
           readingTime: readingTimeMinutes,
+          imagesGenerated: generatedImages.length,
+          totalTime,
         },
       }),
       {
@@ -316,6 +388,23 @@ Return ONLY a JSON object:
 
   } catch (error) {
     console.error('❌ Blog generation failed:', error);
+    
+    if (logId) {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+      const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      
+      const totalTime = Math.floor((Date.now() - startTime) / 1000);
+      await supabase
+        .from('blog_generation_logs')
+        .update({
+          status: 'failed',
+          error_message: error instanceof Error ? error.message : 'Unknown error',
+          total_time_seconds: totalTime
+        })
+        .eq('id', logId);
+    }
+
     return new Response(
       JSON.stringify({
         success: false,

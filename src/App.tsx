@@ -39,6 +39,7 @@ import AdminReviews from "./pages/admin/Reviews";
 import AdminAnalytics from "./pages/admin/Analytics";
 import AdminBlogPosts from "./pages/admin/BlogPosts";
 import AdminBlogEditor from "./pages/admin/BlogEditor";
+import AdminBlogGeneratorSettings from "./pages/admin/BlogGeneratorSettings";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import { AdminAuthProvider } from "./hooks/useAdminAuth";
@@ -164,6 +165,16 @@ const App = () => (
               <ProtectedRoute>
                 <AdminLayout>
                   <AdminBlogEditor />
+                </AdminLayout>
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/blog-generator" 
+            element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <AdminBlogGeneratorSettings />
                 </AdminLayout>
               </ProtectedRoute>
             } 
