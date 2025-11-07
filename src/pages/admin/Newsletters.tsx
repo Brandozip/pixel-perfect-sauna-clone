@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { LogOut, Search, Download, Mail, TrendingUp, Users, Calendar, Trash2 } from 'lucide-react';
+import { Search, Download, Mail, TrendingUp, Users, Calendar, Trash2 } from 'lucide-react';
 import { format, subDays, isAfter } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 
@@ -36,8 +34,6 @@ interface Metrics {
 }
 
 export default function Newsletters() {
-  const { user, signOut } = useAdminAuth();
-  const navigate = useNavigate();
   const { toast } = useToast();
   
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
@@ -192,31 +188,14 @@ export default function Newsletters() {
   const currentSubscribers = filteredSubscribers.slice(startIndex, endIndex);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div>
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/admin/dashboard')}
-              className="mb-2"
-            >
-              ← Back to Dashboard
-            </Button>
-            <h1 className="text-2xl font-bold text-foreground">Newsletter Subscribers</h1>
-            <p className="text-sm text-muted-foreground">Manage your email list</p>
-          </div>
-          <Button variant="outline" onClick={signOut}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
-          </Button>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+    <>
+      <div className="container mx-auto px-4 py-8">
         {/* Metrics Cards */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Newsletter Subscribers</h1>
+          <p className="text-muted-foreground">Manage your email list</p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -392,7 +371,7 @@ export default function Newsletters() {
             )}
           </CardContent>
         </Card>
-      </main>
+      </div>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -416,6 +395,6 @@ export default function Newsletters() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </>
   );
 }

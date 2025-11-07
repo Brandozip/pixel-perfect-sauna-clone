@@ -1,30 +1,18 @@
 import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LogOut, Mail, FileText, Image, PenSquare, BarChart3 } from 'lucide-react';
+import { Mail, FileText, Image, PenSquare, BarChart3 } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const { user, signOut } = useAdminAuth();
-
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
-            <p className="text-sm text-muted-foreground">Welcome back, {user?.email}</p>
-          </div>
-          <Button variant="outline" onClick={signOut}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
-          </Button>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+        <p className="text-muted-foreground mt-2">Welcome to your admin dashboard</p>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Newsletter Management */}
           <Card 
             className="hover:shadow-lg transition-shadow cursor-pointer"
@@ -124,7 +112,6 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         </div>
-      </main>
     </div>
   );
 }

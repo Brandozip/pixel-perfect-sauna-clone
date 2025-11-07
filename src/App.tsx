@@ -37,6 +37,7 @@ import AdminSubmissions from "./pages/admin/Submissions";
 import AdminGallery from "./pages/admin/Gallery";
 import { AdminAuthProvider } from "./hooks/useAdminAuth";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
+import { AdminLayout } from "./components/admin/AdminLayout";
 
 const queryClient = new QueryClient();
 
@@ -80,7 +81,9 @@ const App = () => (
             path="/admin/dashboard" 
             element={
               <ProtectedRoute>
-                <AdminDashboard />
+                <AdminLayout>
+                  <AdminDashboard />
+                </AdminLayout>
               </ProtectedRoute>
             } 
           />
@@ -88,7 +91,9 @@ const App = () => (
             path="/admin/newsletters" 
             element={
               <ProtectedRoute>
-                <AdminNewsletters />
+                <AdminLayout>
+                  <AdminNewsletters />
+                </AdminLayout>
               </ProtectedRoute>
             } 
           />
@@ -96,7 +101,9 @@ const App = () => (
             path="/admin/submissions" 
             element={
               <ProtectedRoute>
-                <AdminSubmissions />
+                <AdminLayout>
+                  <AdminSubmissions />
+                </AdminLayout>
               </ProtectedRoute>
             } 
           />
@@ -104,7 +111,9 @@ const App = () => (
             path="/admin/gallery" 
             element={
               <ProtectedRoute>
-                <AdminGallery />
+                <AdminLayout>
+                  <AdminGallery />
+                </AdminLayout>
               </ProtectedRoute>
             } 
           />

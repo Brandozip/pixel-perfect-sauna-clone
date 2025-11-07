@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { LogOut, Search, Download, FileText, TrendingUp, AlertCircle, Clock } from 'lucide-react';
+import { Search, Download, FileText, TrendingUp, AlertCircle, Clock } from 'lucide-react';
 import { format, subDays, isAfter } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 
@@ -57,8 +55,6 @@ const priorityColors: Record<string, string> = {
 };
 
 export default function Submissions() {
-  const { signOut } = useAdminAuth();
-  const navigate = useNavigate();
   const { toast } = useToast();
 
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -240,30 +236,14 @@ export default function Submissions() {
   const currentContacts = filteredContacts.slice(startIndex, endIndex);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div>
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/admin/dashboard')}
-              className="mb-2"
-            >
-              ← Back to Dashboard
-            </Button>
-            <h1 className="text-2xl font-bold text-foreground">Form Submissions</h1>
-            <p className="text-sm text-muted-foreground">Manage contact form submissions</p>
-          </div>
-          <Button variant="outline" onClick={signOut}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
-          </Button>
+    <>
+      <div className="container mx-auto px-4 py-8">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Form Submissions</h1>
+          <p className="text-muted-foreground">Manage contact form submissions</p>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
         {/* Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
@@ -470,7 +450,7 @@ export default function Submissions() {
             )}
           </CardContent>
         </Card>
-      </main>
+      </div>
 
       {/* Contact Details Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -579,6 +559,6 @@ export default function Submissions() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }
