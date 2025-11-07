@@ -3,30 +3,39 @@
 ## Project Overview
 This document outlines the development roadmap and strategic plan for the Saunas Plus website rebuild and expansion.
 
-## Phase 1: Foundation (Current)
+## Phase 1: Foundation ✅ COMPLETE
 ✅ **Completed:**
 - Modern React/TypeScript codebase with Vite
 - Responsive design system with Tailwind CSS
 - All core pages migrated (28 pages total)
-- Navigation and routing structure
+- **Modular navigation system with dropdown menus**
+- **Fuzzy search functionality across all pages**
+- **Theme toggle (light/dark mode)**
 - SEO optimization
-- Mobile-responsive design
+- Mobile-responsive design with hamburger menu
 
-✅ **Newly Added:**
+✅ **Form & Data Collection:**
 - Cost Calculator with real-time estimates
-- Database integration for contact submissions
-- Email automation for customer inquiries
+- Database integration for contact submissions (Formspree)
 - Enhanced contact form with service selection
+- **Newsletter subscription system with database storage**
+- **Newsletter subscribers table with RLS policies**
+
+✅ **Design System:**
+- Custom color tokens (sauna colors, wood tones)
+- Utility classes (container-fluid, shadow-custom, link-muted)
+- Consistent typography system
 
 ## Phase 2: Backend & Data Management (In Progress)
-🔄 **Current:**
+✅ **Completed:**
 - Supabase Cloud integration
-- Contact form database storage
-- Email notification system via Resend
-- Row Level Security (RLS) policies
+- Contact form submissions (via Formspree)
+- Newsletter subscribers database with RLS policies
+- Row Level Security (RLS) policies for all tables
 
 📋 **Next Steps:**
-- Admin dashboard for managing inquiries
+- Admin dashboard for managing inquiries and newsletter subscribers
+- Email notification system via Resend for contact form
 - Customer relationship management (CRM) features
 - Project tracking system
 - Quote management system
@@ -37,8 +46,9 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - Photo gallery management system
 - Testimonial submission and approval workflow
 - Blog/article management system
-- Newsletter automation
+- **Newsletter email automation (connected to database)**
 - Analytics and reporting dashboard
+- Admin panel for newsletter management
 
 ## Phase 4: Marketing & SEO
 📈 **Roadmap:**
@@ -62,29 +72,36 @@ This document outlines the development roadmap and strategic plan for the Saunas
 
 ### Current Stack:
 - **Frontend:** React 18, TypeScript, Vite
-- **Styling:** Tailwind CSS, shadcn/ui components
-- **Backend:** Supabase (PostgreSQL, Edge Functions)
-- **Email:** Resend API
+- **Styling:** Tailwind CSS, shadcn/ui components, custom design tokens
+- **Backend:** Supabase Cloud (PostgreSQL, Edge Functions)
+- **Forms:** Formspree (contact form)
+- **Email:** Resend API (planned for newsletters and notifications)
+- **Theme:** next-themes (dark/light mode)
 - **Hosting:** Lovable Cloud
 - **Version Control:** Git
 
 ### Database Schema:
-- `contacts` table: Store customer inquiries
-- Future tables:
+✅ **Implemented:**
+- `contacts` table: Store customer inquiries (with RLS policies)
+- `newsletter_subscribers` table: Email list with subscription tracking (with RLS policies)
+
+📋 **Future tables:**
   - `projects`: Track sauna projects
   - `quotes`: Manage price quotes
   - `testimonials`: Customer reviews
   - `blog_posts`: Content management
-  - `newsletter_subscribers`: Email list
+  - `users`: Admin users and roles
 
 ## Key Priorities
 
 ### Immediate (1-2 weeks):
 1. ✅ Complete cost calculator
 2. ✅ Database integration for contacts
-3. ✅ Email automation
-4. 🔄 Admin dashboard for viewing submissions
-5. Image optimization and CDN setup
+3. ✅ Newsletter subscription system
+4. ✅ Modular navigation with search
+5. 🔄 Admin dashboard for viewing submissions and newsletter subscribers
+6. 🔄 Email automation via Resend for contact form and newsletters
+7. Image optimization and CDN setup
 
 ### Short-term (1-3 months):
 1. Project management system
@@ -124,5 +141,24 @@ This document outlines the development roadmap and strategic plan for the Saunas
 
 ---
 
-*Last Updated: 2025*  
-*Version: 2.0*
+## Recent Updates (Latest First)
+
+### January 2025 - Navigation & Newsletter System
+- ✅ Rebuilt navigation system with modular components
+- ✅ Added fuzzy search functionality across site
+- ✅ Implemented newsletter subscription with database integration
+- ✅ Updated footer with newsletter signup
+- ✅ Enhanced design system with custom color tokens
+- ✅ Mobile-responsive navigation with hamburger menu
+- ✅ Theme toggle integration (light/dark mode)
+
+### Previous Updates
+- ✅ Cost calculator implementation
+- ✅ Contact form with Formspree integration
+- ✅ Database structure for contacts
+- ✅ Initial site migration to React/TypeScript
+
+---
+
+*Last Updated: January 2025*  
+*Version: 2.1*
