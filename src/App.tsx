@@ -10,6 +10,10 @@ import Gallery from "./pages/Gallery";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
+import CustomSaunaDesign from "./pages/services/CustomSaunaDesign";
+import SteamShowerInstallation from "./pages/services/SteamShowerInstallation";
+import ResidentialSaunaBuilds from "./pages/services/ResidentialSaunaBuilds";
+import OutdoorSaunaKits from "./pages/services/OutdoorSaunaKits";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +27,10 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/services/custom-sauna-design" element={<CustomSaunaDesign />} />
+          <Route path="/services/steam-shower-installation" element={<SteamShowerInstallation />} />
+          <Route path="/services/residential-sauna-builds" element={<ResidentialSaunaBuilds />} />
+          <Route path="/services/outdoor-sauna-kits" element={<OutdoorSaunaKits />} />
           <Route path="/health-benefits" element={<HealthBenefits />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/about" element={<About />} />
