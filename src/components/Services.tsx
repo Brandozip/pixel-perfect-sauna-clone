@@ -5,6 +5,7 @@ import customSaunaDesign from "@/assets/custom-sauna-design.png";
 import steamShower from "@/assets/steam-shower.png";
 import residentialSauna from "@/assets/residential-sauna.png";
 import outdoorSauna from "@/assets/outdoor-sauna.png";
+import { Link } from "react-router-dom";
 
 const services = [
   {
@@ -66,9 +67,11 @@ export const Services = () => {
         </div>
         
         <div className="text-center">
-          <Button variant="outline" size="lg" className="text-lg">
-            View All Services
-          </Button>
+          <Link to="/services">
+            <Button variant="outline" size="lg" className="text-lg">
+              View All Services
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

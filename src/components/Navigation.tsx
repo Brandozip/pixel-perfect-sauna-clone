@@ -1,6 +1,7 @@
 import { Clock, MapPin, Phone, Mail, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
+import { Link } from "react-router-dom";
 
 export const Navigation = () => {
   const { theme, setTheme } = useTheme();
@@ -37,26 +38,28 @@ export const Navigation = () => {
             <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Toggle theme</span>
           </Button>
-          <Button className="bg-accent hover:bg-accent/90 text-accent-foreground">
-            Free Consultation
-          </Button>
+          <Link to="/contact">
+            <Button className="bg-accent hover:bg-accent/90 text-accent-foreground">
+              Free Consultation
+            </Button>
+          </Link>
         </div>
       </div>
       
       <nav className="container border-t border-border">
         <div className="flex h-16 items-center justify-between">
-          <a href="/" className="text-2xl font-bold">
+          <Link to="/" className="text-2xl font-bold">
             Saunas<span className="text-accent">Plus</span>
-          </a>
+          </Link>
           
           <div className="hidden md:flex items-center gap-8">
-            <a href="/" className="text-sm font-medium hover:text-accent transition-colors">Home</a>
-            <a href="/services" className="text-sm font-medium hover:text-accent transition-colors">Services</a>
-            <a href="/health-benefits" className="text-sm font-medium hover:text-accent transition-colors">Health Benefits</a>
-            <a href="/gallery" className="text-sm font-medium hover:text-accent transition-colors">Gallery</a>
-            <a href="/about" className="text-sm font-medium hover:text-accent transition-colors">About</a>
-            <a href="/faq" className="text-sm font-medium hover:text-accent transition-colors">FAQ</a>
-            <a href="/contact" className="text-sm font-medium hover:text-accent transition-colors">Contact</a>
+            <Link to="/" className="text-sm font-medium hover:text-accent transition-colors">Home</Link>
+            <Link to="/services" className="text-sm font-medium hover:text-accent transition-colors">Services</Link>
+            <Link to="/health-benefits" className="text-sm font-medium hover:text-accent transition-colors">Health Benefits</Link>
+            <Link to="/gallery" className="text-sm font-medium hover:text-accent transition-colors">Gallery</Link>
+            <Link to="/about" className="text-sm font-medium hover:text-accent transition-colors">About</Link>
+            <Link to="/faq" className="text-sm font-medium hover:text-accent transition-colors">FAQ</Link>
+            <Link to="/contact" className="text-sm font-medium hover:text-accent transition-colors">Contact</Link>
           </div>
         </div>
       </nav>

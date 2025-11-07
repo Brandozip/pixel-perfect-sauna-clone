@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
 import heroImage from "@/assets/hero-sauna.jpg";
+import { Link } from "react-router-dom";
 
 export const Hero = () => {
   return (
@@ -21,12 +22,16 @@ export const Hero = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground text-lg px-8 py-6">
-            Free Consultation
-          </Button>
-          <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/30 text-lg px-8 py-6 backdrop-blur-sm">
-            Explore Our Work
-          </Button>
+          <Link to="/contact">
+            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground text-lg px-8 py-6">
+              Free Consultation
+            </Button>
+          </Link>
+          <Link to="/gallery">
+            <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/30 text-lg px-8 py-6 backdrop-blur-sm">
+              Explore Our Work
+            </Button>
+          </Link>
         </div>
         
         <div className="flex flex-wrap justify-center gap-6 md:gap-8">

@@ -1,5 +1,6 @@
 import { Droplets, Heart, Activity, Zap, Moon, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const benefits = [
   {
@@ -64,9 +65,11 @@ export const HealthBenefits = () => {
           <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
             Discover how regular sauna sessions can significantly improve your overall wellbeing and quality of life.
           </p>
-          <Button variant="outline" size="lg" className="text-lg">
-            Explore All Health Benefits
-          </Button>
+          <Link to="/health-benefits">
+            <Button variant="outline" size="lg" className="text-lg">
+              Explore All Health Benefits
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

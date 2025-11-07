@@ -1,4 +1,5 @@
 import { Clock, MapPin, Phone, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   return (
@@ -17,23 +18,23 @@ export const Footer = () => {
           <div>
             <h4 className="font-bold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li><a href="/" className="text-primary-foreground/80 hover:text-accent transition-colors">Home</a></li>
-              <li><a href="/services" className="text-primary-foreground/80 hover:text-accent transition-colors">Services</a></li>
-              <li><a href="/health-benefits" className="text-primary-foreground/80 hover:text-accent transition-colors">Health Benefits</a></li>
-              <li><a href="/gallery" className="text-primary-foreground/80 hover:text-accent transition-colors">Gallery</a></li>
-              <li><a href="/about" className="text-primary-foreground/80 hover:text-accent transition-colors">About</a></li>
-              <li><a href="/faq" className="text-primary-foreground/80 hover:text-accent transition-colors">FAQ</a></li>
-              <li><a href="/contact" className="text-primary-foreground/80 hover:text-accent transition-colors">Contact</a></li>
+              <li><Link to="/" className="text-primary-foreground/80 hover:text-accent transition-colors">Home</Link></li>
+              <li><Link to="/services" className="text-primary-foreground/80 hover:text-accent transition-colors">Services</Link></li>
+              <li><Link to="/health-benefits" className="text-primary-foreground/80 hover:text-accent transition-colors">Health Benefits</Link></li>
+              <li><Link to="/gallery" className="text-primary-foreground/80 hover:text-accent transition-colors">Gallery</Link></li>
+              <li><Link to="/about" className="text-primary-foreground/80 hover:text-accent transition-colors">About</Link></li>
+              <li><Link to="/faq" className="text-primary-foreground/80 hover:text-accent transition-colors">FAQ</Link></li>
+              <li><Link to="/contact" className="text-primary-foreground/80 hover:text-accent transition-colors">Contact</Link></li>
             </ul>
           </div>
           
           <div>
             <h4 className="font-bold mb-4">Services</h4>
             <ul className="space-y-2">
-              <li><a href="/services/custom-sauna-design" className="text-primary-foreground/80 hover:text-accent transition-colors">Custom Sauna Design</a></li>
-              <li><a href="/services/steam-shower-installation" className="text-primary-foreground/80 hover:text-accent transition-colors">Steam Shower Installation</a></li>
-              <li><a href="/services/residential-sauna-builds" className="text-primary-foreground/80 hover:text-accent transition-colors">Residential Sauna Builds</a></li>
-              <li><a href="/services/outdoor-sauna-kits" className="text-primary-foreground/80 hover:text-accent transition-colors">Outdoor Sauna Kits</a></li>
+              <li><Link to="/services" className="text-primary-foreground/80 hover:text-accent transition-colors">Custom Sauna Design</Link></li>
+              <li><Link to="/services" className="text-primary-foreground/80 hover:text-accent transition-colors">Steam Shower Installation</Link></li>
+              <li><Link to="/services" className="text-primary-foreground/80 hover:text-accent transition-colors">Residential Sauna Builds</Link></li>
+              <li><Link to="/services" className="text-primary-foreground/80 hover:text-accent transition-colors">Outdoor Sauna Kits</Link></li>
             </ul>
           </div>
           
