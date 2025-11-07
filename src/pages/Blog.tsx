@@ -9,6 +9,9 @@ import LoadingSpinner from '@/components/ui/loading-spinner';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import CleanNavbar from '@/components/navigation/CleanNavbar';
+import { Footer } from '@/components/Footer';
+import { ThemeProvider } from 'next-themes';
 
 interface BlogPost {
   id: string;
@@ -79,13 +82,14 @@ export default function Blog() {
   }
 
   return (
-    <>
+    <ThemeProvider attribute="class" defaultTheme="light">
       <Helmet>
         <title>Blog - Saunas Plus | Sauna Tips, Health Benefits & Installation Guides</title>
         <meta name="description" content="Expert insights on saunas, health benefits, installation tips, maintenance guides, and wellness advice from Atlanta's premier sauna specialists." />
       </Helmet>
 
       <div className="min-h-screen bg-background">
+        <CleanNavbar />
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-primary/10 to-primary/5 py-16">
           <div className="container mx-auto px-4">
@@ -218,7 +222,8 @@ export default function Blog() {
             </div>
           )}
         </div>
+        <Footer />
       </div>
-    </>
+    </ThemeProvider>
   );
 }

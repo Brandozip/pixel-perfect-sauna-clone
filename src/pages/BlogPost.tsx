@@ -9,6 +9,9 @@ import LoadingSpinner from '@/components/ui/loading-spinner';
 import { format } from 'date-fns';
 import { Helmet } from 'react-helmet';
 import { ArticleSchema } from '@/components/seo/ArticleSchema';
+import CleanNavbar from '@/components/navigation/CleanNavbar';
+import { Footer } from '@/components/Footer';
+import { ThemeProvider } from 'next-themes';
 
 interface BlogPost {
   id: string;
@@ -141,7 +144,7 @@ export default function BlogPost() {
   }
 
   return (
-    <>
+    <ThemeProvider attribute="class" defaultTheme="light">
       <Helmet>
         <title>{post.seo_title || post.title} - Saunas Plus Blog</title>
         <meta name="description" content={post.seo_description || post.excerpt || ''} />
@@ -161,6 +164,7 @@ export default function BlogPost() {
       />
 
       <div className="min-h-screen bg-background">
+        <CleanNavbar />
         <div className="container mx-auto px-4 py-8">
           <Button variant="ghost" onClick={() => navigate('/blog')} className="mb-6">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -262,7 +266,8 @@ export default function BlogPost() {
             )}
           </article>
         </div>
+        <Footer />
       </div>
-    </>
+    </ThemeProvider>
   );
 }
