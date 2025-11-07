@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Plus, Pencil, Trash2, Eye, Search, Calendar, User } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye, Search, Calendar, User, Sparkles } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
@@ -41,6 +41,7 @@ export default function BlogPosts() {
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -99,6 +100,33 @@ export default function BlogPosts() {
     }
   };
 
+  const handleGenerateBlog = async () => {
+    setIsGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-blog', {
+        body: { manual: true }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success!',
+        description: `Blog post "${data.post.title}" generated successfully and saved as draft`,
+      });
+
+      fetchPosts();
+    } catch (error) {
+      console.error('Error generating blog:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to generate blog post. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const filteredPosts = posts.filter(post =>
     post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     post.excerpt?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -129,10 +157,29 @@ export default function BlogPosts() {
           <h1 className="text-3xl font-bold">Blog Posts</h1>
           <p className="text-muted-foreground">Manage your blog content</p>
         </div>
-        <Button onClick={() => navigate('/admin/blog/new')}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Post
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={handleGenerateBlog}
+            disabled={isGenerating}
+            variant="outline"
+          >
+            {isGenerating ? (
+              <>
+                <LoadingSpinner size="sm" className="mr-2" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles className="mr-2 h-4 w-4" />
+                Generate Blog
+              </>
+            )}
+          </Button>
+          <Button onClick={() => navigate('/admin/blog/new')}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Post
+          </Button>
+        </div>
       </div>
 
       <div className="mb-6">
