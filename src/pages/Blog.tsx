@@ -12,6 +12,7 @@ import { Helmet } from 'react-helmet';
 import CleanNavbar from '@/components/navigation/CleanNavbar';
 import { Footer } from '@/components/Footer';
 import { ThemeProvider } from 'next-themes';
+import { blogPageMeta } from '@/components/seo/SocialMetaTags';
 
 interface BlogPost {
   id: string;
@@ -84,8 +85,22 @@ export default function Blog() {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
       <Helmet>
-        <title>Blog - Saunas Plus | Sauna Tips, Health Benefits & Installation Guides</title>
-        <meta name="description" content="Expert insights on saunas, health benefits, installation tips, maintenance guides, and wellness advice from Atlanta's premier sauna specialists." />
+        <title>{blogPageMeta.title}</title>
+        <meta name="description" content={blogPageMeta.description} />
+        <meta name="keywords" content={blogPageMeta.keywords.join(', ')} />
+        
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={blogPageMeta.title} />
+        <meta property="og:description" content={blogPageMeta.description} />
+        <meta property="og:url" content="https://www.saunasplus.com/blog" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={blogPageMeta.title} />
+        <meta name="twitter:description" content={blogPageMeta.description} />
+        
+        <link rel="canonical" href="https://www.saunasplus.com/blog" />
       </Helmet>
 
       <div className="min-h-screen bg-background">

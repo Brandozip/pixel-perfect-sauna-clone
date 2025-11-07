@@ -170,3 +170,10 @@ export const galleryPageMeta = {
   keywords: ["sauna gallery", "sauna photos", "completed saunas", "Atlanta sauna projects", "custom sauna examples"],
   image: "https://www.saunasplus.com/og-gallery.jpg"
 };
+
+export const blogPageMeta = {
+  title: "Sauna Blog - Expert Tips, Health Benefits & Installation Guides",
+  description: "Expert insights on sauna health benefits, installation tips, maintenance guides, and wellness advice from Atlanta's premier sauna specialists. Stay informed with our latest articles.",
+  keywords: ["sauna blog", "sauna tips", "sauna health benefits", "sauna installation guide", "sauna maintenance", "wellness blog"],
+  image: "https://www.saunasplus.com/og-blog.jpg"
+};

@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Calendar, User, Clock, ArrowLeft, Share2 } from 'lucide-react';
+import { Calendar, User, Clock, ArrowLeft } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import { format } from 'date-fns';
 import { Helmet } from 'react-helmet';
@@ -12,6 +12,7 @@ import { ArticleSchema } from '@/components/seo/ArticleSchema';
 import CleanNavbar from '@/components/navigation/CleanNavbar';
 import { Footer } from '@/components/Footer';
 import { ThemeProvider } from 'next-themes';
+import { SocialShare } from '@/components/blog/SocialShare';
 
 interface BlogPost {
   id: string;
@@ -149,6 +150,28 @@ export default function BlogPost() {
         <title>{post.seo_title || post.title} - Saunas Plus Blog</title>
         <meta name="description" content={post.seo_description || post.excerpt || ''} />
         {post.tags && <meta name="keywords" content={post.tags.join(', ')} />}
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:title" content={post.seo_title || post.title} />
+        <meta property="og:description" content={post.seo_description || post.excerpt || ''} />
+        {post.featured_image_url && <meta property="og:image" content={post.featured_image_url} />}
+        <meta property="og:site_name" content="Saunas Plus" />
+        <meta property="article:published_time" content={post.published_at} />
+        <meta property="article:author" content={post.author_name} />
+        {post.category && <meta property="article:section" content={post.category} />}
+        {post.tags && post.tags.map(tag => <meta key={tag} property="article:tag" content={tag} />)}
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={window.location.href} />
+        <meta name="twitter:title" content={post.seo_title || post.title} />
+        <meta name="twitter:description" content={post.seo_description || post.excerpt || ''} />
+        {post.featured_image_url && <meta name="twitter:image" content={post.featured_image_url} />}
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href={window.location.href} />
       </Helmet>
 
       <ArticleSchema
@@ -179,7 +202,7 @@ export default function BlogPost() {
               )}
               <h1 className="heading-2 mb-6">{post.title}</h1>
               
-              <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-8 pb-6 border-b border-border">
+              <div className="flex flex-wrap items-center gap-4 text-muted-foreground mb-4">
                 <div className="flex items-center gap-2">
                   {post.author_avatar_url && (
                     <img 
@@ -203,10 +226,14 @@ export default function BlogPost() {
                     {post.reading_time_minutes} min read
                   </div>
                 )}
-                <Button variant="outline" size="sm" onClick={handleShare} className="ml-auto">
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Share
-                </Button>
+              </div>
+
+              <div className="pb-6 mb-8 border-b border-border">
+                <SocialShare 
+                  url={`/blog/${post.slug}`}
+                  title={post.title}
+                  description={post.excerpt || undefined}
+                />
               </div>
 
               {post.featured_image_url && (
