@@ -17,7 +17,69 @@ interface GalleryImageMetadata {
 
 export function useGalleryUpload() {
   const [uploading, setUploading] = useState(false);
+  const [generatingMetadata, setGeneratingMetadata] = useState(false);
   const { toast } = useToast();
+
+  const generateMetadata = async (file: File) => {
+    setGeneratingMetadata(true);
+
+    try {
+      // Convert file to base64
+      const reader = new FileReader();
+      const base64Promise = new Promise<string>((resolve, reject) => {
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const imageBase64 = await base64Promise;
+
+      // Call edge function to generate metadata
+      const { data, error } = await supabase.functions.invoke('generate-image-metadata', {
+        body: { imageBase64 }
+      });
+
+      if (error) throw error;
+
+      if (!data?.metadata) {
+        throw new Error('No metadata received from AI');
+      }
+
+      toast({
+        title: 'Metadata Generated',
+        description: 'AI has analyzed the image and generated SEO metadata',
+      });
+
+      return data.metadata;
+    } catch (error) {
+      console.error('Metadata generation error:', error);
+      
+      // Handle specific error cases
+      if (error instanceof Error && error.message.includes('Rate limit')) {
+        toast({
+          title: 'Rate Limit Reached',
+          description: 'Too many requests. Please wait a moment and try again.',
+          variant: 'destructive',
+        });
+      } else if (error instanceof Error && error.message.includes('Payment required')) {
+        toast({
+          title: 'Credits Required',
+          description: 'Please add credits to your Lovable AI workspace to continue.',
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Generation Failed',
+          description: 'Failed to generate metadata. You can enter it manually.',
+          variant: 'destructive',
+        });
+      }
+      
+      return null;
+    } finally {
+      setGeneratingMetadata(false);
+    }
+  };
 
   const uploadImage = async (file: File, metadata: GalleryImageMetadata) => {
     setUploading(true);
@@ -151,8 +213,10 @@ export function useGalleryUpload() {
 
   return {
     uploading,
+    generatingMetadata,
     uploadImage,
     deleteImage,
     updateImage,
+    generateMetadata,
   };
 }

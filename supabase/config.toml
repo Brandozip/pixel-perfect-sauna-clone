@@ -1,1 +1,4 @@
 project_id = "damitvvtyphjaeyvzyen"
+
+[functions.generate-image-metadata]
+verify_jwt = false

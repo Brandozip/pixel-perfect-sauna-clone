@@ -11,7 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Upload, X, Edit, Trash2, Eye, EyeOff, Image as ImageIcon, Star, Download } from 'lucide-react';
+import { Upload, X, Edit, Trash2, Eye, EyeOff, Image as ImageIcon, Star, Download, Sparkles } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import { useToast } from '@/hooks/use-toast';
 
@@ -46,7 +46,7 @@ const Gallery = () => {
   const [migrating, setMigrating] = useState(false);
   const [migrationProgress, setMigrationProgress] = useState({ current: 0, total: 0, message: '' });
 
-  const { uploading, uploadImage, deleteImage, updateImage } = useGalleryUpload();
+  const { uploading, generatingMetadata, uploadImage, deleteImage, updateImage, generateMetadata } = useGalleryUpload();
   const { toast } = useToast();
 
   // Form state for upload/edit
@@ -128,6 +128,26 @@ const Gallery = () => {
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       handleFileSelect(Array.from(e.target.files));
+    }
+  };
+
+  const handleGenerateMetadata = async () => {
+    if (selectedFiles.length === 0) return;
+
+    // Generate metadata for the first image only
+    const metadata = await generateMetadata(selectedFiles[0]);
+    
+    if (metadata) {
+      setFormData({
+        ...formData,
+        title: metadata.title,
+        alt_text: metadata.alt_text,
+        description: metadata.description,
+        category: metadata.suggested_category,
+        seo_keywords: metadata.seo_keywords,
+        seo_title: metadata.seo_title,
+        seo_description: metadata.seo_description,
+      });
     }
   };
 
@@ -484,7 +504,35 @@ const Gallery = () => {
               </div>
 
               <div className="border-t pt-4 space-y-4">
-                <p className="text-sm font-medium">Apply to all images:</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium">Metadata for all images:</p>
+                  {selectedFiles.length === 1 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleGenerateMetadata}
+                      disabled={generatingMetadata}
+                    >
+                      {generatingMetadata ? (
+                        <>
+                          <LoadingSpinner size="sm" className="mr-2" />
+                          Analyzing...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="h-4 w-4 mr-2" />
+                          Generate with AI
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
+                {selectedFiles.length > 1 && (
+                  <p className="text-xs text-muted-foreground">
+                    Note: AI metadata generation is only available for single image uploads. For multiple images, the same metadata will be applied to all.
+                  </p>
+                )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
