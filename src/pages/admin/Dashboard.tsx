@@ -68,7 +68,10 @@ export default function AdminDashboard() {
           </Card>
 
           {/* Gallery Management */}
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Card 
+            className="hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => window.location.href = '/admin/gallery'}
+          >
             <CardHeader>
               <div className="flex items-center justify-between">
                 <Image className="w-8 h-8 text-primary" />
@@ -79,8 +82,8 @@ export default function AdminDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" className="w-full" disabled>
-                Coming Soon
+              <Button variant="outline" className="w-full">
+                Manage Gallery
               </Button>
             </CardContent>
           </Card>

@@ -56,6 +56,60 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_images: {
+        Row: {
+          alt_text: string
+          category: string
+          created_at: string
+          description: string | null
+          featured: boolean
+          id: string
+          image_url: string
+          is_published: boolean
+          order_index: number
+          project_details: Json | null
+          seo_description: string | null
+          seo_keywords: string | null
+          seo_title: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          alt_text: string
+          category?: string
+          created_at?: string
+          description?: string | null
+          featured?: boolean
+          id?: string
+          image_url: string
+          is_published?: boolean
+          order_index?: number
+          project_details?: Json | null
+          seo_description?: string | null
+          seo_keywords?: string | null
+          seo_title?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          alt_text?: string
+          category?: string
+          created_at?: string
+          description?: string | null
+          featured?: boolean
+          id?: string
+          image_url?: string
+          is_published?: boolean
+          order_index?: number
+          project_details?: Json | null
+          seo_description?: string | null
+          seo_keywords?: string | null
+          seo_title?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           email: string
