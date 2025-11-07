@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ThemeProvider } from "next-themes";
+import { SocialMetaTags, galleryPageMeta } from "@/components/seo/SocialMetaTags";
 import { supabase } from '@/integrations/supabase/client';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import { Link } from 'react-router-dom';
@@ -62,6 +63,7 @@ const Gallery = () => {
   }
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags {...galleryPageMeta} />
       <div className="min-h-screen">
         <CleanNavbar />
         

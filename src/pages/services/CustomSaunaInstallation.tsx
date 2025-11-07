@@ -6,6 +6,7 @@ import { CheckCircle2, Phone } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/seo/ServiceSchema";
+import { SocialMetaTags } from "@/components/seo/SocialMetaTags";
 import heroImage from "@/assets/residential-sauna.png";
 
 const processSteps = [
@@ -64,6 +65,12 @@ const whyChoose = [
 const CustomSaunaInstallation = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags
+        title="Custom Sauna Installation Services"
+        description="Professional sauna installation by licensed and insured experts. Code-compliant work, quality materials, proper ventilation systems, and comprehensive system testing."
+        keywords={["sauna installation", "professional sauna installer", "Atlanta sauna contractor", "licensed sauna builder"]}
+        image="https://www.saunasplus.com/og-installation.jpg"
+      />
       <ServiceSchema
         name="Custom Sauna Installation"
         description="Professional sauna installation services for residential and commercial properties. Expert craftsmanship and code-compliant work."

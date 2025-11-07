@@ -6,6 +6,7 @@ import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
 import { FAQSchema } from "@/components/seo/FAQSchema";
 import { BreadcrumbSchema } from "@/components/seo/ServiceSchema";
+import { SocialMetaTags, faqPageMeta } from "@/components/seo/SocialMetaTags";
 
 const faqs = [
   {
@@ -61,6 +62,7 @@ const faqs = [
 const FAQ = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags {...faqPageMeta} />
       <FAQSchema faqs={faqs} />
       <BreadcrumbSchema
         items={[

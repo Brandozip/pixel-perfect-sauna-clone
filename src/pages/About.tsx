@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Award, Users, Wrench, Heart } from "lucide-react";
 import { ThemeProvider } from "next-themes";
+import { SocialMetaTags, aboutPageMeta } from "@/components/seo/SocialMetaTags";
 import luxurySauna from "@/assets/luxury-sauna.jpg";
 
 const values = [
@@ -40,6 +41,7 @@ const milestones = [
 const About = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags {...aboutPageMeta} />
       <div className="min-h-screen">
         <CleanNavbar />
         

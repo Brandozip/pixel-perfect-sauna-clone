@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Droplets, Heart, Activity, Zap, Moon, Sparkles, Brain, Shield } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
+import { SocialMetaTags, healthBenefitsPageMeta } from "@/components/seo/SocialMetaTags";
 
 const benefits = [
   {
@@ -100,6 +101,7 @@ const benefits = [
 const HealthBenefits = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags {...healthBenefitsPageMeta} />
       <div className="min-h-screen">
         <CleanNavbar />
         

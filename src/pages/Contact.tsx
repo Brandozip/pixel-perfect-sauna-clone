@@ -4,11 +4,13 @@ import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Clock, MapPin, Phone, Mail } from "lucide-react";
 import { ThemeProvider } from "next-themes";
+import { SocialMetaTags, contactPageMeta } from "@/components/seo/SocialMetaTags";
 import ContactForm from '@/components/shared/ContactForm';
 
 const Contact = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags {...contactPageMeta} />
       <div className="min-h-screen">
         <CleanNavbar />
         

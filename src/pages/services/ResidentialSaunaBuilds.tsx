@@ -6,6 +6,7 @@ import { CheckCircle2, Phone } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/seo/ServiceSchema";
+import { SocialMetaTags } from "@/components/seo/SocialMetaTags";
 import heroImage from "@/assets/service-detail-hero.png";
 import customerImage from "@/assets/testimonial-customer.png";
 import gallery1 from "@/assets/testimonial-nick.png";
@@ -77,6 +78,12 @@ const processSteps = [
 const ResidentialSaunaBuilds = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags
+        title="Residential Sauna Builds"
+        description="Complete home sauna design and installation for the ultimate wellness sanctuary. Custom-built saunas with premium materials, full electrical integration, and expert craftsmanship."
+        keywords={["residential sauna", "home sauna installation", "custom home sauna", "Atlanta sauna builder", "basement sauna"]}
+        image="https://www.saunasplus.com/og-residential-sauna.jpg"
+      />
       <ServiceSchema
         name="Residential Sauna Builds"
         description="Complete home sauna design and installation for the ultimate wellness sanctuary. Custom-built saunas tailored to your space."

@@ -6,6 +6,7 @@ import { CheckCircle2, Phone, Zap, Thermometer, Waves } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/seo/ServiceSchema";
+import { SocialMetaTags } from "@/components/seo/SocialMetaTags";
 import heroImage from "@/assets/luxury-sauna.jpg";
 
 const benefits = [
@@ -55,6 +56,12 @@ const features = [
 const IndoorInfraredSauna = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags
+        title="Indoor Infrared Sauna Solutions"
+        description="Modern infrared sauna installation for health and wellness. Lower operating temperatures, deeper tissue penetration, energy efficiency. Far infrared and full spectrum options available."
+        keywords={["infrared sauna", "far infrared", "indoor sauna", "home infrared sauna", "Atlanta infrared"]}
+        image="https://www.saunasplus.com/og-infrared-sauna.jpg"
+      />
       <ServiceSchema
         name="Indoor Infrared Sauna"
         description="Modern infrared sauna installation for health and wellness. Experience the therapeutic benefits of infrared technology."

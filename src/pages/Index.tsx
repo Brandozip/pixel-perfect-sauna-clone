@@ -9,10 +9,12 @@ import { CTASection } from "@/components/CTASection";
 import { Footer } from "@/components/Footer";
 import { ThemeProvider } from "next-themes";
 import { LocalBusinessSchema, OrganizationSchema, WebsiteSchema } from "@/components/seo/StructuredData";
+import { SocialMetaTags, homePageMeta } from "@/components/seo/SocialMetaTags";
 
 const Index = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags {...homePageMeta} />
       <LocalBusinessSchema />
       <OrganizationSchema />
       <WebsiteSchema />

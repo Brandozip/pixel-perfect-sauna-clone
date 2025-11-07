@@ -6,6 +6,7 @@ import { CheckCircle2, Phone } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/seo/ServiceSchema";
+import { SocialMetaTags } from "@/components/seo/SocialMetaTags";
 import heroImage from "@/assets/service-detail-hero.png";
 import customerImage from "@/assets/testimonial-customer.png";
 import gallery1 from "@/assets/testimonial-nick.png";
@@ -72,6 +73,12 @@ const processSteps = [
 const CustomSaunaDesign = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags
+        title="Custom Sauna Design Services"
+        description="Personalized sauna designs that blend seamlessly with your space and lifestyle. Expert 3D visualization, material selection, and space optimization for your perfect wellness sanctuary."
+        keywords={["custom sauna design", "sauna design consultation", "3D sauna design", "Atlanta sauna designer", "personalized sauna"]}
+        image="https://www.saunasplus.com/og-custom-design.jpg"
+      />
       <ServiceSchema
         name="Custom Sauna Design"
         description="Personalized sauna designs that blend seamlessly with your space and lifestyle. Professional design consultation and planning services."

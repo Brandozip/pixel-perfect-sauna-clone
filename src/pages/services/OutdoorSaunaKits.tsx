@@ -6,6 +6,7 @@ import { CheckCircle2, Phone } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/seo/ServiceSchema";
+import { SocialMetaTags } from "@/components/seo/SocialMetaTags";
 import heroImage from "@/assets/service-detail-hero.png";
 import customerImage from "@/assets/testimonial-customer.png";
 import gallery1 from "@/assets/testimonial-nick.png";
@@ -82,6 +83,12 @@ const processSteps = [
 const OutdoorSaunaKits = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags
+        title="Outdoor Sauna Kits"
+        description="Pre-built outdoor sauna kits designed for easy backyard installation. Weather-resistant construction, multiple sizes, premium quality for authentic outdoor wellness experience."
+        keywords={["outdoor sauna kit", "backyard sauna", "pre-built sauna", "garden sauna", "Atlanta outdoor sauna"]}
+        image="https://www.saunasplus.com/og-outdoor-sauna.jpg"
+      />
       <ServiceSchema
         name="Outdoor Sauna Kits"
         description="Pre-built sauna kits designed for easy installation in your backyard or garden. Weather-resistant, premium quality outdoor saunas."

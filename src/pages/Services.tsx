@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
+import { SocialMetaTags, servicesPageMeta } from "@/components/seo/SocialMetaTags";
 import customSaunaDesign from "@/assets/custom-sauna-design.png";
 import steamShower from "@/assets/steam-shower.png";
 import residentialSauna from "@/assets/residential-sauna.png";
@@ -64,6 +65,7 @@ const services = [
 const Services = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags {...servicesPageMeta} />
       <div className="min-h-screen">
         <CleanNavbar />
         

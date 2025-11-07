@@ -6,6 +6,7 @@ import { CheckCircle2, Phone } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import { Link } from "react-router-dom";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/seo/ServiceSchema";
+import { SocialMetaTags } from "@/components/seo/SocialMetaTags";
 import heroImage from "@/assets/service-detail-hero.png";
 import customerImage from "@/assets/testimonial-customer.png";
 
@@ -77,6 +78,12 @@ const processSteps = [
 const SteamShowerInstallation = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
+      <SocialMetaTags
+        title="Steam Shower Installation Services"
+        description="Transform your bathroom into a spa-like retreat with professional steam shower installation. Commercial-grade generators, waterproof construction, and lifetime warranty."
+        keywords={["steam shower installation", "steam room", "bathroom spa", "Atlanta steam shower", "home steam generator"]}
+        image="https://www.saunasplus.com/og-steam-shower.jpg"
+      />
       <ServiceSchema
         name="Steam Shower Installation"
         description="Transform your bathroom into a spa-like retreat with professional steam shower installation services."
