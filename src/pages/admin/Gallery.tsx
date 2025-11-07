@@ -274,7 +274,21 @@ const Gallery = () => {
       // Upload all files with their respective metadata
       for (let i = 0; i < selectedFiles.length; i++) {
         const file = selectedFiles[i];
-        const metadata = finalMetadata[i] || formData; // Use saved metadata or current form
+        const savedMetadata = finalMetadata[i];
+        
+        // Ensure all required fields are present with defaults
+        const metadata = {
+          title: savedMetadata?.title || `Image ${i + 1}`,
+          alt_text: savedMetadata?.alt_text || `Gallery image ${i + 1}`,
+          description: savedMetadata?.description || '',
+          category: savedMetadata?.category || savedMetadata?.suggested_category || 'residential',
+          seo_keywords: savedMetadata?.seo_keywords || '',
+          seo_title: savedMetadata?.seo_title || '',
+          seo_description: savedMetadata?.seo_description || '',
+          is_published: savedMetadata?.is_published ?? true,
+          featured: savedMetadata?.featured ?? false,
+        };
+        
         await uploadImage(file, metadata);
       }
       
