@@ -1,31 +1,54 @@
+import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Quote } from "lucide-react";
-import nickAvatar from "@/assets/testimonial-nick.png";
-import residentialSauna from "@/assets/residential-sauna.png";
-import outdoorSauna from "@/assets/outdoor-sauna.png";
+import { StarRating } from "@/components/ui/star-rating";
+import { supabase } from '@/integrations/supabase/client';
 
-const testimonials = [
-  {
-    quote: "We had our sauna installed by Grayson in May 2024. The room was originally a closet turned into a wine cellar. Meeting with Grayson the first visit inspired confidence and a vision. He told us to plan and the timelines and stuck to it. In addition he was always available after the installation to fine tune some extras. I think it's rare to get this kind of professionalism and I recommend him without reservation.",
-    author: "Nick S.",
-    location: "Buckhead",
-    avatar: nickAvatar
-  },
-  {
-    quote: "Grayson is the consummate professional. His work is exemplary. Punctual, straightforward, honest and cleans up afterwards which more than I can say for many contractors.",
-    author: "Anonymous",
-    location: "Atlanta",
-    avatar: residentialSauna
-  },
-  {
-    quote: "We wanted a custom-cut sauna as part of an extensive home remodel, and had a clear idea of how the sauna should complement our home's overall design. Of the three companies we spoke with, Grayson was the only one who didn't try to force a sale by phone, and after a site visit, he presented a design that fit our aesthetic and space perfectly. It was clear that he had actually listened and could honor our vision. Through the build, Grayson and his helpers were honest, professional, and accessible. We love our beautiful new sauna and can't recommend Grayson highly enough.",
-    author: "Katherine and John",
-    location: "Brookhaven",
-    avatar: outdoorSauna
-  }
-];
+interface Review {
+  id: string;
+  author_name: string;
+  author_location: string;
+  author_avatar_url: string | null;
+  rating: number;
+  review_text: string;
+}
 
 export const Testimonials = () => {
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  const fetchReviews = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('reviews')
+        .select('id, author_name, author_location, author_avatar_url, rating, review_text')
+        .eq('is_published', true)
+        .eq('status', 'approved')
+        .order('is_featured', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(3);
+
+      if (error) throw error;
+      setReviews(data || []);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return null;
+  }
+
+  if (reviews.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-20">
       <div className="container">
@@ -37,21 +60,26 @@ export const Testimonials = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <Card key={index} className="card-elevated card-content">
+          {reviews.map((review) => (
+            <Card key={review.id} className="card-elevated card-content">
               <Quote className="h-10 w-10 text-primary mb-4" />
+              <div className="mb-4">
+                <StarRating rating={review.rating} size="md" />
+              </div>
               <blockquote className="text-muted-foreground mb-6 italic leading-relaxed">
-                "{testimonial.quote}"
+                "{review.review_text}"
               </blockquote>
               <div className="flex items-center gap-4">
-                <img 
-                  src={testimonial.avatar} 
-                  alt={testimonial.author}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
+                {review.author_avatar_url && (
+                  <img 
+                    src={review.author_avatar_url} 
+                    alt={review.author_name}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                )}
                 <div>
-                  <div className="font-heading font-semibold">{testimonial.author}</div>
-                  <div className="text-sm text-muted-foreground">{testimonial.location}</div>
+                  <div className="font-heading font-semibold">{review.author_name}</div>
+                  <div className="text-sm text-muted-foreground">{review.author_location}</div>
                 </div>
               </div>
             </Card>
