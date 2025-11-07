@@ -261,35 +261,129 @@ This document outlines the development roadmap and strategic plan for the Saunas
 
 ✅ **Routing & Navigation:**
 - ✅ Public routes: `/blog`, `/blog/:slug`
-- ✅ Admin routes: `/admin/blog`, `/admin/blog/:id`, `/admin/blog/new`
+- ✅ Admin routes: `/admin/blog`, `/admin/blog/:id`, `/admin/blog/new`, `/admin/blog-generator`
 - ✅ Blog link added to main navigation menu
 - ✅ Blog management in admin sidebar
 - ✅ Protected admin routes with authentication
 
-✅ **Automated Blog Generator - IMPLEMENTED:**
-- ✅ AI-powered blog generation using Lovable AI (Gemini 2.5 Flash)
-- ✅ Edge function: `generate-blog`
-  - Multi-step AI process: topic → outline → content → SEO
-  - Duplicate prevention (checks existing topics/titles)
-  - 1800-2200 word SEO-optimized posts
+✅ **Automated Blog Generator - FULLY ENHANCED:**
+- ✅ **AI-powered 10-step generation pipeline:**
+  1. Load Settings
+  2. Analyze Existing Content (duplicate prevention)
+  3. Generate Unique Topic (Gemini Flash)
+  4. Research & Gather Information (Gemini Flash)
+  5. Create Detailed Outline (Gemini Flash)
+  6. Write Full Content (Gemini Pro/Flash - configurable)
+  7. Fact Check Content (Gemini Pro/Flash - configurable)
+  8. Edit for Clarity (Gemini Flash)
+  9. Plan Image Placements (Gemini Flash)
+  10. Generate & Insert Images (Gemini Flash Image) + SEO Metadata
+
+- ✅ **Edge Function Enhancements:**
+  - Multi-step AI process with real-time progress tracking
+  - Database logging for each generation step
+  - Duplicate topic prevention (semantic analysis)
+  - 1800-2500 word SEO-optimized posts
   - Automatic slug generation
   - Reading time calculation
-- ✅ Scheduled automation with pg_cron
-  - Runs twice daily (12:00 AM and 12:00 PM)
-  - Uses pg_net for HTTP calls
-  - Automatic draft creation
-- ✅ Manual trigger button in admin UI
-  - "Generate Blog" button in /admin/blog
-  - Real-time generation with loading state
-  - Success notification with post details
-- ✅ Content Quality Features:
+  - Image generation with Nano Banana (Gemini Flash Image)
+  - Automatic image insertion at strategic positions
+  - Base64 image handling and storage
+  
+- ✅ **Admin Settings Interface (`/admin/blog-generator`):**
+  - **Schedule Tab:**
+    - Enable/disable automated generation toggle
+    - Customizable cron expression (twice daily default)
+    - Visual schedule description
+  - **Prompts Tab:** Fully customizable prompts for all 9 steps:
+    - Topic Generation (based on Medium article)
+    - Research & Information Gathering
+    - Outline Creation
+    - Content Writing
+    - Fact Checking (new!)
+    - Clarity Editing
+    - Sentence Improvement
+    - Image Suggestions
+    - SEO Metadata
+  - **Models Tab:**
+    - Toggle Gemini Pro for content writing
+    - Toggle Gemini Pro for fact checking
+    - Model information and recommendations
+  - **Content Tab:**
+    - Target word count (1000-5000)
+    - Enable/disable image generation
+    - Max images per post (1-10)
+  
+- ✅ **Database Tables:**
+  - `blog_generator_settings`: Stores all configuration
+  - `blog_generation_logs`: Tracks progress and results
+  - RLS policies for admin-only access
+  - Automatic timestamp triggers
+  
+- ✅ **Progress Tracking:**
+  - Real-time step-by-step progress logging
+  - Step completion counter (1/10, 2/10, etc.)
+  - Stores results from each generation step
+  - Error tracking with detailed messages
+  - Total generation time tracking
+  
+- ✅ **Content Quality Features:**
+  - Fact-checking step verifies claims and statistics
   - Semantic duplicate detection
-  - Topic diversity across categories
-  - Natural keyword integration
+  - Topic diversity across 10 categories
+  - Natural keyword integration (3-5 times)
   - Internal linking suggestions
   - FAQ sections for featured snippets
-  - Call-to-action sections
-- ✅ Content Topics Rotation:
+  - Strong call-to-action sections
+  - Professional markdown formatting
+  
+- ✅ **Image Generation & Integration:**
+  - AI-powered image generation using Gemini Flash Image
+  - Strategic image placement based on content analysis
+  - Automatic markdown insertion with captions
+  - Alt text and SEO optimization
+  - Base64 data URL handling
+  - Configurable max images per post
+  
+- ✅ **Prompt Engineering (Medium Article-Based):**
+  - Brainstorm innovative topics
+  - Gather comprehensive information
+  - Create detailed outlines with H2/H3 structure
+  - Write engaging, conversational content
+  - Fact-check claims and statistics
+  - Edit for clarity and coherence
+  - Improve sentence structure and word choice
+  - Suggest strategic image placements
+  - Optimize SEO metadata
+  
+- ✅ **Model Selection:**
+  - Gemini Flash: Fast, efficient (default for most steps)
+  - Gemini Pro: Higher quality reasoning (content & fact-checking)
+  - Gemini Flash Image: Image generation
+  - Configurable per-step model selection
+  
+- ✅ **Scheduled Automation:**
+  - Runs twice daily (12:00 AM and 12:00 PM) by default
+  - Uses pg_cron for reliable scheduling
+  - Customizable schedule via cron expression
+  - Can be disabled via settings
+  
+- ✅ **Manual Trigger:**
+  - "Generate Blog" button in `/admin/blog`
+  - Real-time generation with loading state
+  - Success notification with post details
+  - Immediate draft creation
+  
+- ✅ **Markdown Rendering:**
+  - React Markdown with GitHub Flavored Markdown
+  - Proper heading hierarchy (H1-H3)
+  - Styled lists (ordered and unordered)
+  - Code blocks with syntax highlighting
+  - Blockquotes and links
+  - Responsive images with captions
+  - Dark mode support
+
+- ✅ **Content Topics Rotation (10 Categories):**
   - Health & Wellness
   - Installation & DIY
   - Maintenance & Care

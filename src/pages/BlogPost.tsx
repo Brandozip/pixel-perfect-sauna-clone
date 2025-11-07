@@ -131,19 +131,6 @@ export default function BlogPost() {
       </ReactMarkdown>
     );
   };
-        if (paragraph.includes('\n- ')) {
-          const items = paragraph.split('\n- ').filter(Boolean);
-          return (
-            <ul key={index} className="list-disc list-inside space-y-2 my-4">
-              {items.map((item, i) => <li key={i}>{item}</li>)}
-            </ul>
-          );
-        }
-        
-        // Regular paragraphs
-        return <p key={index} className="mb-4 leading-relaxed">{paragraph}</p>;
-      });
-  };
 
   if (loading) {
     return (
