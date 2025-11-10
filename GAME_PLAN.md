@@ -955,8 +955,17 @@ This document outlines the development roadmap and strategic plan for the Saunas
   - Personal blog posts with byline
   - Workshop/warehouse tour section
 
-## Phase 4: Shopify E-Commerce Integration 🛒
-**Priority: MEDIUM-HIGH - New revenue stream**
+## Step 4: Shopify Integration (Next Priority)
+**Priority: MEDIUM-HIGH - Revenue generation**
+**Status:** 📋 Planned
+
+### Pre-Integration Checklist:
+- ✅ GA4 conversion tracking implemented
+- ✅ Analytics baseline established  
+- ✅ Performance optimizations complete
+- 📋 Product catalog planning needed
+- 📋 Pricing strategy development needed
+- 📋 Shipping/fulfillment planning needed
 
 ### 4A: Shopify Setup & Planning
 📋 **Store Configuration:**
