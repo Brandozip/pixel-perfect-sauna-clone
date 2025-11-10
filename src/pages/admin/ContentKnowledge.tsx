@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/ui/loading-spinner';
-import { RefreshCw, Search, Database, FileText, Settings, TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react';
+import { RefreshCw, Search, Database, FileText, Settings, TrendingUp, AlertTriangle, CheckCircle, ExternalLink, Edit, Link2Off } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -37,12 +38,14 @@ interface BlogContext {
 
 export default function ContentKnowledge() {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [indexing, setIndexing] = useState(false);
   const [siteContent, setSiteContent] = useState<SiteContent[]>([]);
   const [blogContext, setBlogContext] = useState<BlogContext | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('all');
+  const [showOrphanedOnly, setShowOrphanedOnly] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -133,11 +136,33 @@ export default function ContentKnowledge() {
     }
   };
 
+  const handleViewPage = (url: string) => {
+    window.open(url, '_blank');
+  };
+
+  const handleEditBlog = async (url: string) => {
+    // Extract slug from URL
+    const slug = url.replace('/blog/', '');
+    
+    // Fetch the blog post by slug
+    const { data } = await supabase
+      .from('blog_posts')
+      .select('id')
+      .eq('slug', slug)
+      .single();
+    
+    if (data) {
+      navigate(`/admin/blog-editor?id=${data.id}`);
+    }
+  };
+
   const filteredContent = siteContent.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          item.url.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = filterType === 'all' || item.page_type === filterType;
-    return matchesSearch && matchesType;
+    const isOrphaned = !item.related_pages || (Array.isArray(item.related_pages) && item.related_pages.length === 0);
+    const matchesOrphanFilter = !showOrphanedOnly || isOrphaned;
+    return matchesSearch && matchesType && matchesOrphanFilter;
   });
 
   const contentByType = siteContent.reduce((acc, item) => {
@@ -256,6 +281,14 @@ export default function ContentKnowledge() {
                     ))}
                   </SelectContent>
                 </Select>
+                <Button
+                  variant={showOrphanedOnly ? "default" : "outline"}
+                  onClick={() => setShowOrphanedOnly(!showOrphanedOnly)}
+                  className="whitespace-nowrap"
+                >
+                  <Link2Off className="mr-2 h-4 w-4" />
+                  {showOrphanedOnly ? 'Show All' : 'Orphaned Only'}
+                </Button>
               </div>
 
               <div className="border rounded-lg">
@@ -268,29 +301,67 @@ export default function ContentKnowledge() {
                       <TableHead>Keywords</TableHead>
                       <TableHead>Related</TableHead>
                       <TableHead>Last Indexed</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredContent.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell className="font-medium">{item.title}</TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">{item.page_type}</Badge>
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{item.url}</TableCell>
-                        <TableCell className="text-sm">
-                          {item.main_keywords?.slice(0, 3).join(', ') || 'N/A'}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">
-                            {Array.isArray(item.related_pages) ? item.related_pages.length : 0}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {new Date(item.last_indexed_at).toLocaleDateString()}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {filteredContent.map((item) => {
+                      const isOrphaned = !item.related_pages || (Array.isArray(item.related_pages) && item.related_pages.length === 0);
+                      const isBlog = item.page_type === 'blog';
+                      
+                      return (
+                        <TableRow key={item.id} className={isOrphaned ? 'bg-orange-50 dark:bg-orange-950/20' : ''}>
+                          <TableCell className="font-medium">
+                            <div className="flex items-center gap-2">
+                              {item.title}
+                              {isOrphaned && (
+                                <Badge variant="destructive" className="text-xs">
+                                  <Link2Off className="mr-1 h-3 w-3" />
+                                  Orphaned
+                                </Badge>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">{item.page_type}</Badge>
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">{item.url}</TableCell>
+                          <TableCell className="text-sm">
+                            {item.main_keywords?.slice(0, 3).join(', ') || 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={isOrphaned ? "destructive" : "outline"}>
+                              {Array.isArray(item.related_pages) ? item.related_pages.length : 0}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            {new Date(item.last_indexed_at).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleViewPage(item.url)}
+                                title="View page"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                              </Button>
+                              {isBlog && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => handleEditBlog(item.url)}
+                                  title="Edit blog post"
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </div>
@@ -368,6 +439,52 @@ export default function ContentKnowledge() {
         </TabsContent>
 
         <TabsContent value="health" className="space-y-6">
+          {orphanedPages > 0 && (
+            <Card className="border-orange-500">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-orange-500" />
+                  Orphaned Pages Detected
+                </CardTitle>
+                <CardDescription>
+                  {orphanedPages} page{orphanedPages !== 1 ? 's' : ''} {orphanedPages !== 1 ? 'have' : 'has'} no internal links. 
+                  These pages may not be discoverable by users or search engines.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Why this matters:</strong> Pages without internal links are harder for visitors to find and may rank lower in search results. 
+                  They also miss opportunities to guide users through your content.
+                </p>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => setShowOrphanedOnly(true)}
+                    variant="default"
+                  >
+                    View Orphaned Pages
+                  </Button>
+                  <Button 
+                    onClick={handleReindex}
+                    variant="outline"
+                    disabled={indexing}
+                  >
+                    <RefreshCw className={`mr-2 h-4 w-4 ${indexing ? 'animate-spin' : ''}`} />
+                    Re-index to Update Links
+                  </Button>
+                </div>
+                <div className="pt-4 border-t">
+                  <p className="text-sm font-medium mb-2">Quick Fixes:</p>
+                  <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                    <li>Add relevant internal links in your blog posts and pages</li>
+                    <li>Include these pages in your navigation or footer</li>
+                    <li>Reference them in related content</li>
+                    <li>Consider if the page should remain published</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>

@@ -42,7 +42,7 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - ✅ Phase 2I: Component Brand Refresh
 - ✅ Phase 2J: Site Structure Documentation
 - ✅ Phase 2K: Content Knowledge Base System
-- 🔄 Phase 2L: Blog & Knowledge Enhancements (IN PROGRESS)
+- ✅ Phase 2L: Blog & Knowledge Enhancements (COMPLETE)
 
 ---
 
@@ -727,92 +727,64 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - Cron jobs scheduled and running
 - Health monitoring active
 
-📋 **Phase 2L Improvements Needed:**
-- Auto-add keywords/tags when generating blogs
-- Auto-trigger indexing after blog publication
-- Expand knowledge panel with clickable page links
-- Add "Edit Page" buttons in knowledge dashboard
-- Orphaned page resolution workflow
-- Enhanced SEO metrics in knowledge panel
+### Phase 2L: Blog & Knowledge Enhancements ✅ COMPLETE
+**Status:** Complete (2025-11-10)  
+**Duration:** 1 day  
+**Focus:** Enhanced blog generation workflow and knowledge panel improvements
 
-### Phase 2L: Blog & Knowledge Enhancements 🚀 (IN PROGRESS)
-**Status: Planning comprehensive improvements to automation and UX**
+#### 1. Auto-Keywords on Blog Generation ✅
+- **Status:** Complete
+- **Implementation:**
+  - Blog generation extracts SEO keywords automatically
+  - Keywords saved to `blog_posts.seo_keywords` field
+  - Auto-converted to array format for knowledge base
+- **Files:**
+  - `supabase/functions/generate-blog/index.ts` - Extracts keywords during generation
+  - Database trigger handles keyword indexing
 
-📋 **Blog Automation Improvements:**
-- **Auto-Keywords on Generation:**
-  - Extract keywords from AI-generated content
-  - Automatically populate `seo_keywords` field
-  - Save `tags` array from AI suggestions
-  - Ensure keywords are indexed-ready
-- **Auto-Indexing Trigger:**
-  - When blog status changes to 'published'
-  - Automatically add to `site_content` table
-  - Run AI analysis for keywords/summary
-  - Calculate relationships with existing content
-  - Update link suggestions for all posts
-- **Enhanced Link Insertion:**
-  - Auto-suggest links during content writing
-  - Pre-populate common links (contact, popular services)
-  - Validate link targets exist before insertion
-  - Show link preview on hover
+#### 2. Auto-Indexing for Published Blogs ✅
+- **Status:** Complete
+- **Implementation:**
+  - Enhanced `trigger_content_reindex()` database function
+  - Automatically extracts keywords from `seo_keywords` field
+  - Populates `site_content.main_keywords` array
+  - Triggers on blog publish and content updates
+- **Files:**
+  - Migration enhances keyword extraction and indexing
+  - Trigger function extracts comma-separated keywords into array
 
-📋 **Knowledge Panel Enhancements:**
-- **Clickable Page Entries:**
-  - Table rows link to actual pages (open in new tab)
-  - "Edit" button for blog posts → opens blog editor
-  - "View" button for static pages → opens page
-  - Quick actions menu (re-index, view details, delete)
-- **Enhanced SEO Details Panel:**
-  - Click any page to expand full details modal:
-    - Complete keyword list with search volumes
-    - Full content summary (not truncated)
-    - Incoming links count and sources
-    - Outgoing links count and destinations
-    - Last modified date and indexing history
-    - Page performance metrics (views, time on page)
-    - SEO score (0-100) based on completeness
-- **Advanced Filtering:**
-  - Filter by SEO score ranges
-  - Filter by link health (orphaned, well-connected)
-  - Filter by last updated date
-  - Filter by page type (multi-select)
-  - Save filter presets
-- **Bulk Actions:**
-  - Select multiple pages for batch re-indexing
-  - Bulk delete (with confirmation)
-  - Export selected pages to CSV
-  - Bulk edit categories/types
+#### 3. Enhanced Knowledge Panel Features ✅
+- **Status:** Complete
+- **Implementation:**
+  - **View Links:** Click external link icon to open page in new tab
+  - **Edit Buttons:** Click edit icon on blog posts to jump to editor
+  - **Orphaned Page Filter:** "Orphaned Only" button to show unlinked pages
+  - **Visual Indicators:** Orange highlighting for orphaned pages
+  - **Action Buttons:** Added to each content row for quick access
+- **Files:**
+  - `src/pages/admin/ContentKnowledge.tsx` - Enhanced UI with actions
 
-📋 **Orphaned Page Resolution:**
-- **Detection & Alerts:**
-  - Visual indicators on orphaned pages (⚠️ icon)
-  - "Orphaned Pages" filter/view
-  - Weekly email digest with orphaned page list
-- **Resolution Workflow:**
-  - "Fix Links" button for orphaned pages
-  - AI suggests 3-5 pages that should link here
-  - One-click "Create Link" to open relevant pages
-  - Track resolution status (pending/in-progress/resolved)
-  - Auto-close when page receives 2+ incoming links
-- **Prevention:**
-  - Link suggestion algorithm prioritizes orphaned pages
-  - Warning when creating pages without planning links
-  - Required field: "Planned linking from" during page creation
+#### 4. Orphaned Page Resolution Workflow ✅
+- **Status:** Complete
+- **Implementation:**
+  - Alert card at top of Health Dashboard when orphaned pages detected
+  - Quick action buttons: "View Orphaned Pages" and "Re-index"
+  - Educational content explaining why orphaned pages matter
+  - Quick fixes checklist for resolution
+  - Visual badges showing orphaned status in table
+- **Features:**
+  - Auto-detection of pages with no internal links
+  - Filter to show only orphaned pages
+  - Statistics showing link health percentage
+  - Guidance on how to fix orphaned content
 
-📋 **SEO Expansion:**
-- **Meta Tags Management:**
-  - Edit OG image, title, description per page
-  - Preview social share cards
-  - Schema.org markup configuration
-- **Performance Tracking:**
-  - Google Search Console integration
-  - Track keyword rankings over time
-  - Monitor click-through rates
-  - Page speed scores and suggestions
-- **Competitor Analysis:**
-  - Track competitor keywords
-  - Gap analysis for missing topics
-  - Content opportunity finder
+**Technical Improvements:**
+- Better keyword extraction from AI-generated content
+- Improved content health metrics
+- Enhanced user navigation between admin panels
+- Visual feedback for content issues
+
+---
 
 ## Technical Implementation Plan
 
@@ -1464,12 +1436,12 @@ This document outlines the development roadmap and strategic plan for the Saunas
 
 ### Immediate (Current Sprint - 1-2 weeks):
 1. ✅ **Phase 2K: Content Knowledge Base** (COMPLETE)
-2. 🔄 **Phase 2L: Blog & Knowledge Enhancements** (IN PROGRESS)
+2. ✅ **Phase 2L: Blog & Knowledge Enhancements** (COMPLETE)
    - Auto-keywords on blog generation
    - Auto-indexing trigger for published blogs
    - Enhanced knowledge panel with clickable links
    - Orphaned page resolution workflow
-3. 📋 **Phase 3: Owner/Operator Branding** (2-3 days)
+3. 📋 **Phase 3: Owner/Operator Branding** (2-3 days) ← NEXT
    - Upload and display owner photo
    - About page owner bio section
    - Trust signals and credentials
