@@ -1,48 +1,52 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import Services from "./pages/Services";
-import HealthBenefits from "./pages/HealthBenefits";
-import Gallery from "./pages/Gallery";
-import About from "./pages/About";
-import FAQ from "./pages/FAQ";
-import Contact from "./pages/Contact";
-import CustomSaunaDesign from "./pages/services/CustomSaunaDesign";
-import SteamShowerInstallation from "./pages/services/SteamShowerInstallation";
-import ResidentialSaunaBuilds from "./pages/services/ResidentialSaunaBuilds";
-import OutdoorSaunaKits from "./pages/services/OutdoorSaunaKits";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsOfService from "./pages/TermsOfService";
-import AntiAging from "./pages/health-benefits/AntiAging";
-import Cardiovascular from "./pages/health-benefits/Cardiovascular";
-import ChronicPainRelief from "./pages/health-benefits/ChronicPainRelief";
-import Detoxification from "./pages/health-benefits/Detoxification";
-import ImmuneSystem from "./pages/health-benefits/ImmuneSystem";
-import MentalHealth from "./pages/health-benefits/MentalHealth";
-import MuscleRecovery from "./pages/health-benefits/MuscleRecovery";
-import CommercialProjects from "./pages/CommercialProjects";
-import IndoorInfraredSauna from "./pages/services/IndoorInfraredSauna";
-import CustomSaunaInstallation from "./pages/services/CustomSaunaInstallation";
-import OutdoorSaunaLanding from "./pages/OutdoorSaunaLanding";
-import FastTrackLanding from "./pages/FastTrackLanding";
-import CostCalculator from "./pages/CostCalculator";
-import NotFound from "./pages/NotFound";
-import AdminLogin from "./pages/admin/Login";
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminNewsletters from "./pages/admin/Newsletters";
-import AdminSubmissions from "./pages/admin/Submissions";
-import AdminGallery from "./pages/admin/Gallery";
-import AdminReviews from "./pages/admin/Reviews";
-import AdminAnalytics from "./pages/admin/Analytics";
-import AdminBlogPosts from "./pages/admin/BlogPosts";
-import AdminBlogEditor from "./pages/admin/BlogEditor";
-import AdminBlogGeneratorSettings from "./pages/admin/BlogGeneratorSettings";
-import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
+import { PageSkeleton } from "@/components/ui/page-skeleton";
+
+// Lazy load all pages for code splitting
+const Index = lazy(() => import("./pages/Index"));
+const Services = lazy(() => import("./pages/Services"));
+const HealthBenefits = lazy(() => import("./pages/HealthBenefits"));
+const Gallery = lazy(() => import("./pages/Gallery"));
+const About = lazy(() => import("./pages/About"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+const Contact = lazy(() => import("./pages/Contact"));
+const CustomSaunaDesign = lazy(() => import("./pages/services/CustomSaunaDesign"));
+const SteamShowerInstallation = lazy(() => import("./pages/services/SteamShowerInstallation"));
+const ResidentialSaunaBuilds = lazy(() => import("./pages/services/ResidentialSaunaBuilds"));
+const OutdoorSaunaKits = lazy(() => import("./pages/services/OutdoorSaunaKits"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const AntiAging = lazy(() => import("./pages/health-benefits/AntiAging"));
+const Cardiovascular = lazy(() => import("./pages/health-benefits/Cardiovascular"));
+const ChronicPainRelief = lazy(() => import("./pages/health-benefits/ChronicPainRelief"));
+const Detoxification = lazy(() => import("./pages/health-benefits/Detoxification"));
+const ImmuneSystem = lazy(() => import("./pages/health-benefits/ImmuneSystem"));
+const MentalHealth = lazy(() => import("./pages/health-benefits/MentalHealth"));
+const MuscleRecovery = lazy(() => import("./pages/health-benefits/MuscleRecovery"));
+const CommercialProjects = lazy(() => import("./pages/CommercialProjects"));
+const IndoorInfraredSauna = lazy(() => import("./pages/services/IndoorInfraredSauna"));
+const CustomSaunaInstallation = lazy(() => import("./pages/services/CustomSaunaInstallation"));
+const OutdoorSaunaLanding = lazy(() => import("./pages/OutdoorSaunaLanding"));
+const FastTrackLanding = lazy(() => import("./pages/FastTrackLanding"));
+const CostCalculator = lazy(() => import("./pages/CostCalculator"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const AdminLogin = lazy(() => import("./pages/admin/Login"));
+const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
+const AdminNewsletters = lazy(() => import("./pages/admin/Newsletters"));
+const AdminSubmissions = lazy(() => import("./pages/admin/Submissions"));
+const AdminGallery = lazy(() => import("./pages/admin/Gallery"));
+const AdminReviews = lazy(() => import("./pages/admin/Reviews"));
+const AdminAnalytics = lazy(() => import("./pages/admin/Analytics"));
+const AdminBlogPosts = lazy(() => import("./pages/admin/BlogPosts"));
+const AdminBlogEditor = lazy(() => import("./pages/admin/BlogEditor"));
+const AdminBlogGeneratorSettings = lazy(() => import("./pages/admin/BlogGeneratorSettings"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
+
 import { AdminAuthProvider } from "./hooks/useAdminAuth";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { AdminLayout } from "./components/admin/AdminLayout";
@@ -57,131 +61,149 @@ const App = () => (
       <BrowserRouter>
         <AdminAuthProvider>
           <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/services/custom-sauna-design" element={<CustomSaunaDesign />} />
-          <Route path="/services/steam-shower-installation" element={<SteamShowerInstallation />} />
-          <Route path="/services/residential-sauna-builds" element={<ResidentialSaunaBuilds />} />
-          <Route path="/services/outdoor-sauna-kits" element={<OutdoorSaunaKits />} />
-          <Route path="/services/indoor-infrared-sauna" element={<IndoorInfraredSauna />} />
-          <Route path="/services/custom-sauna-installation" element={<CustomSaunaInstallation />} />
-          <Route path="/health-benefits" element={<HealthBenefits />} />
-          <Route path="/health-benefits/anti-aging" element={<AntiAging />} />
-          <Route path="/health-benefits/cardiovascular" element={<Cardiovascular />} />
-          <Route path="/health-benefits/chronic-pain-relief" element={<ChronicPainRelief />} />
-          <Route path="/health-benefits/detoxification" element={<Detoxification />} />
-          <Route path="/health-benefits/immune-system" element={<ImmuneSystem />} />
-          <Route path="/health-benefits/mental-health" element={<MentalHealth />} />
-          <Route path="/health-benefits/muscle-recovery" element={<MuscleRecovery />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/commercial-projects" element={<CommercialProjects />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route path="/outdoor-sauna-landing" element={<OutdoorSaunaLanding />} />
-          <Route path="/fast-track" element={<FastTrackLanding />} />
-          <Route path="/cost-calculator" element={<CostCalculator />} />
+          <Route path="/" element={<Suspense fallback={<PageSkeleton />}><Index /></Suspense>} />
+          <Route path="/services" element={<Suspense fallback={<PageSkeleton />}><Services /></Suspense>} />
+          <Route path="/services/custom-sauna-design" element={<Suspense fallback={<PageSkeleton />}><CustomSaunaDesign /></Suspense>} />
+          <Route path="/services/steam-shower-installation" element={<Suspense fallback={<PageSkeleton />}><SteamShowerInstallation /></Suspense>} />
+          <Route path="/services/residential-sauna-builds" element={<Suspense fallback={<PageSkeleton />}><ResidentialSaunaBuilds /></Suspense>} />
+          <Route path="/services/outdoor-sauna-kits" element={<Suspense fallback={<PageSkeleton />}><OutdoorSaunaKits /></Suspense>} />
+          <Route path="/services/indoor-infrared-sauna" element={<Suspense fallback={<PageSkeleton />}><IndoorInfraredSauna /></Suspense>} />
+          <Route path="/services/custom-sauna-installation" element={<Suspense fallback={<PageSkeleton />}><CustomSaunaInstallation /></Suspense>} />
+          <Route path="/health-benefits" element={<Suspense fallback={<PageSkeleton />}><HealthBenefits /></Suspense>} />
+          <Route path="/health-benefits/anti-aging" element={<Suspense fallback={<PageSkeleton />}><AntiAging /></Suspense>} />
+          <Route path="/health-benefits/cardiovascular" element={<Suspense fallback={<PageSkeleton />}><Cardiovascular /></Suspense>} />
+          <Route path="/health-benefits/chronic-pain-relief" element={<Suspense fallback={<PageSkeleton />}><ChronicPainRelief /></Suspense>} />
+          <Route path="/health-benefits/detoxification" element={<Suspense fallback={<PageSkeleton />}><Detoxification /></Suspense>} />
+          <Route path="/health-benefits/immune-system" element={<Suspense fallback={<PageSkeleton />}><ImmuneSystem /></Suspense>} />
+          <Route path="/health-benefits/mental-health" element={<Suspense fallback={<PageSkeleton />}><MentalHealth /></Suspense>} />
+          <Route path="/health-benefits/muscle-recovery" element={<Suspense fallback={<PageSkeleton />}><MuscleRecovery /></Suspense>} />
+          <Route path="/gallery" element={<Suspense fallback={<PageSkeleton />}><Gallery /></Suspense>} />
+          <Route path="/about" element={<Suspense fallback={<PageSkeleton />}><About /></Suspense>} />
+          <Route path="/faq" element={<Suspense fallback={<PageSkeleton />}><FAQ /></Suspense>} />
+          <Route path="/contact" element={<Suspense fallback={<PageSkeleton />}><Contact /></Suspense>} />
+          <Route path="/commercial-projects" element={<Suspense fallback={<PageSkeleton />}><CommercialProjects /></Suspense>} />
+          <Route path="/privacy-policy" element={<Suspense fallback={<PageSkeleton />}><PrivacyPolicy /></Suspense>} />
+          <Route path="/terms-of-service" element={<Suspense fallback={<PageSkeleton />}><TermsOfService /></Suspense>} />
+          <Route path="/outdoor-sauna-landing" element={<Suspense fallback={<PageSkeleton />}><OutdoorSaunaLanding /></Suspense>} />
+          <Route path="/fast-track" element={<Suspense fallback={<PageSkeleton />}><FastTrackLanding /></Suspense>} />
+          <Route path="/cost-calculator" element={<Suspense fallback={<PageSkeleton />}><CostCalculator /></Suspense>} />
           
           {/* Blog Routes */}
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/blog" element={<Suspense fallback={<PageSkeleton />}><Blog /></Suspense>} />
+          <Route path="/blog/:slug" element={<Suspense fallback={<PageSkeleton />}><BlogPost /></Suspense>} />
           
           {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/login" element={<Suspense fallback={<PageSkeleton />}><AdminLogin /></Suspense>} />
           <Route 
             path="/admin/dashboard" 
             element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <AdminDashboard />
-                </AdminLayout>
-              </ProtectedRoute>
+              <Suspense fallback={<PageSkeleton />}>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminDashboard />
+                  </AdminLayout>
+                </ProtectedRoute>
+              </Suspense>
             } 
           />
           <Route 
             path="/admin/newsletters" 
             element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <AdminNewsletters />
-                </AdminLayout>
-              </ProtectedRoute>
+              <Suspense fallback={<PageSkeleton />}>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminNewsletters />
+                  </AdminLayout>
+                </ProtectedRoute>
+              </Suspense>
             } 
           />
           <Route 
             path="/admin/submissions" 
             element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <AdminSubmissions />
-                </AdminLayout>
-              </ProtectedRoute>
+              <Suspense fallback={<PageSkeleton />}>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminSubmissions />
+                  </AdminLayout>
+                </ProtectedRoute>
+              </Suspense>
             } 
           />
           <Route 
             path="/admin/gallery" 
             element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <AdminGallery />
-                </AdminLayout>
-              </ProtectedRoute>
+              <Suspense fallback={<PageSkeleton />}>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminGallery />
+                  </AdminLayout>
+                </ProtectedRoute>
+              </Suspense>
             } 
           />
           <Route 
             path="/admin/reviews" 
             element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <AdminReviews />
-                </AdminLayout>
-              </ProtectedRoute>
+              <Suspense fallback={<PageSkeleton />}>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminReviews />
+                  </AdminLayout>
+                </ProtectedRoute>
+              </Suspense>
             } 
           />
           <Route 
             path="/admin/analytics" 
             element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <AdminAnalytics />
-                </AdminLayout>
-              </ProtectedRoute>
+              <Suspense fallback={<PageSkeleton />}>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminAnalytics />
+                  </AdminLayout>
+                </ProtectedRoute>
+              </Suspense>
             } 
           />
           <Route 
             path="/admin/blog" 
             element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <AdminBlogPosts />
-                </AdminLayout>
-              </ProtectedRoute>
+              <Suspense fallback={<PageSkeleton />}>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminBlogPosts />
+                  </AdminLayout>
+                </ProtectedRoute>
+              </Suspense>
             } 
           />
           <Route 
             path="/admin/blog/:id" 
             element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <AdminBlogEditor />
-                </AdminLayout>
-              </ProtectedRoute>
+              <Suspense fallback={<PageSkeleton />}>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminBlogEditor />
+                  </AdminLayout>
+                </ProtectedRoute>
+              </Suspense>
             } 
           />
           <Route 
             path="/admin/blog-generator" 
             element={
-              <ProtectedRoute>
-                <AdminLayout>
-                  <AdminBlogGeneratorSettings />
-                </AdminLayout>
-              </ProtectedRoute>
+              <Suspense fallback={<PageSkeleton />}>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminBlogGeneratorSettings />
+                  </AdminLayout>
+                </ProtectedRoute>
+              </Suspense>
             } 
           />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<Suspense fallback={<PageSkeleton />}><NotFound /></Suspense>} />
           </Routes>
         </AdminAuthProvider>
       </BrowserRouter>
