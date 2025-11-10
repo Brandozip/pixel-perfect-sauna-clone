@@ -49,10 +49,12 @@ const AdminContentKnowledge = lazy(() => import("./pages/admin/ContentKnowledge"
 const AdminOwnerProfile = lazy(() => import("./pages/admin/OwnerProfile"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+const Install = lazy(() => import("./pages/Install"));
 
 import { AdminAuthProvider } from "./hooks/useAdminAuth";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { AdminLayout } from "./components/admin/AdminLayout";
+import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +65,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <PageViewTracker />
+        <PWAInstallPrompt />
         <AdminAuthProvider>
           <Routes>
           <Route path="/" element={<Suspense fallback={<PageSkeleton />}><Index /></Suspense>} />
@@ -95,6 +98,9 @@ const App = () => (
           {/* Blog Routes */}
           <Route path="/blog" element={<Suspense fallback={<PageSkeleton />}><Blog /></Suspense>} />
           <Route path="/blog/:slug" element={<Suspense fallback={<PageSkeleton />}><BlogPost /></Suspense>} />
+          
+          {/* PWA Install Page */}
+          <Route path="/install" element={<Suspense fallback={<PageSkeleton />}><Install /></Suspense>} />
           
           {/* Admin Routes */}
           <Route path="/admin/login" element={<Suspense fallback={<PageSkeleton />}><AdminLogin /></Suspense>} />
