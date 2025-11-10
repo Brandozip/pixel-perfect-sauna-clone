@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { PageViewTracker } from "@/components/PageViewTracker";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 
 // Lazy load all pages for code splitting
@@ -61,6 +62,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <PageViewTracker />
         <AdminAuthProvider>
           <Routes>
           <Route path="/" element={<Suspense fallback={<PageSkeleton />}><Index /></Suspense>} />
