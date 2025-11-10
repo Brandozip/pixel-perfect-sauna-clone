@@ -7,9 +7,9 @@ import { ThemeProvider } from "next-themes";
 import { SocialMetaTags, galleryPageMeta } from "@/components/seo/SocialMetaTags";
 import { ImageObjectSchema } from "@/components/seo/ImageObjectSchema";
 import { supabase } from '@/integrations/supabase/client';
-import LoadingSpinner from '@/components/ui/loading-spinner';
 import { Link } from 'react-router-dom';
 import { LazyImage } from '@/components/ui/lazy-image';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface GalleryImage {
   id: string;
@@ -57,15 +57,6 @@ const Gallery = () => {
     ? images 
     : images.filter(img => img.category === selectedCategory);
 
-  if (loading) {
-    return (
-      <ThemeProvider attribute="class" defaultTheme="light">
-        <div className="min-h-screen flex items-center justify-center">
-          <LoadingSpinner size="lg" />
-        </div>
-      </ThemeProvider>
-    );
-  }
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
       <SocialMetaTags {...galleryPageMeta} />
@@ -107,7 +98,21 @@ const Gallery = () => {
               ))}
             </div>
             
-            {filteredImages.length > 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {Array.from({ length: 6 }).map((_, idx) => (
+                  <Card key={idx} className="overflow-hidden">
+                    <Skeleton className="aspect-[4/3] w-full rounded-none" />
+                    <div className="p-6 space-y-3">
+                      <Skeleton className="h-6 w-24" />
+                      <Skeleton className="h-6 w-full" />
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-16 w-full" />
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            ) : filteredImages.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredImages.map((image) => (
                   <Card key={image.id} className="overflow-hidden group hover:shadow-xl transition-shadow">

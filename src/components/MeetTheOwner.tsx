@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Award, Phone, Mail, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LazyImage } from '@/components/ui/lazy-image';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function MeetTheOwner() {
   const [profile, setProfile] = useState<any>(null);
@@ -31,12 +32,34 @@ export function MeetTheOwner() {
     }
   };
 
-  if (loading || !profile) return null;
+  if (!loading && !profile) return null;
 
   return (
     <section className="py-20 bg-secondary/30">
       <div className="container">
-        <Card className="overflow-hidden">
+        {loading ? (
+          <Card className="overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-8">
+              <Skeleton className="h-96 md:h-full rounded-none" />
+              <div className="p-8 md:p-12 flex flex-col justify-center space-y-4">
+                <Skeleton className="h-10 w-48" />
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-20 w-full" />
+                <Skeleton className="h-6 w-40" />
+                <Skeleton className="h-6 w-36" />
+                <div className="flex gap-2">
+                  <Skeleton className="h-6 w-24" />
+                  <Skeleton className="h-6 w-24" />
+                </div>
+                <div className="flex gap-3">
+                  <Skeleton className="h-10 w-40" />
+                  <Skeleton className="h-10 w-40" />
+                </div>
+              </div>
+            </div>
+          </Card>
+        ) : (
+          <Card className="overflow-hidden">
           <div className="grid md:grid-cols-2 gap-8">
             {/* Photo Section */}
             <div className="relative h-96 md:h-auto">
@@ -118,6 +141,7 @@ export function MeetTheOwner() {
             </div>
           </div>
         </Card>
+        )}
       </div>
     </section>
   );

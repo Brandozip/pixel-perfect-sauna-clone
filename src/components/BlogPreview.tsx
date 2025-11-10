@@ -7,6 +7,7 @@ import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { LazyImage } from '@/components/ui/lazy-image';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface BlogPost {
   id: string;
@@ -21,6 +22,7 @@ interface BlogPost {
 
 export const BlogPreview = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,10 +42,12 @@ export const BlogPreview = () => {
       if (data) setPosts(data);
     } catch (error) {
       console.error('Error fetching posts:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (posts.length === 0) return null;
+  if (!loading && posts.length === 0) return null;
 
   return (
     <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-primary/5">
@@ -56,44 +60,63 @@ export const BlogPreview = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          {posts.map((post) => (
-            <Card 
-              key={post.id} 
-              className="overflow-hidden hover:shadow-elevated transition-all cursor-pointer border-border flex flex-col"
-              onClick={() => navigate(`/blog/${post.slug}`)}
-            >
-              {post.featured_image_url && (
-                <LazyImage
-                  src={post.featured_image_url}
-                  alt={post.title}
-                  wrapperClassName="h-48"
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  aspectRatio="4/3"
-                />
-              )}
-              <CardContent className="p-6 flex-1 flex flex-col">
-                {post.category && (
-                  <Badge variant="secondary" className="mb-3 w-fit">{post.category}</Badge>
-                )}
-                <h3 className="heading-4 mb-2 line-clamp-2">{post.title}</h3>
-                {post.excerpt && (
-                  <p className="body-md text-muted-foreground mb-4 line-clamp-3 flex-1">{post.excerpt}</p>
-                )}
-                <div className="flex flex-wrap gap-3 text-sm text-muted-foreground pt-4 border-t border-border mt-auto">
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    {format(new Date(post.published_at), 'MMM dd, yyyy')}
+          {loading ? (
+            // Skeleton loaders
+            Array.from({ length: 3 }).map((_, idx) => (
+              <Card key={idx} className="overflow-hidden border-border">
+                <Skeleton className="h-48 w-full rounded-none" />
+                <CardContent className="p-6">
+                  <Skeleton className="h-6 w-20 mb-3" />
+                  <Skeleton className="h-6 w-full mb-2" />
+                  <Skeleton className="h-6 w-3/4 mb-4" />
+                  <Skeleton className="h-16 w-full mb-4" />
+                  <div className="flex gap-3 pt-4 border-t border-border">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-4 w-16" />
                   </div>
-                  {post.reading_time_minutes && (
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {post.reading_time_minutes} min
-                    </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            posts.map((post) => (
+              <Card 
+                key={post.id} 
+                className="overflow-hidden hover:shadow-elevated transition-all cursor-pointer border-border flex flex-col"
+                onClick={() => navigate(`/blog/${post.slug}`)}
+              >
+                {post.featured_image_url && (
+                  <LazyImage
+                    src={post.featured_image_url}
+                    alt={post.title}
+                    wrapperClassName="h-48"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    aspectRatio="4/3"
+                  />
+                )}
+                <CardContent className="p-6 flex-1 flex flex-col">
+                  {post.category && (
+                    <Badge variant="secondary" className="mb-3 w-fit">{post.category}</Badge>
                   )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  <h3 className="heading-4 mb-2 line-clamp-2">{post.title}</h3>
+                  {post.excerpt && (
+                    <p className="body-md text-muted-foreground mb-4 line-clamp-3 flex-1">{post.excerpt}</p>
+                  )}
+                  <div className="flex flex-wrap gap-3 text-sm text-muted-foreground pt-4 border-t border-border mt-auto">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      {format(new Date(post.published_at), 'MMM dd, yyyy')}
+                    </div>
+                    {post.reading_time_minutes && (
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {post.reading_time_minutes} min
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
 
         <div className="text-center">

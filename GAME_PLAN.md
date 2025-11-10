@@ -836,10 +836,13 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - Maintained instant display for above-the-fold content (Hero, Services)
 
 ✅ **Image Optimization:**
-- Added `loading="lazy"` attribute to all images site-wide
-- Lazy loading on: Services cards, testimonial avatars, gallery images, blog post images, owner profile photo
-- Images only load when entering viewport (browser-native)
+- Created LazyImage component with blur-up effect and IntersectionObserver
+- Applied LazyImage to: Services, Testimonials, WhyChooseUs, Gallery, BlogPreview, MeetTheOwner
+- Added skeleton loaders for text content during loading states (BlogPreview, MeetTheOwner, Gallery)
+- Images only load when entering viewport with smooth fade-in transition
+- Blur placeholder displayed while images load
 - Reduced initial page load weight by 60-80%
+- Improved perceived performance with loading states
 
 ✅ **Resource Preloading & Preconnect:**
 - Preload critical hero image with `fetchpriority="high"`
