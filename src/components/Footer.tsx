@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Home, Info, Wrench, Image, HelpCircle, MessageCircle, Heart } from "lucide-react";
 import NewsletterSignup from '@/components/marketing/NewsletterSignup';
 import { Logo } from './branding/Logo';
+import { trackPhoneClick, trackEmailClick } from '@/utils/analytics';
 
 export const Footer = () => {
   const year = new Date().getFullYear();
@@ -80,13 +81,21 @@ export const Footer = () => {
               </li>
               <li className="flex items-start gap-2">
                 <Phone className="h-5 w-5 mt-0.5 flex-shrink-0 text-primary" />
-                <a href="tel:+16782459966" className="text-background/90 hover:text-primary transition-colors">
+                <a 
+                  href="tel:+16782459966" 
+                  className="text-background/90 hover:text-primary transition-colors"
+                  onClick={trackPhoneClick}
+                >
                   678-245-9966
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <Mail className="h-5 w-5 mt-0.5 flex-shrink-0 text-primary" />
-                <a href="mailto:contact@saunasplus.com" className="text-background/90 hover:text-primary transition-colors">
+                <a 
+                  href="mailto:contact@saunasplus.com" 
+                  className="text-background/90 hover:text-primary transition-colors"
+                  onClick={trackEmailClick}
+                >
                   contact@saunasplus.com
                 </a>
               </li>

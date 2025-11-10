@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
+import { trackFormSubmission } from '@/utils/analytics';
 
 interface ContactFormData {
   name: string;
@@ -21,11 +22,23 @@ export function useContactForm() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const hasStartedForm = useRef(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+    
+    // Track form start on first interaction
+    if (!hasStartedForm.current) {
+      hasStartedForm.current = true;
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'form_start', {
+          form_name: 'contact_form',
+        });
+      }
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -40,6 +53,7 @@ export function useContactForm() {
       service_interested_in: '',
       message: ''
     });
+    hasStartedForm.current = false;
   };
 
   const contactSchema = z.object({
@@ -113,6 +127,9 @@ export function useContactForm() {
         title: 'Message Sent!',
         description: "Thank you for contacting us. We'll get back to you soon!",
       });
+      
+      // Track successful form submission
+      trackFormSubmission('contact_form');
       
       resetForm();
       return true;

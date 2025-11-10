@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { trackButtonClick } from "@/utils/analytics";
 
 export const CTASection = () => {
   return (
@@ -13,12 +14,21 @@ export const CTASection = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/contact">
-              <Button size="lg" className="bg-primary hover:bg-primary-emphasis text-primary-foreground text-lg px-8 py-6 shadow-elevated">
+              <Button 
+                size="lg" 
+                className="bg-primary hover:bg-primary-emphasis text-primary-foreground text-lg px-8 py-6 shadow-elevated"
+                onClick={() => trackButtonClick('Get Free Consultation', 'CTA Section')}
+              >
                 Get Free Consultation
               </Button>
             </Link>
             <Link to="/gallery">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-2">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="text-lg px-8 py-6 border-2"
+                onClick={() => trackButtonClick('View Our Projects', 'CTA Section')}
+              >
                 View Our Projects
               </Button>
             </Link>

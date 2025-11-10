@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
+import { trackFormSubmission } from '@/utils/analytics';
 
 export function useNewsletterSignup() {
   const [email, setEmail] = useState('');
@@ -54,6 +55,10 @@ export function useNewsletterSignup() {
           title: 'Success!',
           description: 'Successfully subscribed to newsletter!',
         });
+        
+        // Track newsletter signup
+        trackFormSubmission('newsletter_signup');
+        
         setEmail('');
         return true;
       }

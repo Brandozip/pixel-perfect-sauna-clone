@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { trackButtonClick } from "@/utils/analytics";
 
 export const Hero = () => {
   return (
@@ -20,12 +21,21 @@ export const Hero = () => {
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           <Link to="/contact">
-            <Button size="lg" className="bg-primary hover:bg-primary-emphasis text-primary-foreground text-lg px-8 py-6 shadow-elevated">
+            <Button 
+              size="lg" 
+              className="bg-primary hover:bg-primary-emphasis text-primary-foreground text-lg px-8 py-6 shadow-elevated"
+              onClick={() => trackButtonClick('Free Consultation', 'Hero')}
+            >
               Free Consultation
             </Button>
           </Link>
           <Link to="/gallery">
-            <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/30 text-lg px-8 py-6 backdrop-blur-sm">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="bg-white/10 hover:bg-white/20 text-white border-white/30 text-lg px-8 py-6 backdrop-blur-sm"
+              onClick={() => trackButtonClick('Explore Our Work', 'Hero')}
+            >
               Explore Our Work
             </Button>
           </Link>
