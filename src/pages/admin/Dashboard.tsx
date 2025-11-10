@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, FileText, Image, PenSquare, BarChart3, Star, Users, Eye, TrendingUp, Activity } from 'lucide-react';
+import { Mail, FileText, Image, PenSquare, BarChart3, Star, Users, Eye, TrendingUp, Activity, Database } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 
 interface DashboardStats {
@@ -13,6 +13,8 @@ interface DashboardStats {
   reviews: number;
   avgRating: string;
   pendingReviews: number;
+  indexedPages: number;
+  pageTypes: number;
 }
 
 export default function AdminDashboard() {
@@ -27,11 +29,12 @@ export default function AdminDashboard() {
     try {
       setLoading(true);
       
-      const [subscribersRes, submissionsRes, imagesRes, reviewsRes] = await Promise.all([
+      const [subscribersRes, submissionsRes, imagesRes, reviewsRes, contentRes] = await Promise.all([
         supabase.from('newsletter_subscribers').select('*', { count: 'exact', head: true }),
         supabase.from('contacts').select('*', { count: 'exact', head: true }),
         supabase.from('gallery_images').select('*', { count: 'exact', head: true }),
-        supabase.from('reviews').select('*', { count: 'exact', head: true })
+        supabase.from('reviews').select('*', { count: 'exact', head: true }),
+        supabase.from('site_content').select('page_type')
       ]);
 
       const allReviews = await supabase.from('reviews').select('rating');
@@ -42,6 +45,8 @@ export default function AdminDashboard() {
       const pendingReviewsRes = await supabase.from('reviews').select('*', { count: 'exact', head: true }).eq('status', 'pending');
       const newSubmissionsRes = await supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('status', 'new');
 
+      const pageTypes = contentRes.data ? new Set(contentRes.data.map(c => c.page_type)).size : 0;
+
       setStats({
         subscribers: subscribersRes.count || 0,
         submissions: submissionsRes.count || 0,
@@ -49,7 +54,9 @@ export default function AdminDashboard() {
         images: imagesRes.count || 0,
         reviews: reviewsRes.count || 0,
         avgRating,
-        pendingReviews: pendingReviewsRes.count || 0
+        pendingReviews: pendingReviewsRes.count || 0,
+        indexedPages: contentRes.data?.length || 0,
+        pageTypes
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -245,6 +252,27 @@ export default function AdminDashboard() {
             <CardContent>
               <Button variant="outline" className="w-full">
                 Manage Blog
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Content Knowledge Base */}
+          <Card 
+            className="hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => window.location.href = '/admin/content-knowledge'}
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <Database className="w-8 h-8 text-primary" />
+              </div>
+              <CardTitle className="mt-4">Content Knowledge</CardTitle>
+              <CardDescription>
+                {stats ? `${stats.indexedPages} indexed pages across ${stats.pageTypes} types` : 'Manage content indexing and context'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full">
+                View Knowledge Base
               </Button>
             </CardContent>
           </Card>

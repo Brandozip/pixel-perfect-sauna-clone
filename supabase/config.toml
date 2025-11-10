@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.index-site-content]
 verify_jwt = false
+
+[functions.monitor-content-health]
+verify_jwt = false

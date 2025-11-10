@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import { ArrowLeft, Save, Eye } from 'lucide-react';
+import { LinkSuggestions } from '@/components/admin/LinkSuggestions';
+import { LinkQualityIndicator } from '@/components/admin/LinkQualityIndicator';
 
 export default function BlogEditor() {
   const { id } = useParams();
@@ -19,6 +21,7 @@ export default function BlogEditor() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -132,6 +135,36 @@ export default function BlogEditor() {
     }
   };
 
+  const handleInsertLink = (url: string, text: string) => {
+    const textarea = contentRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = formData.content.substring(start, end);
+    const linkText = selectedText || text;
+    const linkMarkdown = `[${linkText}](${url})`;
+
+    const newContent = 
+      formData.content.substring(0, start) +
+      linkMarkdown +
+      formData.content.substring(end);
+
+    setFormData({ ...formData, content: newContent });
+
+    // Focus back on textarea
+    setTimeout(() => {
+      textarea.focus();
+      const newCursorPos = start + linkMarkdown.length;
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
+
+    toast({
+      title: 'Link Inserted',
+      description: `Added link to ${text}`
+    });
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -141,7 +174,7 @@ export default function BlogEditor() {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-5xl">
+    <div className="container mx-auto p-6 max-w-7xl">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" onClick={() => navigate('/admin/blog')}>
@@ -163,14 +196,16 @@ export default function BlogEditor() {
         </div>
       </div>
 
-      <Tabs defaultValue="content" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="content">Content</TabsTrigger>
-          <TabsTrigger value="seo">SEO & Metadata</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <Tabs defaultValue="content" className="space-y-6">
+            <TabsList>
+              <TabsTrigger value="content">Content</TabsTrigger>
+              <TabsTrigger value="seo">SEO & Metadata</TabsTrigger>
+              <TabsTrigger value="settings">Settings</TabsTrigger>
+            </TabsList>
 
-        <TabsContent value="content" className="space-y-6">
+            <TabsContent value="content" className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Basic Information</CardTitle>
@@ -210,6 +245,7 @@ export default function BlogEditor() {
               <div>
                 <Label htmlFor="content">Content * (Markdown supported)</Label>
                 <Textarea
+                  ref={contentRef}
                   id="content"
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
@@ -363,6 +399,19 @@ export default function BlogEditor() {
           </Card>
         </TabsContent>
       </Tabs>
+        </div>
+
+        {/* Sidebar with suggestions */}
+        <div className="space-y-6">
+          <LinkQualityIndicator content={formData.content} />
+          <LinkSuggestions
+            title={formData.title}
+            category={formData.category}
+            content={formData.content}
+            onInsertLink={handleInsertLink}
+          />
+        </div>
+      </div>
     </div>
   );
 }
