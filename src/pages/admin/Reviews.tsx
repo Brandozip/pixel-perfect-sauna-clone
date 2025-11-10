@@ -133,7 +133,6 @@ const Reviews = () => {
       setCreateDialogOpen(false);
       fetchReviews();
     } catch (error) {
-      console.error('Create failed:', error);
       toast({
         title: 'Error',
         description: 'Failed to create review',
@@ -183,7 +182,6 @@ const Reviews = () => {
       setEditDialogOpen(false);
       fetchReviews();
     } catch (error) {
-      console.error('Update failed:', error);
       toast({
         title: 'Error',
         description: 'Failed to update review',
@@ -211,7 +209,6 @@ const Reviews = () => {
 
       fetchReviews();
     } catch (error) {
-      console.error('Approval failed:', error);
       toast({
         title: 'Error',
         description: 'Failed to approve review',
@@ -236,7 +233,6 @@ const Reviews = () => {
 
       fetchReviews();
     } catch (error) {
-      console.error('Rejection failed:', error);
       toast({
         title: 'Error',
         description: 'Failed to reject review',
@@ -270,7 +266,6 @@ const Reviews = () => {
       setReviewToDelete(null);
       fetchReviews();
     } catch (error) {
-      console.error('Delete failed:', error);
       toast({
         title: 'Error',
         description: 'Failed to delete review',

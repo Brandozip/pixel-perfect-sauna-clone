@@ -99,7 +99,7 @@ export default function BlogPost() {
           url: window.location.href
         });
       } catch (err) {
-        console.log('Share failed:', err);
+        // Share cancelled or failed silently
       }
     }
   };

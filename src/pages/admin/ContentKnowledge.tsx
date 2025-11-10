@@ -92,7 +92,6 @@ export default function ContentKnowledge() {
       
       await fetchData();
     } catch (error) {
-      console.error('Error re-indexing:', error);
       toast({
         title: 'Error',
         description: 'Failed to re-index site content',
@@ -127,7 +126,6 @@ export default function ContentKnowledge() {
         description: 'Blog writing context updated successfully'
       });
     } catch (error) {
-      console.error('Error saving context:', error);
       toast({
         title: 'Error',
         description: 'Failed to save blog writing context',

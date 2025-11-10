@@ -33,14 +33,10 @@ export function useNewsletterSignup() {
     setIsLoading(true);
 
     try {
-      console.log('Attempting to insert email:', email);
-      
       const { data, error } = await supabase
         .from('newsletter_subscribers')
         .insert([{ email }])
         .select();
-
-      console.log('Insert result:', { data, error });
 
       if (error) {
         if (error.code === '23505') {
@@ -51,7 +47,6 @@ export function useNewsletterSignup() {
           });
           return false;
         } else {
-          console.error('Supabase error:', error);
           throw error;
         }
       } else {
@@ -63,7 +58,6 @@ export function useNewsletterSignup() {
         return true;
       }
     } catch (error) {
-      console.error('Newsletter signup error:', error);
       toast({
         title: 'Error',
         description: 'Failed to subscribe. Please try again.',

@@ -77,8 +77,6 @@ export function useContactForm() {
     setIsSubmitting(true);
 
     try {
-      console.log('Submitting contact form:', formData);
-
       // Submit to Supabase database for admin panel
       const { data, error } = await supabase
         .from('contacts')
@@ -91,10 +89,7 @@ export function useContactForm() {
         }])
         .select();
 
-      console.log('Contact form result:', { data, error });
-
       if (error) {
-        console.error('Supabase error:', error);
         throw error;
       }
 
@@ -122,7 +117,6 @@ export function useContactForm() {
       resetForm();
       return true;
     } catch (error) {
-      console.error('Contact form error:', error);
       toast({
         title: 'Error',
         description: 'Failed to send message. Please try again.',

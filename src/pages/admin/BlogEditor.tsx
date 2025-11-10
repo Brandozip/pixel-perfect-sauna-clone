@@ -124,7 +124,6 @@ export default function BlogEditor() {
         description: `Blog post ${publish ? 'published' : 'saved'} successfully`
       });
     } catch (error) {
-      console.error('Error saving post:', error);
       toast({
         title: 'Error',
         description: 'Failed to save blog post',

@@ -51,7 +51,6 @@ export function useOwnerProfile() {
       toast.success('Photo uploaded successfully');
       return publicUrl;
     } catch (error: any) {
-      console.error('Error uploading photo:', error);
       toast.error(error.message || 'Failed to upload photo');
       return null;
     } finally {
@@ -71,7 +70,6 @@ export function useOwnerProfile() {
       toast.success('Profile updated successfully');
       return true;
     } catch (error: any) {
-      console.error('Error updating profile:', error);
       toast.error(error.message || 'Failed to update profile');
       return false;
     }
@@ -91,7 +89,6 @@ export function useOwnerProfile() {
       toast.success('Photo deleted successfully');
       return true;
     } catch (error: any) {
-      console.error('Error deleting photo:', error);
       toast.error(error.message || 'Failed to delete photo');
       return false;
     }

@@ -80,7 +80,6 @@ export default function BlogGeneratorSettings() {
         description: 'Settings saved successfully'
       });
     } catch (error) {
-      console.error('Error saving settings:', error);
       toast({
         title: 'Error',
         description: 'Failed to save settings',

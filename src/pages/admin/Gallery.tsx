@@ -193,7 +193,6 @@ const Gallery = () => {
           setBatchProgress(prev => ({ ...prev, [i]: 'error' }));
         }
       } catch (error) {
-        console.error(`Failed to generate metadata for image ${i}:`, error);
         setBatchProgress(prev => ({ ...prev, [i]: 'error' }));
       }
 
@@ -325,13 +324,8 @@ const Gallery = () => {
         variant: results.failed > 0 ? 'destructive' : 'default',
       });
 
-      if (results.errors.length > 0) {
-        console.error('Migration errors:', results.errors);
-      }
-
       fetchImages();
     } catch (error) {
-      console.error('Migration failed:', error);
       toast({
         title: 'Migration Failed',
         description: 'Failed to migrate images. Please try again.',

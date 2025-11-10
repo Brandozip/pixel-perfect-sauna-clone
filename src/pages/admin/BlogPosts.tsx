@@ -88,7 +88,6 @@ export default function BlogPosts() {
       });
       fetchPosts();
     } catch (error) {
-      console.error('Error deleting post:', error);
       toast({
         title: 'Error',
         description: 'Failed to delete blog post',
@@ -116,7 +115,6 @@ export default function BlogPosts() {
 
       fetchPosts();
     } catch (error) {
-      console.error('Error generating blog:', error);
       toast({
         title: 'Error',
         description: 'Failed to generate blog post. Please try again.',
