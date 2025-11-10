@@ -21,6 +21,18 @@ serve(async (req) => {
   }
 
   try {
+    // Verify authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Note: This function uses Lovable AI which doesn't require separate auth check
+    // but we still verify the request is authenticated
+    
     const { imageBase64 } = await req.json();
 
     if (!imageBase64) {

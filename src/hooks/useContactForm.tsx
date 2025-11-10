@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { z } from 'zod';
 
 interface ContactFormData {
   name: string;
@@ -41,20 +42,21 @@ export function useContactForm() {
     });
   };
 
-  const validateForm = (): boolean => {
-    if (!formData.name || !formData.email || !formData.message) {
-      toast({
-        title: 'Missing Fields',
-        description: 'Please fill in all required fields',
-        variant: 'destructive',
-      });
-      return false;
-    }
+  const contactSchema = z.object({
+    name: z.string().trim().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
+    email: z.string().trim().email('Invalid email address').max(255, 'Email must be less than 255 characters'),
+    phone: z.string().trim().max(20, 'Phone must be less than 20 characters').optional(),
+    message: z.string().trim().min(1, 'Message is required').max(2000, 'Message must be less than 2000 characters'),
+  });
 
-    if (!formData.email.includes('@')) {
+  const validateForm = (): boolean => {
+    const result = contactSchema.safeParse(formData);
+    
+    if (!result.success) {
+      const firstError = result.error.issues[0];
       toast({
-        title: 'Invalid Email',
-        description: 'Please enter a valid email address',
+        title: 'Validation Error',
+        description: firstError.message,
         variant: 'destructive',
       });
       return false;

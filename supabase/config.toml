@@ -1,13 +1,13 @@
 project_id = "damitvvtyphjaeyvzyen"
 
 [functions.generate-image-metadata]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-blog]
-verify_jwt = false
+verify_jwt = true
 
 [functions.index-site-content]
-verify_jwt = false
+verify_jwt = true
 
 [functions.monitor-content-health]
-verify_jwt = false
+verify_jwt = true

@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { z } from 'zod';
 
 export function useNewsletterSignup() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  const emailSchema = z.string().trim().email('Invalid email address').max(255, 'Email must be less than 255 characters');
+
   const validateEmail = (email: string): boolean => {
-    return email.length > 0 && email.includes('@');
+    const result = emailSchema.safeParse(email);
+    return result.success;
   };
 
   const subscribe = async (e?: React.FormEvent) => {
@@ -16,10 +20,11 @@ export function useNewsletterSignup() {
       e.preventDefault();
     }
     
-    if (!validateEmail(email)) {
+    const validationResult = emailSchema.safeParse(email);
+    if (!validationResult.success) {
       toast({
         title: 'Invalid Email',
-        description: 'Please enter a valid email address',
+        description: validationResult.error.issues[0].message,
         variant: 'destructive',
       });
       return false;
