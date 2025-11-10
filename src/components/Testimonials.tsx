@@ -74,6 +74,7 @@ export const Testimonials = () => {
                   <img 
                     src={review.author_avatar_url} 
                     alt={review.author_name}
+                    loading="lazy"
                     className="w-12 h-12 rounded-full object-cover"
                   />
                 )}

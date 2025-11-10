@@ -1,16 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
-import heroImage from "@/assets/hero-sauna.jpg";
 import { Link } from "react-router-dom";
 
 export const Hero = () => {
   return (
     <section 
-      className="relative h-[700px] flex items-center justify-center text-white"
+      className="relative h-[700px] flex items-center justify-center text-white bg-cover bg-center"
       style={{
-        backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%), url(${heroImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%), url(/src/assets/hero-sauna.jpg)`,
       }}
     >
       <div className="container relative z-10 text-center max-w-4xl">

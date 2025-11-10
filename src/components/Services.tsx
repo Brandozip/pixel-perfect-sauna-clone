@@ -1,35 +1,31 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import customSaunaDesign from "@/assets/custom-sauna-design.png";
-import steamShower from "@/assets/steam-shower.png";
-import residentialSauna from "@/assets/residential-sauna.png";
-import outdoorSauna from "@/assets/outdoor-sauna.png";
 import { Link } from "react-router-dom";
 
 const services = [
   {
     title: "Custom Sauna Design",
     description: "Personalized designs that blend seamlessly with your space and lifestyle.",
-    image: customSaunaDesign,
+    image: "/src/assets/custom-sauna-design.png",
     link: "/services/custom-sauna-design"
   },
   {
     title: "Steam Shower Installation",
     description: "Transform your bathroom into a spa-like retreat with our steam shower solutions.",
-    image: steamShower,
+    image: "/src/assets/steam-shower.png",
     link: "/services/steam-shower-installation"
   },
   {
     title: "Residential Sauna Builds",
     description: "Complete home sauna design and installation for the ultimate wellness sanctuary.",
-    image: residentialSauna,
+    image: "/src/assets/residential-sauna.png",
     link: "/services/residential-sauna-builds"
   },
   {
     title: "Outdoor Sauna Kits",
     description: "Pre-built sauna kits designed for easy installation in your backyard or garden.",
-    image: outdoorSauna,
+    image: "/src/assets/outdoor-sauna.png",
     link: "/services/outdoor-sauna-kits"
   }
 ];
@@ -52,6 +48,7 @@ export const Services = () => {
                 <img 
                   src={service.image} 
                   alt={service.title}
+                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
               </div>

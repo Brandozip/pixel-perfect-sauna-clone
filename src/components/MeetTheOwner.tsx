@@ -43,6 +43,7 @@ export function MeetTheOwner() {
                 <img
                   src={profile.photo_url}
                   alt={profile.full_name}
+                  loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               ) : (

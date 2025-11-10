@@ -1,5 +1,4 @@
 import { Award, Ruler, Wrench, Zap } from "lucide-react";
-import luxurySauna from "@/assets/luxury-sauna.jpg";
 
 const features = [
   {
@@ -52,8 +51,9 @@ export const WhyChooseUs = () => {
         
         <div className="relative rounded-lg overflow-hidden mb-8">
           <img 
-            src={luxurySauna} 
-            alt="Luxury Sauna" 
+            src="/src/assets/luxury-sauna.jpg"
+            alt="Luxury Sauna"
+            loading="lazy"
             className="w-full h-[400px] object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
