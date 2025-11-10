@@ -19,7 +19,7 @@ serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')!;
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY')!;
     
     const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -157,15 +157,18 @@ PRIORITY LINK TARGETS (try to include 2-3 of these):
       '  "search_intent": "informational"\n' +
       '}';
     
-    const topicResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const topicResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [{ role: 'user', content: topicPrompt }],
+        contents: [{ parts: [{ text: topicPrompt }] }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+        }
       }),
     });
 
@@ -175,7 +178,7 @@ PRIORITY LINK TARGETS (try to include 2-3 of these):
     }
 
     const topicData = await topicResponse.json();
-    const topicText = topicData.choices[0].message.content.trim();
+    const topicText = topicData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
     
     // Extract JSON from markdown code blocks if present
     let topic;
@@ -202,20 +205,18 @@ PRIORITY LINK TARGETS (try to include 2-3 of these):
     await updateLog('Researching Content', 4);
     const researchPrompt = settings.research_prompt.replace('[TOPIC]', topic.title);
     
-    const researchResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const researchResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [{ role: 'user', content: researchPrompt }],
+        contents: [{ parts: [{ text: researchPrompt }] }],
       }),
     });
 
     const researchData = await researchResponse.json();
-    const researchText = researchData.choices[0].message.content.trim();
+    const researchText = researchData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
     await updateLog('Researching Content', 4, { research: researchText.substring(0, 500) });
 
     // Step 4: Generate outline
@@ -230,20 +231,18 @@ PRIORITY LINK TARGETS (try to include 2-3 of these):
       '  "conclusion_cta": "Call to action"\n' +
       '}';
     
-    const outlineResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const outlineResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [{ role: 'user', content: outlinePrompt }],
+        contents: [{ parts: [{ text: outlinePrompt }] }],
       }),
     });
 
     const outlineData = await outlineResponse.json();
-    const outlineText = outlineData.choices[0].message.content.trim();
+    const outlineText = outlineData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
     
     // Extract JSON from markdown code blocks if present
     let outline;
@@ -284,22 +283,20 @@ CRITICAL INSTRUCTIONS FOR THIS POST:
 
 Write the complete blog post now with all internal links embedded naturally:`;
     
-    const contentModel = settings.use_pro_for_content ? 'google/gemini-2.5-pro' : 'google/gemini-2.5-flash';
+    const contentModel = settings.use_pro_for_content ? 'gemini-2.0-flash-thinking-exp' : 'gemini-2.0-flash-exp';
     
-    const contentResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const contentResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${contentModel}:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: contentModel,
-        messages: [{ role: 'user', content: contentPrompt }],
+        contents: [{ parts: [{ text: contentPrompt }] }],
       }),
     });
 
     const contentData = await contentResponse.json();
-    let content = contentData.choices[0].message.content.trim();
+    let content = contentData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
     const wordCount = content.split(/\s+/).length;
     
     // Validate internal links
@@ -343,62 +340,56 @@ Write the complete blog post now with all internal links embedded naturally:`;
     // Step 6: Fact check (use Pro if enabled)
     await updateLog('Fact Checking', 7);
     const factCheckPrompt = settings.fact_check_prompt.replace('[CONTENT]', content);
-    const factCheckModel = settings.use_pro_for_fact_check ? 'google/gemini-2.5-pro' : 'google/gemini-2.5-flash';
+    const factCheckModel = settings.use_pro_for_fact_check ? 'gemini-2.0-flash-thinking-exp' : 'gemini-2.0-flash-exp';
     
-    const factCheckResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const factCheckResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${factCheckModel}:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: factCheckModel,
-        messages: [{ role: 'user', content: factCheckPrompt }],
+        contents: [{ parts: [{ text: factCheckPrompt }] }],
       }),
     });
 
     const factCheckData = await factCheckResponse.json();
-    const factCheckResult = factCheckData.choices[0].message.content.trim();
+    const factCheckResult = factCheckData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
     await updateLog('Fact Checking', 7, { summary: factCheckResult.substring(0, 500) });
 
     // Step 7: Edit for clarity
     await updateLog('Editing for Clarity', 8);
     const clarityPrompt = settings.clarity_edit_prompt.replace('[CONTENT]', content);
     
-    const clarityResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const clarityResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [{ role: 'user', content: clarityPrompt }],
+        contents: [{ parts: [{ text: clarityPrompt }] }],
       }),
     });
 
     const clarityData = await clarityResponse.json();
-    content = clarityData.choices[0].message.content.trim();
+    content = clarityData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
     await updateLog('Editing for Clarity', 8);
 
     // Step 8: Get image suggestions
     await updateLog('Planning Images', 9);
     const imagePrompt = settings.image_suggestions_prompt.replace('[CONTENT]', content);
     
-    const imageSuggestionsResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const imageSuggestionsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [{ role: 'user', content: imagePrompt }],
+        contents: [{ parts: [{ text: imagePrompt }] }],
       }),
     });
 
     const imageSuggestionsData = await imageSuggestionsResponse.json();
-    const imageSuggestionsText = imageSuggestionsData.choices[0].message.content.trim();
+    const imageSuggestionsText = imageSuggestionsData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
     
     // Parse image suggestions
     let imageSuggestions: any[] = [];
@@ -426,24 +417,25 @@ Write the complete blog post now with all internal links embedded naturally:`;
           `A professional photograph for a sauna blog article, showing ${suggestion.type}`;
         
         try {
-          const imageGenResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          const imageGenResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${geminiApiKey}`, {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${lovableApiKey}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              model: 'google/gemini-2.5-flash-image',
-              messages: [{
-                role: 'user',
-                content: imagePromptText
+              instances: [{
+                prompt: imagePromptText
               }],
-              modalities: ['image', 'text']
+              parameters: {
+                sampleCount: 1,
+                aspectRatio: "16:9"
+              }
             }),
           });
 
           const imageGenData = await imageGenResponse.json();
-          const imageUrl = imageGenData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+          const imageUrl = imageGenData.predictions?.[0]?.bytesBase64Encoded ? 
+            `data:image/png;base64,${imageGenData.predictions[0].bytesBase64Encoded}` : null;
           
           if (imageUrl) {
             generatedImages.push(imageUrl);
@@ -479,20 +471,18 @@ Write the complete blog post now with all internal links embedded naturally:`;
       '  "tags": ["tag1", "tag2"]\n' +
       '}';
 
-    const seoResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const seoResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [{ role: 'user', content: seoPrompt }],
+        contents: [{ parts: [{ text: seoPrompt }] }],
       }),
     });
 
     const seoData = await seoResponse.json();
-    const seoText = seoData.choices[0].message.content.trim();
+    const seoText = seoData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
     
     // Extract JSON from markdown code blocks if present
     let seo;

@@ -53,7 +53,7 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')!;
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     console.log('🔍 Starting site content indexing...');
@@ -79,20 +79,18 @@ Return ONLY valid JSON (no markdown formatting):
   "related_types": ["service", "health-benefit"]
 }`;
 
-      const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${lovableApiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
-          messages: [{ role: 'user', content: analysisPrompt }],
+          contents: [{ parts: [{ text: analysisPrompt }] }],
         }),
       });
 
       const aiData = await aiResponse.json();
-      const content = aiData.choices[0].message.content.trim();
+      const content = aiData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
       const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       const analysis = JSON.parse(cleanContent);
 
@@ -188,20 +186,18 @@ Return ONLY valid JSON (no markdown formatting):
 ]`;
 
       try {
-        const relationResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        const relationResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${lovableApiKey}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash',
-            messages: [{ role: 'user', content: relationshipPrompt }],
+            contents: [{ parts: [{ text: relationshipPrompt }] }],
           }),
         });
 
         const relData = await relationResponse.json();
-        const relContent = relData.choices[0].message.content.trim();
+        const relContent = relData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
         const cleanRelContent = relContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
         const relationships = JSON.parse(cleanRelContent);
 
