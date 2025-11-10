@@ -229,6 +229,54 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_writing_context: {
+        Row: {
+          avg_post_length: number | null
+          brand_voice: string | null
+          common_phrases: Json | null
+          company_name: string | null
+          id: string
+          linking_rules: Json | null
+          most_popular_categories: Json | null
+          priority_pages: Json | null
+          prohibited_links: string[] | null
+          service_area: string | null
+          target_audience: string | null
+          total_published_posts: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          avg_post_length?: number | null
+          brand_voice?: string | null
+          common_phrases?: Json | null
+          company_name?: string | null
+          id?: string
+          linking_rules?: Json | null
+          most_popular_categories?: Json | null
+          priority_pages?: Json | null
+          prohibited_links?: string[] | null
+          service_area?: string | null
+          target_audience?: string | null
+          total_published_posts?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          avg_post_length?: number | null
+          brand_voice?: string | null
+          common_phrases?: Json | null
+          company_name?: string | null
+          id?: string
+          linking_rules?: Json | null
+          most_popular_categories?: Json | null
+          priority_pages?: Json | null
+          prohibited_links?: string[] | null
+          service_area?: string | null
+          target_audience?: string | null
+          total_published_posts?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       contacts: {
         Row: {
           admin_notes: string | null
@@ -268,6 +316,36 @@ export type Database = {
           service_interested_in?: string | null
           status?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      content_relationships: {
+        Row: {
+          ai_reasoning: string | null
+          created_at: string | null
+          id: string
+          relationship_type: string
+          relevance_score: number | null
+          source_url: string
+          target_url: string
+        }
+        Insert: {
+          ai_reasoning?: string | null
+          created_at?: string | null
+          id?: string
+          relationship_type: string
+          relevance_score?: number | null
+          source_url: string
+          target_url: string
+        }
+        Update: {
+          ai_reasoning?: string | null
+          created_at?: string | null
+          id?: string
+          relationship_type?: string
+          relevance_score?: number | null
+          source_url?: string
+          target_url?: string
         }
         Relationships: []
       }
@@ -406,6 +484,81 @@ export type Database = {
           source?: string | null
           status?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          call_to_actions: Json | null
+          category: string | null
+          content_summary: string | null
+          created_at: string | null
+          excerpt: string | null
+          h1_heading: string | null
+          h2_headings: string[] | null
+          id: string
+          indexed_content: string | null
+          internal_links_to: Json | null
+          key_topics: Json | null
+          last_indexed_at: string | null
+          last_modified_at: string | null
+          main_keywords: string[] | null
+          page_type: string
+          related_pages: Json | null
+          slug: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string | null
+          url: string
+          word_count: number | null
+        }
+        Insert: {
+          call_to_actions?: Json | null
+          category?: string | null
+          content_summary?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          h1_heading?: string | null
+          h2_headings?: string[] | null
+          id?: string
+          indexed_content?: string | null
+          internal_links_to?: Json | null
+          key_topics?: Json | null
+          last_indexed_at?: string | null
+          last_modified_at?: string | null
+          main_keywords?: string[] | null
+          page_type: string
+          related_pages?: Json | null
+          slug?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string | null
+          url: string
+          word_count?: number | null
+        }
+        Update: {
+          call_to_actions?: Json | null
+          category?: string | null
+          content_summary?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          h1_heading?: string | null
+          h2_headings?: string[] | null
+          id?: string
+          indexed_content?: string | null
+          internal_links_to?: Json | null
+          key_topics?: Json | null
+          last_indexed_at?: string | null
+          last_modified_at?: string | null
+          main_keywords?: string[] | null
+          page_type?: string
+          related_pages?: Json | null
+          slug?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string | null
+          url?: string
+          word_count?: number | null
         }
         Relationships: []
       }

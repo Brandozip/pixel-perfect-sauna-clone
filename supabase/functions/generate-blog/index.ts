@@ -71,6 +71,81 @@ serve(async (req) => {
 
     const existingTopics = existingPosts?.map(p => `- ${p.title} (${p.category})`).join('\n') || '';
 
+    // Fetch content knowledge base
+    console.log('📚 Loading content knowledge base...');
+    const { data: contentKnowledge } = await supabase
+      .from('site_content')
+      .select('url, title, page_type, content_summary, main_keywords, related_pages, category');
+
+    const { data: writingContext } = await supabase
+      .from('blog_writing_context')
+      .select('*')
+      .single();
+
+    // Build site context for AI
+    const servicePages = contentKnowledge?.filter(c => c.page_type === 'service') || [];
+    const healthPages = contentKnowledge?.filter(c => c.page_type === 'health-benefit') || [];
+    const utilityPages = contentKnowledge?.filter(c => c.page_type === 'utility') || [];
+
+    const siteContext = `
+═══════════════════════════════════════════════════════════════
+WEBSITE KNOWLEDGE BASE - USE THIS FOR INTERNAL LINKING
+═══════════════════════════════════════════════════════════════
+
+COMPANY INFO:
+- Name: ${writingContext?.company_name || 'Saunas Plus'}
+- Location: ${writingContext?.service_area || 'Atlanta, GA'}
+- Brand Voice: ${writingContext?.brand_voice || 'Professional yet approachable'}
+
+AVAILABLE SERVICE PAGES (Link to these when mentioning services):
+${servicePages.map(c => `  • ${c.title} → ${c.url}
+    Keywords: ${c.main_keywords?.slice(0, 4).join(', ') || 'N/A'}`).join('\n')}
+
+HEALTH BENEFIT PAGES (Link when discussing wellness/health topics):
+${healthPages.map(c => `  • ${c.title} → ${c.url}
+    Keywords: ${c.main_keywords?.slice(0, 4).join(', ') || 'N/A'}`).join('\n')}
+
+KEY UTILITY PAGES:
+${utilityPages.map(c => `  • ${c.title} → ${c.url}`).join('\n')}
+
+EXISTING BLOG POSTS (Reference to show content depth):
+${existingPosts?.slice(0, 10).map(p => `  • ${p.title} → /blog/${p.slug}`).join('\n') || 'None yet'}
+
+═══════════════════════════════════════════════════════════════
+INTERNAL LINKING RULES (CRITICAL - FOLLOW EXACTLY):
+═══════════════════════════════════════════════════════════════
+
+REQUIREMENTS:
+- Include ${writingContext?.linking_rules?.min_internal_links || 3}-${writingContext?.linking_rules?.max_internal_links || 8} internal links per post
+- Use EXACT URLs from the lists above (copy them precisely)
+- Always link to /contact when mentioning consultations or getting started
+- Link naturally within the content flow, not in a separate "Resources" section
+
+HOW TO LINK:
+✅ GOOD: "...our [custom sauna design](/services/custom-sauna-design) team can help..."
+✅ GOOD: "...studies show [cardiovascular benefits](/health-benefits/cardiovascular) improve..."
+✅ GOOD: "...ready to begin? [Contact our team](/contact) for a free consultation..."
+
+❌ BAD: "Click here for more info"
+❌ BAD: Links not from the available pages list above
+❌ BAD: Too many links in one paragraph
+
+PRIORITY LINK TARGETS (try to include 2-3 of these):
+1. Service pages when mentioning installation/design/types
+2. Health benefit pages when discussing wellness
+3. /contact when suggesting next steps
+4. /gallery when mentioning projects/examples
+5. Related blog posts for additional reading
+
+═══════════════════════════════════════════════════════════════
+`;
+
+    console.log('✅ Content knowledge loaded:', {
+      services: servicePages.length,
+      health: healthPages.length,
+      blogs: existingPosts?.length || 0
+    });
+
     // Step 2: Generate unique topic
     await updateLog('Generating Topic', 3);
     const topicPrompt = settings.topic_prompt.replace('[EXISTING_TOPICS]', existingTopics) + 
@@ -192,9 +267,22 @@ serve(async (req) => {
 
     // Step 5: Write full content (use Pro if enabled)
     await updateLog('Writing Content', 6);
-    const contentPrompt = settings.content_prompt
-      .replace('[WORD_COUNT]', settings.target_word_count.toString())
-      .replace('[OUTLINE]', JSON.stringify(outline, null, 2));
+    const contentPrompt = `${siteContext}
+
+${settings.content_prompt
+  .replace('[WORD_COUNT]', settings.target_word_count.toString())
+  .replace('[OUTLINE]', JSON.stringify(outline, null, 2))}
+
+CRITICAL INSTRUCTIONS FOR THIS POST:
+1. Write ${settings.target_word_count} words of engaging, informative content
+2. Include ${writingContext?.linking_rules?.min_internal_links || 3}-${writingContext?.linking_rules?.max_internal_links || 8} natural internal links using EXACT URLs from the knowledge base above
+3. Link to relevant service pages when discussing sauna types/installation
+4. Link to health benefit pages when discussing wellness topics  
+5. Include at least ONE link to /contact when suggesting consultation
+6. Make links flow naturally - don't force them
+7. Use descriptive anchor text that includes keywords
+
+Write the complete blog post now with all internal links embedded naturally:`;
     
     const contentModel = settings.use_pro_for_content ? 'google/gemini-2.5-pro' : 'google/gemini-2.5-flash';
     
@@ -214,7 +302,43 @@ serve(async (req) => {
     let content = contentData.choices[0].message.content.trim();
     const wordCount = content.split(/\s+/).length;
     
-    await updateLog('Writing Content', 6, { wordCount });
+    // Validate internal links
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const foundLinks = [...content.matchAll(linkRegex)];
+    const internalLinks = foundLinks.filter(([, , url]) => url.startsWith('/'));
+    
+    console.log(`📊 Link validation: Found ${internalLinks.length} internal links`);
+    
+    // Check each internal link exists
+    const validLinks: string[] = [];
+    const invalidLinks: string[] = [];
+    
+    for (const [fullMatch, text, url] of internalLinks) {
+      const exists = contentKnowledge?.find(c => c.url === url);
+      if (exists) {
+        validLinks.push(url);
+      } else {
+        invalidLinks.push(url);
+        console.warn(`⚠️  Invalid internal link: ${url} (${text})`);
+      }
+    }
+    
+    const minLinks = writingContext?.linking_rules?.min_internal_links || 3;
+    if (validLinks.length < minLinks) {
+      console.warn(`⚠️  Only ${validLinks.length} valid internal links (minimum: ${minLinks})`);
+    }
+    
+    // Check for required /contact link
+    const hasContactLink = validLinks.some(url => url === '/contact');
+    if (!hasContactLink && writingContext?.linking_rules?.always_include_contact) {
+      console.warn('⚠️  Missing required link to /contact');
+    }
+    
+    await updateLog('Writing Content', 6, { 
+      wordCount, 
+      internalLinks: validLinks.length,
+      invalidLinks: invalidLinks.length 
+    });
 
     // Step 6: Fact check (use Pro if enabled)
     await updateLog('Fact Checking', 7);
