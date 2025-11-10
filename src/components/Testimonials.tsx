@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Quote } from "lucide-react";
 import { StarRating } from "@/components/ui/star-rating";
+import { LazyImage } from "@/components/ui/lazy-image";
 import { supabase } from '@/integrations/supabase/client';
 
 interface Review {
@@ -71,11 +72,11 @@ export const Testimonials = () => {
               </blockquote>
               <div className="flex items-center gap-4">
                 {review.author_avatar_url && (
-                  <img 
-                    src={review.author_avatar_url} 
+                  <LazyImage
+                    src={review.author_avatar_url}
                     alt={review.author_name}
-                    loading="lazy"
-                    className="w-12 h-12 rounded-full object-cover"
+                    wrapperClassName="w-12 h-12 rounded-full"
+                    className="w-full h-full rounded-full object-cover"
                   />
                 )}
                 <div>

@@ -1,4 +1,5 @@
 import { Award, Ruler, Wrench, Zap } from "lucide-react";
+import { LazyImage } from "@/components/ui/lazy-image";
 import luxurySaunaImage from "@/assets/luxury-sauna.jpg";
 
 const features = [
@@ -51,10 +52,10 @@ export const WhyChooseUs = () => {
         </div>
         
         <div className="relative rounded-lg overflow-hidden mb-8">
-          <img 
+          <LazyImage
             src={luxurySaunaImage}
             alt="Luxury Sauna"
-            loading="lazy"
+            wrapperClassName="rounded-lg"
             className="w-full h-[400px] object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">

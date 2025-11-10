@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { LazyImage } from "@/components/ui/lazy-image";
 import customSaunaImage from "@/assets/custom-sauna-design.png";
 import steamShowerImage from "@/assets/steam-shower.png";
 import residentialSaunaImage from "@/assets/residential-sauna.png";
@@ -48,14 +49,13 @@ export const Services = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {services.map((service, index) => (
             <Card key={index} className="card-elevated overflow-hidden group">
-              <div className="aspect-[4/3] overflow-hidden">
-                <img 
-                  src={service.image} 
-                  alt={service.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
+              <LazyImage
+                src={service.image}
+                alt={service.title}
+                aspectRatio="4/3"
+                wrapperClassName="overflow-hidden"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              />
               <div className="card-content">
                 <h3 className="heading-4 mb-3">{service.title}</h3>
                 <p className="text-muted-foreground mb-4">{service.description}</p>
