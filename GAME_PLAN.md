@@ -41,6 +41,8 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - ✅ Phase 2H: Brand Guidelines Implementation
 - ✅ Phase 2I: Component Brand Refresh
 - ✅ Phase 2J: Site Structure Documentation
+- ✅ Phase 2K: Content Knowledge Base System
+- 🔄 Phase 2L: Blog & Knowledge Enhancements (IN PROGRESS)
 
 ---
 
@@ -654,6 +656,164 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - ✅ All footer links working
 - ✅ All CTA buttons properly linked
 
+### Phase 2K: Content Knowledge Base System 🧠 ✅ COMPLETE
+**Status: Fully operational AI-powered content indexing and linking system**
+
+✅ **Database Schema:**
+- `site_content` table: Indexed pages with AI analysis
+  - Columns: url, page_type, title, content_summary, main_keywords[], key_topics (jsonb), related_pages (jsonb), last_indexed_at
+  - Stores 33+ pages (services, health benefits, blogs, utility pages)
+- `blog_writing_context` table: AI writing configuration
+  - Brand voice, target audience, service area
+  - Priority pages, common phrases, linking rules
+  - Prohibited links array
+- `content_relationships` table: Page interconnections
+  - Tracks relevance scores and relationship types
+- `blog_generation_logs` table: AI generation tracking
+  - Step-by-step progress monitoring
+  - Error tracking and performance metrics
+
+✅ **Edge Functions:**
+- `index-site-content`: AI-powered page indexing
+  - Uses Gemini API to analyze 25+ static pages
+  - Extracts keywords, summaries, primary topics
+  - Calculates content relationships
+  - Robust error handling with fallbacks
+  - **Automated:** Runs daily at 3 AM via cron job
+- `monitor-content-health`: Weekly health checks
+  - Detects orphaned pages (no incoming links)
+  - Identifies stale content (>180 days)
+  - Finds missing metadata
+  - Emails admin with weekly digest
+  - **Automated:** Runs Mondays at 9 AM via cron job
+- `generate-blog`: Enhanced with knowledge base
+  - Loads 33+ indexed pages for context
+  - Auto-generates 3-8 contextual internal links
+  - Validates all links against site content
+  - Ensures /contact link is included
+  - 160s average generation time
+
+✅ **Admin Features:**
+- `/admin/content-knowledge` dashboard:
+  - **Indexed Content Table:** View all 33 pages with search/filter
+  - **Writing Context Editor:** Configure brand voice and linking rules
+  - **Health Dashboard:** Content distribution charts, quality metrics
+  - **Manual Re-indexing:** Trigger indexing on-demand
+  - **Stats Cards:** Total pages, page types, link health %, orphaned pages
+- **Blog Editor Enhancements:**
+  - **Link Suggestions Sidebar:** AI-powered link recommendations
+    - Shows 2-3 related services
+    - Shows 2-3 related health benefits
+    - Shows 2-3 related blog posts
+    - Always suggests /contact page
+    - Relevance scores (0-100%)
+    - One-click link insertion
+  - **Link Quality Indicator:** Real-time link analysis
+    - Current internal link count (0-8)
+    - Visual quality badges (poor/fair/good/excessive)
+    - Required link checklist (contact, service, health, blog)
+    - Guidance messages based on link count
+
+✅ **Automation:**
+- pg_cron enabled for scheduled tasks
+- Daily indexing: `0 3 * * *` (3 AM)
+- Weekly health monitoring: `0 9 * * 1` (Mondays 9 AM)
+- pg_net configured for HTTP calls to edge functions
+
+✅ **Current Status:**
+- 33 pages indexed (97% with summaries, 85% with keywords)
+- Knowledge base fully operational
+- Link suggestions working in blog editor
+- Cron jobs scheduled and running
+- Health monitoring active
+
+📋 **Phase 2L Improvements Needed:**
+- Auto-add keywords/tags when generating blogs
+- Auto-trigger indexing after blog publication
+- Expand knowledge panel with clickable page links
+- Add "Edit Page" buttons in knowledge dashboard
+- Orphaned page resolution workflow
+- Enhanced SEO metrics in knowledge panel
+
+### Phase 2L: Blog & Knowledge Enhancements 🚀 (IN PROGRESS)
+**Status: Planning comprehensive improvements to automation and UX**
+
+📋 **Blog Automation Improvements:**
+- **Auto-Keywords on Generation:**
+  - Extract keywords from AI-generated content
+  - Automatically populate `seo_keywords` field
+  - Save `tags` array from AI suggestions
+  - Ensure keywords are indexed-ready
+- **Auto-Indexing Trigger:**
+  - When blog status changes to 'published'
+  - Automatically add to `site_content` table
+  - Run AI analysis for keywords/summary
+  - Calculate relationships with existing content
+  - Update link suggestions for all posts
+- **Enhanced Link Insertion:**
+  - Auto-suggest links during content writing
+  - Pre-populate common links (contact, popular services)
+  - Validate link targets exist before insertion
+  - Show link preview on hover
+
+📋 **Knowledge Panel Enhancements:**
+- **Clickable Page Entries:**
+  - Table rows link to actual pages (open in new tab)
+  - "Edit" button for blog posts → opens blog editor
+  - "View" button for static pages → opens page
+  - Quick actions menu (re-index, view details, delete)
+- **Enhanced SEO Details Panel:**
+  - Click any page to expand full details modal:
+    - Complete keyword list with search volumes
+    - Full content summary (not truncated)
+    - Incoming links count and sources
+    - Outgoing links count and destinations
+    - Last modified date and indexing history
+    - Page performance metrics (views, time on page)
+    - SEO score (0-100) based on completeness
+- **Advanced Filtering:**
+  - Filter by SEO score ranges
+  - Filter by link health (orphaned, well-connected)
+  - Filter by last updated date
+  - Filter by page type (multi-select)
+  - Save filter presets
+- **Bulk Actions:**
+  - Select multiple pages for batch re-indexing
+  - Bulk delete (with confirmation)
+  - Export selected pages to CSV
+  - Bulk edit categories/types
+
+📋 **Orphaned Page Resolution:**
+- **Detection & Alerts:**
+  - Visual indicators on orphaned pages (⚠️ icon)
+  - "Orphaned Pages" filter/view
+  - Weekly email digest with orphaned page list
+- **Resolution Workflow:**
+  - "Fix Links" button for orphaned pages
+  - AI suggests 3-5 pages that should link here
+  - One-click "Create Link" to open relevant pages
+  - Track resolution status (pending/in-progress/resolved)
+  - Auto-close when page receives 2+ incoming links
+- **Prevention:**
+  - Link suggestion algorithm prioritizes orphaned pages
+  - Warning when creating pages without planning links
+  - Required field: "Planned linking from" during page creation
+
+📋 **SEO Expansion:**
+- **Meta Tags Management:**
+  - Edit OG image, title, description per page
+  - Preview social share cards
+  - Schema.org markup configuration
+- **Performance Tracking:**
+  - Google Search Console integration
+  - Track keyword rankings over time
+  - Monitor click-through rates
+  - Page speed scores and suggestions
+- **Competitor Analysis:**
+  - Track competitor keywords
+  - Gap analysis for missing topics
+  - Content opportunity finder
+
 ## Technical Implementation Plan
 
 ### Database Migrations Order:
@@ -682,17 +842,271 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - ✅ CSRF protection
 - ✅ Rate limiting on sensitive operations
 
-## Phase 3: Enhanced Features
-🎯 **Planned:**
-- Customer portal for project tracking
-- Photo gallery management system
-- Testimonial submission and approval workflow
-- Blog/article management system
-- **Newsletter email automation (connected to database)**
-- Analytics and reporting dashboard
-- Admin panel for newsletter management
+## Phase 3: Owner/Operator Branding & Personalization 👤
+**Priority: HIGH - Builds trust and personal connection**
 
-## Phase 4: Marketing & SEO Optimization 📈
+📋 **Owner Profile Section:**
+- **Homepage Hero Enhancement:**
+  - Add owner photo (professional headshot)
+  - "Meet the Owner" section below hero
+  - Personal story and sauna passion
+  - Years of experience badge
+  - Certifications and credentials
+- **About Page Overhaul:**
+  - Detailed owner biography
+  - Professional journey timeline
+  - Gallery of owner working on projects
+  - Personal sauna at home showcase
+  - Family business values
+  - Community involvement
+- **Owner Photo Management:**
+  - Upload interface in admin panel (`/admin/settings/owner-profile`)
+  - Image cropping and optimization
+  - Multiple photos for different contexts
+  - Alt text for SEO
+  - Stored in Supabase storage: `owner-photos` bucket
+
+📋 **Trust Signals:**
+- **Credentials Display:**
+  - License numbers and certifications
+  - Insurance information
+  - BBB rating (if applicable)
+  - Years in business badge
+  - Service area map
+- **Social Proof:**
+  - Owner-generated content (before/after photos)
+  - Personal video testimonials from owner
+  - Owner's favorite project showcase
+  - "Owner's Pick" sauna recommendations
+- **Behind the Scenes:**
+  - Blog posts written by owner (byline)
+  - Workshop/warehouse tour photos
+  - Team introduction (if applicable)
+  - Day in the life content
+
+📋 **Contact Personalization:**
+- Direct owner phone line (optional)
+- Owner email address
+- "Book a call with [Owner Name]" CTA
+- Owner response time guarantee
+- Personal signature on automated emails
+
+## Phase 4: Shopify E-Commerce Integration 🛒
+**Priority: MEDIUM-HIGH - New revenue stream**
+
+### 4A: Shopify Setup & Planning
+📋 **Store Configuration:**
+- Enable Shopify integration via Lovable
+- Decide: New dev store vs. Connect existing store
+- Configure Shopify plan (after 30-day trial if new)
+- Set up payment gateways (Stripe, PayPal)
+- Configure shipping zones and rates
+- Set tax calculations for GA
+
+📋 **Product Catalog Planning:**
+- **Sauna Accessories:**
+  - Sauna buckets and ladles
+  - Essential oil kits
+  - Thermometers and hygrometers
+  - Sauna lighting (LED systems)
+  - Backrests and cushions
+  - Headrests
+  - Sand timers
+- **Maintenance Products:**
+  - Wood oils and treatments
+  - Cleaning supplies
+  - Replacement parts (rocks, heating elements)
+  - Instruction manuals
+- **Gift Items:**
+  - Branded merchandise (hats, shirts)
+  - Gift cards
+  - Sauna starter kits
+  - Wellness bundles
+- **Premium Items:**
+  - Sauna kits (DIY)
+  - Pre-built sauna units (small scale)
+  - Custom sauna doors
+  - High-end accessories
+
+📋 **Integration Points:**
+- **Product Pages:**
+  - `/shop` - Main store page
+  - `/shop/category/[category]` - Category pages
+  - `/shop/product/[slug]` - Individual products
+- **Cart & Checkout:**
+  - Floating cart indicator in header
+  - Side drawer cart
+  - Shopify Checkout (hosted)
+- **Admin Integration:**
+  - Product management via Shopify API
+  - Inventory sync
+  - Order notifications
+  - Shipping label printing
+
+### 4B: Shop Frontend Development
+📋 **Main Shop Page (`/shop`):**
+- Hero section: "Enhance Your Sauna Experience"
+- Category grid (4-6 categories)
+- Featured products carousel
+- "Why Buy From Us" trust badges
+- Newsletter signup for shop deals
+
+📋 **Product Pages:**
+- High-quality product photography
+- Detailed descriptions
+- Specifications table
+- Related products
+- Reviews and ratings
+- Add to cart button
+- Stock availability indicator
+- Estimated delivery date
+
+📋 **Shopping Experience:**
+- Category filtering and sorting
+- Search functionality
+- Product quick view modals
+- Size/variant selection
+- Quantity adjustments
+- Save for later / wishlist
+- Recently viewed products
+
+### 4C: Marketing Integration
+📋 **Cross-Selling:**
+- "Recommended Accessories" on service pages
+- "Complete Your Sauna" bundles
+- Post-installation care kits
+- Seasonal promotions
+- Email campaigns for repeat customers
+
+📋 **Analytics & Tracking:**
+- Google Analytics 4 e-commerce tracking
+- Conversion tracking
+- Abandoned cart recovery
+- Product performance metrics
+- Customer lifetime value tracking
+
+## Phase 5: Code Audit & Optimization 🔍
+**Priority: HIGH - Before Shopify and major new features**
+
+### 5A: Pre-Audit Assessment
+**Goal:** Evaluate codebase health before scaling with Shopify and owner features
+
+📋 **Audit Areas:**
+1. **Component Architecture:**
+   - Review component sizes (any >500 lines?)
+   - Check for code duplication
+   - Identify opportunities for reusable components
+   - Evaluate component hierarchy
+   
+2. **State Management:**
+   - Review prop drilling patterns
+   - Check for unnecessary re-renders
+   - Evaluate data fetching patterns
+   - Look for stale closure issues
+   
+3. **Performance:**
+   - Bundle size analysis
+   - Lazy loading implementation
+   - Image optimization audit
+   - Network request optimization
+   - Lighthouse scores (all pages)
+   
+4. **Type Safety:**
+   - Check for `any` types
+   - Review type imports
+   - Validate interface consistency
+   - Check for type assertions
+   
+5. **Error Handling:**
+   - Review try-catch coverage
+   - Check edge function error handling
+   - Validate user feedback (toasts)
+   - Check loading states
+   
+6. **Security:**
+   - RLS policy review (all tables)
+   - Input sanitization check
+   - XSS vulnerability scan
+   - SQL injection review
+   - API key exposure check
+   
+7. **Code Quality:**
+   - ESLint rule violations
+   - Console.log cleanup
+   - Dead code identification
+   - Import organization
+   - Comment accuracy
+
+### 5B: Refactoring Priorities
+**Based on current knowledge:**
+
+✅ **Good Practices Already In Place:**
+- Modular component structure
+- Supabase integration patterns
+- Edge function organization
+- Admin authentication flow
+- RLS policies on sensitive data
+- Design system with semantic tokens
+- Type safety (TypeScript)
+
+⚠️ **Known Improvement Areas:**
+1. **Blog Editor Component:**
+   - Currently ~367 lines (manageable but growing)
+   - Consider extracting:
+     - `<BlogMetadataForm>` (SEO tab content)
+     - `<BlogSettingsForm>` (settings tab content)
+     - `<BlogContentEditor>` (content tab)
+     
+2. **Link Suggestion Hook:**
+   - Could benefit from caching
+   - Consider debouncing for better performance
+   
+3. **Admin Dashboard:**
+   - Stats fetching could use React Query
+   - Reduce database calls with aggregations
+   
+4. **Edge Functions:**
+   - `generate-blog` is 600+ lines (complex but logical)
+   - Could extract AI prompt templates
+   - Consider rate limit handling
+   
+5. **Image Management:**
+   - Consider CDN integration
+   - Implement image compression
+   - Add lazy loading everywhere
+
+### 5C: Recommended Approach
+**My Assessment:**
+
+**✅ PROCEED WITHOUT MAJOR REFACTOR**
+- Code quality is good overall
+- No critical tech debt
+- Architecture scales well
+- Minor improvements can be done incrementally
+
+**Reasons:**
+1. Well-structured component hierarchy
+2. Good separation of concerns
+3. Consistent patterns throughout
+4. No massive monolithic files
+5. Type safety maintained
+6. Security practices solid
+
+**Incremental Improvements During Feature Development:**
+- Extract subcomponents when files hit 400+ lines
+- Add React Query for data fetching as you go
+- Implement caching for expensive operations
+- Optimize images during Shopify integration
+- Clean up console.logs during testing
+
+**Better Strategy:**
+✅ Focus on Phase 2L improvements first (blog automation)
+✅ Build Phase 3 (Owner branding) - high value, low complexity
+✅ Add Phase 4A (Shopify setup) - new revenue stream
+✅ Do targeted optimization as you encounter bottlenecks
+❌ Don't halt feature development for refactoring
+
+## Phase 4 (Now Phase 6): Marketing & SEO Optimization 📈
 **Priority: HIGH - Critical for organic growth and conversions**
 
 ### 4A: Technical SEO Foundation ⚡
@@ -1048,7 +1462,36 @@ This document outlines the development roadmap and strategic plan for the Saunas
 
 ## Key Priorities
 
-### Immediate (Current Sprint - 2-3 weeks):
+### Immediate (Current Sprint - 1-2 weeks):
+1. ✅ **Phase 2K: Content Knowledge Base** (COMPLETE)
+2. 🔄 **Phase 2L: Blog & Knowledge Enhancements** (IN PROGRESS)
+   - Auto-keywords on blog generation
+   - Auto-indexing trigger for published blogs
+   - Enhanced knowledge panel with clickable links
+   - Orphaned page resolution workflow
+3. 📋 **Phase 3: Owner/Operator Branding** (2-3 days)
+   - Upload and display owner photo
+   - About page owner bio section
+   - Trust signals and credentials
+4. 📋 **Code Quality Pass** (1 day)
+   - Clean up console.logs
+   - Remove dead code
+   - Organize imports
+
+### Short-term (2-4 weeks):
+1. 📋 **Phase 4: Shopify Integration Setup** (1 week)
+   - Enable Shopify integration
+   - Create/connect store
+   - Configure product catalog
+   - Build shop pages
+2. 📋 **Shopify Marketing** (ongoing)
+   - Cross-sell on service pages
+   - Email campaigns for products
+   - Abandoned cart recovery
+3. 📋 **Phase 2L Completion**
+   - Advanced filtering in knowledge panel
+   - Bulk actions for content management
+   - SEO expansion features
 1. ✅ Complete cost calculator
 2. ✅ Database integration for contacts
 3. ✅ Newsletter subscription system
@@ -1105,6 +1548,19 @@ This document outlines the development roadmap and strategic plan for the Saunas
 ---
 
 ## Recent Updates (Latest First)
+
+### November 2025 - Phase 2K & 2L: Content Knowledge Base Complete + Enhancements Planned ✅
+- ✅ Implemented AI-powered content indexing system (33 pages)
+- ✅ Created Content Knowledge Base admin dashboard
+- ✅ Built blog editor link suggestions sidebar
+- ✅ Added real-time link quality indicator
+- ✅ Set up automated cron jobs (daily indexing, weekly health checks)
+- ✅ Edge functions: `index-site-content`, `monitor-content-health`
+- ✅ Enhanced blog generation with contextual internal linking
+- 📋 Planned Phase 2L improvements (auto-keywords, enhanced UX)
+- 📋 Outlined Phase 3 (Owner/Operator branding)
+- 📋 Outlined Phase 4 (Shopify integration)
+- 📋 Outlined Phase 5 (Code audit - recommended incremental approach)
 
 ### January 2025 - Phase 2H: Brand Guidelines Implementation Complete ✅
 - ✅ Implemented complete SaunasPlus brand design system
@@ -1210,5 +1666,5 @@ This document outlines the development roadmap and strategic plan for the Saunas
 
 ---
 
-*Last Updated: January 2025*  
-*Version: 2.8 - Phase 2H Complete (Brand Guidelines), Ready for Phase 2I (Component Refresh)*
+*Last Updated: November 2025*  
+*Version: 3.0 - Phase 2K Complete, Phase 2L-5 Planned, Ready for Owner Branding*
