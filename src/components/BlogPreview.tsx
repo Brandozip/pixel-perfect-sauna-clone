@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { LazyImage } from '@/components/ui/lazy-image';
 
 interface BlogPost {
   id: string;
@@ -62,14 +63,13 @@ export const BlogPreview = () => {
               onClick={() => navigate(`/blog/${post.slug}`)}
             >
               {post.featured_image_url && (
-                <div className="h-48 overflow-hidden">
-                  <img 
-                    src={post.featured_image_url} 
-                    alt={post.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
+                <LazyImage
+                  src={post.featured_image_url}
+                  alt={post.title}
+                  wrapperClassName="h-48"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  aspectRatio="4/3"
+                />
               )}
               <CardContent className="p-6 flex-1 flex flex-col">
                 {post.category && (

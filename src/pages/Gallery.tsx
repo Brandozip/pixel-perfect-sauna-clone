@@ -9,6 +9,7 @@ import { ImageObjectSchema } from "@/components/seo/ImageObjectSchema";
 import { supabase } from '@/integrations/supabase/client';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import { Link } from 'react-router-dom';
+import { LazyImage } from '@/components/ui/lazy-image';
 
 interface GalleryImage {
   id: string;
@@ -110,13 +111,13 @@ const Gallery = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredImages.map((image) => (
                   <Card key={image.id} className="overflow-hidden group hover:shadow-xl transition-shadow">
-                    <div className="aspect-[4/3] overflow-hidden">
-                      <img 
-                        src={image.image_url} 
-                        alt={image.alt_text}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                    </div>
+                    <LazyImage
+                      src={image.image_url}
+                      alt={image.alt_text}
+                      wrapperClassName="aspect-[4/3]"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      aspectRatio="4/3"
+                    />
                     <div className="p-6">
                       <div className="inline-block px-3 py-1 rounded-full bg-accent/10 text-accent text-sm font-medium mb-3 capitalize">
                         {image.category}

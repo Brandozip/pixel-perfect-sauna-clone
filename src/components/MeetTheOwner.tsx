@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Award, Phone, Mail, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { LazyImage } from '@/components/ui/lazy-image';
 
 export function MeetTheOwner() {
   const [profile, setProfile] = useState<any>(null);
@@ -40,11 +41,12 @@ export function MeetTheOwner() {
             {/* Photo Section */}
             <div className="relative h-96 md:h-auto">
               {profile.photo_url ? (
-                <img
+                <LazyImage
                   src={profile.photo_url}
                   alt={profile.full_name}
-                  loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  wrapperClassName="absolute inset-0"
+                  className="w-full h-full object-cover"
+                  loading="eager"
                 />
               ) : (
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
