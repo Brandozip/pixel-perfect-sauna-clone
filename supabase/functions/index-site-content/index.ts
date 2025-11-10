@@ -79,35 +79,77 @@ Return ONLY valid JSON (no markdown formatting):
   "related_types": ["service", "health-benefit"]
 }`;
 
-      const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: analysisPrompt }] }],
-        }),
-      });
+      try {
+        const aiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: analysisPrompt }] }],
+          }),
+        });
 
-      const aiData = await aiResponse.json();
-      const content = aiData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
-      const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-      const analysis = JSON.parse(cleanContent);
+        if (!aiResponse.ok) {
+          throw new Error(`Gemini API error: ${aiResponse.status}`);
+        }
 
-      // Upsert into site_content
-      const { error } = await supabase.from('site_content').upsert({
-        url: page.url,
-        page_type: page.type,
-        title: page.title,
-        content_summary: analysis.summary,
-        main_keywords: analysis.keywords,
-        key_topics: { primary: analysis.primary_topic, related_types: analysis.related_types },
-        category: page.category,
-        last_indexed_at: new Date().toISOString(),
-      }, { onConflict: 'url' });
+        const aiData = await aiResponse.json();
+        const content = aiData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+        
+        if (!content) {
+          console.warn(`No content returned from AI for ${page.url}, using defaults`);
+          throw new Error('Empty AI response');
+        }
 
-      if (error) {
-        console.error(`Error indexing ${page.url}:`, error);
+        const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        
+        // Validate JSON before parsing
+        if (!cleanContent.startsWith('{') || !cleanContent.endsWith('}')) {
+          console.warn(`Invalid JSON format for ${page.url}: ${cleanContent.substring(0, 100)}`);
+          throw new Error('Invalid JSON format');
+        }
+
+        const analysis = JSON.parse(cleanContent);
+
+        // Validate required fields
+        if (!analysis.summary || !analysis.keywords || !Array.isArray(analysis.keywords)) {
+          console.warn(`Missing required fields in analysis for ${page.url}`);
+          throw new Error('Invalid analysis structure');
+        }
+
+        // Upsert into site_content
+        const { error } = await supabase.from('site_content').upsert({
+          url: page.url,
+          page_type: page.type,
+          title: page.title,
+          content_summary: analysis.summary,
+          main_keywords: analysis.keywords,
+          key_topics: { primary: analysis.primary_topic || page.title, related_types: analysis.related_types || [] },
+          category: page.category,
+          last_indexed_at: new Date().toISOString(),
+        }, { onConflict: 'url' });
+
+        if (error) {
+          console.error(`Error upserting ${page.url}:`, error);
+        } else {
+          console.log(`✓ Indexed: ${page.title}`);
+        }
+      } catch (error) {
+        console.error(`Failed to index ${page.url}:`, error instanceof Error ? error.message : error);
+        
+        // Fallback: Insert basic info without AI analysis
+        await supabase.from('site_content').upsert({
+          url: page.url,
+          page_type: page.type,
+          title: page.title,
+          content_summary: `Information about ${page.title}`,
+          main_keywords: [page.type, 'sauna'],
+          category: page.category,
+          last_indexed_at: new Date().toISOString(),
+        }, { onConflict: 'url' });
+        
+        console.log(`✓ Indexed with fallback: ${page.title}`);
       }
     }
 
@@ -196,17 +238,46 @@ Return ONLY valid JSON (no markdown formatting):
           }),
         });
 
+        if (!relationResponse.ok) {
+          throw new Error(`Gemini API error: ${relationResponse.status}`);
+        }
+
         const relData = await relationResponse.json();
         const relContent = relData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+        
+        if (!relContent) {
+          console.warn(`No relationship content for ${content.url}`);
+          continue;
+        }
+
         const cleanRelContent = relContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        
+        // Validate JSON array format
+        if (!cleanRelContent.startsWith('[') || !cleanRelContent.endsWith(']')) {
+          console.warn(`Invalid relationship JSON for ${content.url}: ${cleanRelContent.substring(0, 100)}`);
+          continue;
+        }
+
         const relationships = JSON.parse(cleanRelContent);
 
+        // Validate it's an array
+        if (!Array.isArray(relationships)) {
+          console.warn(`Relationships not an array for ${content.url}`);
+          continue;
+        }
+
         // Store relationships
-        await supabase.from('site_content').update({
+        const { error } = await supabase.from('site_content').update({
           related_pages: relationships
         }).eq('url', content.url);
+
+        if (error) {
+          console.error(`Error updating relationships for ${content.url}:`, error);
+        } else {
+          console.log(`✓ Relationships updated for ${content.title}: ${relationships.length} links`);
+        }
       } catch (error) {
-        console.error(`Error calculating relationships for ${content.url}:`, error);
+        console.error(`Failed to calculate relationships for ${content.url}:`, error instanceof Error ? error.message : error);
       }
     }
 
