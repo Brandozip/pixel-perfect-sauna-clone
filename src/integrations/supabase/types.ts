@@ -430,6 +430,78 @@ export type Database = {
         }
         Relationships: []
       }
+      owner_profile: {
+        Row: {
+          additional_photos: Json | null
+          bbb_rating: string | null
+          bio: string
+          certifications: string[] | null
+          community_involvement: string | null
+          created_at: string
+          email: string | null
+          favorite_project_description: string | null
+          full_name: string
+          id: string
+          insurance_info: string | null
+          license_numbers: string[] | null
+          personal_sauna_details: string | null
+          phone: string | null
+          photo_url: string | null
+          response_time_guarantee: string | null
+          short_bio: string | null
+          specialties: string[] | null
+          title: string | null
+          updated_at: string
+          years_of_experience: number | null
+        }
+        Insert: {
+          additional_photos?: Json | null
+          bbb_rating?: string | null
+          bio: string
+          certifications?: string[] | null
+          community_involvement?: string | null
+          created_at?: string
+          email?: string | null
+          favorite_project_description?: string | null
+          full_name?: string
+          id?: string
+          insurance_info?: string | null
+          license_numbers?: string[] | null
+          personal_sauna_details?: string | null
+          phone?: string | null
+          photo_url?: string | null
+          response_time_guarantee?: string | null
+          short_bio?: string | null
+          specialties?: string[] | null
+          title?: string | null
+          updated_at?: string
+          years_of_experience?: number | null
+        }
+        Update: {
+          additional_photos?: Json | null
+          bbb_rating?: string | null
+          bio?: string
+          certifications?: string[] | null
+          community_involvement?: string | null
+          created_at?: string
+          email?: string | null
+          favorite_project_description?: string | null
+          full_name?: string
+          id?: string
+          insurance_info?: string | null
+          license_numbers?: string[] | null
+          personal_sauna_details?: string | null
+          phone?: string | null
+          photo_url?: string | null
+          response_time_guarantee?: string | null
+          short_bio?: string | null
+          specialties?: string[] | null
+          title?: string | null
+          updated_at?: string
+          years_of_experience?: number | null
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           admin_notes: string | null

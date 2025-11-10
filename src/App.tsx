@@ -45,6 +45,7 @@ const AdminBlogPosts = lazy(() => import("./pages/admin/BlogPosts"));
 const AdminBlogEditor = lazy(() => import("./pages/admin/BlogEditor"));
 const AdminBlogGeneratorSettings = lazy(() => import("./pages/admin/BlogGeneratorSettings"));
 const AdminContentKnowledge = lazy(() => import("./pages/admin/ContentKnowledge"));
+const AdminOwnerProfile = lazy(() => import("./pages/admin/OwnerProfile"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 
@@ -210,6 +211,18 @@ const App = () => (
                 <ProtectedRoute>
                   <AdminLayout>
                     <AdminContentKnowledge />
+                  </AdminLayout>
+                </ProtectedRoute>
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/admin/owner-profile" 
+            element={
+              <Suspense fallback={<PageSkeleton />}>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminOwnerProfile />
                   </AdminLayout>
                 </ProtectedRoute>
               </Suspense>

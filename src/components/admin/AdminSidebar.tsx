@@ -1,4 +1,4 @@
-import { LayoutDashboard, Mail, MessageSquare, Image, FileText, BarChart3, Star, Settings2, Database } from 'lucide-react';
+import { LayoutDashboard, Mail, MessageSquare, Image, FileText, BarChart3, Star, Settings2, Database, User } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';
 import {
@@ -23,6 +23,7 @@ const items = [
   { title: 'Blog', url: '/admin/blog', icon: FileText },
   { title: 'Blog Generator', url: '/admin/blog-generator', icon: Settings2 },
   { title: 'Content Knowledge', url: '/admin/content-knowledge', icon: Database },
+  { title: 'Owner Profile', url: '/admin/owner-profile', icon: User },
 ];
 
 export function AdminSidebar() {
