@@ -827,6 +827,7 @@ This document outlines the development roadmap and strategic plan for the Saunas
 - Converted to path-based image references
 - Images now loaded on-demand instead of bundled
 - Eliminated unnecessary imports across components
+- **Fixed production image loading:** Converted all `/src/assets/` paths back to ES6 imports for proper bundling (Hero, Services, WhyChooseUs components)
 
 ✅ **Lazy Loading Implementation:**
 - Implemented code splitting for below-the-fold homepage components

@@ -2,30 +2,34 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import customSaunaImage from "@/assets/custom-sauna-design.png";
+import steamShowerImage from "@/assets/steam-shower.png";
+import residentialSaunaImage from "@/assets/residential-sauna.png";
+import outdoorSaunaImage from "@/assets/outdoor-sauna.png";
 
 const services = [
   {
     title: "Custom Sauna Design",
     description: "Personalized designs that blend seamlessly with your space and lifestyle.",
-    image: "/src/assets/custom-sauna-design.png",
+    image: customSaunaImage,
     link: "/services/custom-sauna-design"
   },
   {
     title: "Steam Shower Installation",
     description: "Transform your bathroom into a spa-like retreat with our steam shower solutions.",
-    image: "/src/assets/steam-shower.png",
+    image: steamShowerImage,
     link: "/services/steam-shower-installation"
   },
   {
     title: "Residential Sauna Builds",
     description: "Complete home sauna design and installation for the ultimate wellness sanctuary.",
-    image: "/src/assets/residential-sauna.png",
+    image: residentialSaunaImage,
     link: "/services/residential-sauna-builds"
   },
   {
     title: "Outdoor Sauna Kits",
     description: "Pre-built sauna kits designed for easy installation in your backyard or garden.",
-    image: "/src/assets/outdoor-sauna.png",
+    image: outdoorSaunaImage,
     link: "/services/outdoor-sauna-kits"
   }
 ];

@@ -2,13 +2,14 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { trackButtonClick } from "@/utils/analytics";
+import heroImage from "@/assets/hero-sauna.jpg";
 
 export const Hero = () => {
   return (
     <section 
       className="relative h-[700px] flex items-center justify-center text-white bg-cover bg-center"
       style={{
-        backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%), url(/src/assets/hero-sauna.jpg)`,
+        backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%), url(${heroImage})`,
       }}
     >
       <div className="container relative z-10 text-center max-w-4xl">
