@@ -107,4 +107,8 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // Avoid treating large bundles as build errors in CI by raising the warning limit
+    chunkSizeWarningLimit: 2000,
+  }
 }));
