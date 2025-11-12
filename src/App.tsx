@@ -47,6 +47,7 @@ const AdminBlogEditor = lazy(() => import("./pages/admin/BlogEditor"));
 const AdminBlogGeneratorSettings = lazy(() => import("./pages/admin/BlogGeneratorSettings"));
 const AdminContentKnowledge = lazy(() => import("./pages/admin/ContentKnowledge"));
 const AdminOwnerProfile = lazy(() => import("./pages/admin/OwnerProfile"));
+const AdminGTMDocumentation = lazy(() => import("./pages/admin/GTMDocumentation"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const Install = lazy(() => import("./pages/Install"));
@@ -231,6 +232,18 @@ const App = () => (
                 <ProtectedRoute>
                   <AdminLayout>
                     <AdminOwnerProfile />
+                  </AdminLayout>
+                </ProtectedRoute>
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/admin/gtm-docs" 
+            element={
+              <Suspense fallback={<PageSkeleton />}>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminGTMDocumentation />
                   </AdminLayout>
                 </ProtectedRoute>
               </Suspense>

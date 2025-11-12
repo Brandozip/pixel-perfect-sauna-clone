@@ -1,4 +1,4 @@
-import { LayoutDashboard, Mail, MessageSquare, Image, FileText, BarChart3, Star, Settings2, Database, User } from 'lucide-react';
+import { LayoutDashboard, Mail, MessageSquare, Image, FileText, BarChart3, Star, Settings2, Database, User, Settings } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';
 import {
@@ -20,6 +20,7 @@ const items = [
   { title: 'Gallery', url: '/admin/gallery', icon: Image },
   { title: 'Reviews', url: '/admin/reviews', icon: Star },
   { title: 'Analytics', url: '/admin/analytics', icon: BarChart3 },
+  { title: 'GTM Setup', url: '/admin/gtm-docs', icon: Settings },
   { title: 'Blog', url: '/admin/blog', icon: FileText },
   { title: 'Blog Generator', url: '/admin/blog-generator', icon: Settings2 },
   { title: 'Content Knowledge', url: '/admin/content-knowledge', icon: Database },
