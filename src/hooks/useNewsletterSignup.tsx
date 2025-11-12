@@ -3,11 +3,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 import { trackFormSubmission } from '@/utils/analytics';
+import { useGeoCheck } from '@/hooks/useGeoCheck';
 
 export function useNewsletterSignup() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { isAllowed, message: geoMessage, isLoading: geoLoading } = useGeoCheck();
 
   const emailSchema = z.string().trim().email('Invalid email address').max(255, 'Email must be less than 255 characters');
 
@@ -19,6 +21,16 @@ export function useNewsletterSignup() {
   const subscribe = async (e?: React.FormEvent) => {
     if (e) {
       e.preventDefault();
+    }
+    
+    // Check geo-location restriction
+    if (!isAllowed) {
+      toast({
+        title: 'Service Unavailable',
+        description: geoMessage || 'This service is only available to visitors from the United States.',
+        variant: 'destructive',
+      });
+      return false;
     }
     
     const validationResult = emailSchema.safeParse(email);
@@ -79,5 +91,8 @@ export function useNewsletterSignup() {
     setEmail,
     isLoading,
     subscribe,
+    isGeoAllowed: isAllowed,
+    geoMessage,
+    isGeoLoading: geoLoading,
   };
 }

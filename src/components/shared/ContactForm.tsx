@@ -6,13 +6,21 @@ import { useContactForm } from "@/hooks/useContactForm";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 
 const ContactForm: React.FC = () => {
-  const { formData, isSubmitting, handleChange, submitForm } = useContactForm();
+  const { formData, isSubmitting, handleChange, submitForm, isGeoAllowed, geoMessage, isGeoLoading } = useContactForm();
 
   return (
     <form 
       onSubmit={submitForm} 
       className="space-y-4"
     >
+      {!isGeoLoading && !isGeoAllowed && (
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md p-4 mb-4">
+          <p className="text-sm text-yellow-800 dark:text-yellow-200">
+            {geoMessage || 'This service is currently only available to visitors from the United States.'}
+          </p>
+        </div>
+      )}
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium mb-1">
@@ -104,9 +112,14 @@ const ContactForm: React.FC = () => {
       <Button 
         type="submit" 
         className="w-full font-medium bg-primary hover:bg-primary-emphasis text-primary-foreground"
-        disabled={isSubmitting}
+        disabled={isSubmitting || !isGeoAllowed || isGeoLoading}
       >
-        {isSubmitting ? (
+        {isGeoLoading ? (
+          <>
+            <LoadingSpinner size="sm" className="mr-2" />
+            Checking availability...
+          </>
+        ) : isSubmitting ? (
           <>
             <LoadingSpinner size="sm" className="mr-2" />
             Sending...

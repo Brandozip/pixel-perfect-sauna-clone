@@ -7,6 +7,18 @@
 **Version:** 3.5
 
 ### ✅ Recently Completed (November 2025):
+- **Geo-Restriction System:**
+  - Edge function for IP-based country detection
+  - US-only restriction for contact forms and newsletter signups
+  - Graceful degradation (allows access on detection failure)
+  - Visual indicators for restricted users
+  - Uses Cloudflare headers or ip-api.com fallback
+- **GTM Documentation Admin Page:**
+  - Interactive setup guide organized like GTM interface
+  - All 8 variables, 6 triggers, and 14 tags documented
+  - Copy-to-clipboard functionality for IDs
+  - Testing methods and troubleshooting guides
+  - Direct links to GTM and GA4 dashboards
 - **Google Tag Manager (GTM) Implementation:**
   - Migrated from direct GA4 to GTM for centralized tracking management
   - Dual GA4 property support (G-RZN58PQLNK and G-ZFFW9RVTRW)

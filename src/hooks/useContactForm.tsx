@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 import { trackFormSubmission } from '@/utils/analytics';
+import { useGeoCheck } from '@/hooks/useGeoCheck';
 
 interface ContactFormData {
   name: string;
@@ -23,6 +24,7 @@ export function useContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const hasStartedForm = useRef(false);
+  const { isAllowed, message: geoMessage, isLoading: geoLoading } = useGeoCheck();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -32,11 +34,6 @@ export function useContactForm() {
     // Track form start on first interaction
     if (!hasStartedForm.current) {
       hasStartedForm.current = true;
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'form_start', {
-          form_name: 'contact_form',
-        });
-      }
     }
     
     setFormData(prev => ({
@@ -82,6 +79,16 @@ export function useContactForm() {
   const submitForm = async (e?: React.FormEvent) => {
     if (e) {
       e.preventDefault();
+    }
+
+    // Check geo-location restriction
+    if (!isAllowed) {
+      toast({
+        title: 'Service Unavailable',
+        description: geoMessage || 'This service is only available to visitors from the United States.',
+        variant: 'destructive',
+      });
+      return false;
     }
 
     if (!validateForm()) {
@@ -150,6 +157,9 @@ export function useContactForm() {
     isSubmitting,
     handleChange,
     submitForm,
-    resetForm
+    resetForm,
+    isGeoAllowed: isAllowed,
+    geoMessage,
+    isGeoLoading: geoLoading,
   };
 }

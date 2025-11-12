@@ -11,3 +11,6 @@ verify_jwt = true
 
 [functions.monitor-content-health]
 verify_jwt = true
+
+[functions.check-geo-location]
+verify_jwt = false
