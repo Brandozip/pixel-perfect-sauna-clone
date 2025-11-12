@@ -1,9 +1,14 @@
-# Google Analytics Tracking Implementation
+# Analytics Tracking Implementation
 
 ## Overview
-Google Analytics 4 (GA4) property ID: **G-RZN58PQLNK**
+**Tracking Method:** Google Tag Manager (GTM)  
+**GA4 Properties:**
+- Primary: `G-RZN58PQLNK`
+- Secondary: `G-ZFFW9RVTRW`
 
 This document outlines all conversion tracking events implemented across the Saunas Plus website for comprehensive funnel analysis and conversion optimization.
+
+**Implementation:** All events are pushed to the dataLayer and managed through Google Tag Manager for centralized tracking configuration.
 
 ---
 
@@ -215,42 +220,75 @@ This document outlines all conversion tracking events implemented across the Sau
 All tracking functions are centralized in `/src/utils/analytics.ts`:
 
 ```typescript
-trackPageView(path: string)
-trackFormSubmission(formName: string)
-trackButtonClick(buttonName: string, location?: string)
-trackPhoneClick()
-trackEmailClick()
-trackServiceView(serviceName: string)
-trackBlogView(blogTitle: string, blogSlug: string)
+trackPageView(path: string)          // Pushes to dataLayer with event: 'page_view'
+trackFormSubmission(formName: string) // Pushes to dataLayer with event: 'form_submission'
+trackButtonClick(buttonName: string, location?: string) // Pushes to dataLayer with event: 'button_click'
+trackPhoneClick()                     // Pushes to dataLayer with event: 'phone_click'
+trackEmailClick()                     // Pushes to dataLayer with event: 'email_click'
+trackServiceView(serviceName: string) // Pushes to dataLayer with event: 'view_service'
+trackBlogView(blogTitle: string, blogSlug: string) // Pushes to dataLayer with event: 'view_blog'
 ```
+
+**How it works:**
+- All functions push events to `window.dataLayer`
+- Google Tag Manager listens for these events
+- GTM fires configured tags to both GA4 properties
+- No direct `gtag()` calls (managed through GTM)
 
 ---
 
 ## Testing & Verification
 
-### Real-time Testing
-1. Open Google Analytics 4 property
+### GTM Preview Mode (Recommended)
+1. Open Google Tag Manager
+2. Click "Preview" button
+3. Enter your website URL
+4. Test each event and verify tags fire correctly
+5. Check dataLayer variables populate correctly
+
+### Real-time Testing (Both GA4 Properties)
+1. Open both Google Analytics 4 properties
 2. Navigate to Reports → Realtime
 3. Perform actions on site
-4. Verify events appear in real-time view
+4. Verify events appear in both properties
 
-### Debug Mode (Chrome)
-1. Install Google Analytics Debugger extension
-2. Open developer console
-3. Look for `gtag` messages
-4. Verify parameters are correct
+### Google Tag Assistant
+1. Install Google Tag Assistant Chrome extension
+2. Visit your website
+3. Verify both GA4 properties are detected
+4. Check for any errors or warnings
+
+### Browser Console (DataLayer Check)
+1. Open browser Developer Tools (F12)
+2. Type `dataLayer` in console
+3. Verify events are being pushed with correct parameters
+4. Example output: `[{event: 'button_click', button_name: 'Free Consultation', ...}]`
 
 ---
 
 ## Next Steps
 
+### GTM Configuration Required
+⚠️ **Action Required:** Follow the comprehensive setup guide in `GTM_SETUP_GUIDE.md` to:
+1. Create your GTM container
+2. Configure both GA4 properties
+3. Set up custom event tags and triggers
+4. Test and publish your container
+
 ### Recommended Enhancements
-1. Set up GA4 conversion goals for key events
+1. Set up GA4 conversion goals for key events (see `GA4_CONVERSION_SETUP_GUIDE.md`)
 2. Create custom audiences for retargeting
 3. Link to Google Ads for conversion tracking
 4. Set up enhanced ecommerce (if/when shop is added)
 5. Create calculated metrics for conversion rates
 6. Set up alerts for conversion drops
+
+### Future GTM Integrations (No Code Required)
+- Facebook Pixel for Meta ads
+- LinkedIn Insight Tag for LinkedIn ads
+- Hotjar or similar for heatmaps and recordings
+- Google Ads remarketing tags
+- Custom JavaScript for advanced tracking
 
 ### A/B Testing Opportunities
 - Test CTA button copy ("Free Consultation" vs "Get Started")
@@ -260,5 +298,12 @@ trackBlogView(blogTitle: string, blogSlug: string)
 
 ---
 
+## Related Documentation
+- **GTM Setup Guide:** `GTM_SETUP_GUIDE.md` - Complete GTM configuration instructions
+- **GA4 Conversion Setup:** `GA4_CONVERSION_SETUP_GUIDE.md` - Mark events as conversions
+- **Game Plan:** `GAME_PLAN.md` - Project roadmap and status
+
+---
+
 *Last Updated: November 2025*
-*Version: 1.0*
+*Version: 2.0 - GTM Implementation*
