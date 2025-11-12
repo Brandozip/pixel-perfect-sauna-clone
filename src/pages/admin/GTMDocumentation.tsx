@@ -8,7 +8,6 @@ import { toast } from 'sonner';
 import {
   GTM_CONTAINER_ID,
   GA4_PRIMARY,
-  GA4_SECONDARY,
   VARIABLES,
   TRIGGERS,
   TAGS,
@@ -41,10 +40,10 @@ export default function GTMDocumentation() {
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
-      <div className="mb-8">
+        <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Google Tag Manager Setup Guide</h1>
         <p className="text-muted-foreground">
-          Complete documentation for configuring GTM with dual GA4 properties
+          Complete documentation for configuring GTM with GA4 tracking
         </p>
       </div>
 
@@ -60,7 +59,7 @@ export default function GTMDocumentation() {
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">GTM Container</CardTitle>
@@ -87,7 +86,7 @@ export default function GTMDocumentation() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Primary GA4</CardTitle>
+                <CardTitle className="text-lg">GA4 Property</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
@@ -95,27 +94,9 @@ export default function GTMDocumentation() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => copyToClipboard(GA4_PRIMARY, 'Primary GA4')}
+                    onClick={() => copyToClipboard(GA4_PRIMARY, 'GA4 Property')}
                   >
-                    {copiedId === 'Primary GA4' ? <CheckCircle className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Secondary GA4</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <p className="text-2xl font-bold font-mono">{GA4_SECONDARY}</p>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => copyToClipboard(GA4_SECONDARY, 'Secondary GA4')}
-                  >
-                    {copiedId === 'Secondary GA4' ? <CheckCircle className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                    {copiedId === 'GA4 Property' ? <CheckCircle className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                   </Button>
                 </div>
               </CardContent>
@@ -152,7 +133,7 @@ export default function GTMDocumentation() {
               </CardHeader>
               <CardContent>
                 <p className="text-3xl font-bold">{TAGS.length}</p>
-                <p className="text-sm text-muted-foreground mt-1">Total to create</p>
+                <p className="text-sm text-muted-foreground mt-1">1 config + {TAGS.length - 1} event tags</p>
               </CardContent>
             </Card>
           </div>
@@ -173,14 +154,7 @@ export default function GTMDocumentation() {
                 variant="outline"
                 onClick={() => window.open(`https://analytics.google.com/analytics/web/#/p${GA4_PRIMARY.replace('G-', '')}/reports/intelligenthome`, '_blank')}
               >
-                Open Primary GA4
-                <ExternalLink className="h-4 w-4 ml-2" />
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => window.open(`https://analytics.google.com/analytics/web/#/p${GA4_SECONDARY.replace('G-', '')}/reports/intelligenthome`, '_blank')}
-              >
-                Open Secondary GA4
+                Open GA4 Dashboard
                 <ExternalLink className="h-4 w-4 ml-2" />
               </Button>
             </CardContent>
@@ -227,38 +201,23 @@ export default function GTMDocumentation() {
 
           <Card>
             <CardHeader>
-              <CardTitle>GA4 Properties Configuration</CardTitle>
-              <CardDescription>Two GA4 properties tracking this website</CardDescription>
+              <CardTitle>GA4 Property Configuration</CardTitle>
+              <CardDescription>Your GA4 property for tracking website analytics</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="p-4 border rounded-lg space-y-2">
                 <div className="flex items-center justify-between">
-                  <Badge>Primary Property</Badge>
+                  <Badge>GA4 Property</Badge>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => copyToClipboard(GA4_PRIMARY, 'Primary GA4')}
+                    onClick={() => copyToClipboard(GA4_PRIMARY, 'GA4 Property')}
                   >
-                    {copiedId === 'Primary GA4' ? <CheckCircle className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                    {copiedId === 'GA4 Property' ? <CheckCircle className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                   </Button>
                 </div>
                 <p className="text-lg font-mono">{GA4_PRIMARY}</p>
                 <p className="text-sm text-muted-foreground">Main analytics property</p>
-              </div>
-
-              <div className="p-4 border rounded-lg space-y-2">
-                <div className="flex items-center justify-between">
-                  <Badge variant="secondary">Secondary Property</Badge>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => copyToClipboard(GA4_SECONDARY, 'Secondary GA4')}
-                  >
-                    {copiedId === 'Secondary GA4' ? <CheckCircle className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                  </Button>
-                </div>
-                <p className="text-lg font-mono">{GA4_SECONDARY}</p>
-                <p className="text-sm text-muted-foreground">Backup analytics property</p>
               </div>
             </CardContent>
           </Card>
@@ -304,14 +263,14 @@ export default function GTMDocumentation() {
         <TabsContent value="tags" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Configuration Tags</CardTitle>
+              <CardTitle>Configuration Tag</CardTitle>
               <CardDescription>
-                Create these 2 GA4 Configuration tags first - they must fire on all pages
+                Create this GA4 Configuration tag first - it must fire on all pages
               </CardDescription>
             </CardHeader>
           </Card>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6">
             {configTags.map((tag) => (
               <TagCard key={tag.name} tag={tag} />
             ))}
@@ -321,7 +280,7 @@ export default function GTMDocumentation() {
             <CardHeader>
               <CardTitle>Event Tags</CardTitle>
               <CardDescription>
-                Create these {eventTags.length} event tags - 2 tags per event (one for each GA4 property)
+                Create these {eventTags.length} event tags to track user interactions
               </CardDescription>
             </CardHeader>
           </Card>

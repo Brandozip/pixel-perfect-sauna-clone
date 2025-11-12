@@ -3,9 +3,7 @@
 ## Overview
 This guide provides step-by-step instructions for configuring Google Tag Manager (GTM) for the Saunas Plus website. GTM is now implemented in the codebase and ready for container configuration.
 
-**Current GA4 Properties:**
-- Primary: `G-RZN58PQLNK`
-- Secondary: `G-ZFFW9RVTRW`
+**GA4 Property:** `G-RZN58PQLNK`
 
 ---
 
@@ -13,42 +11,27 @@ This guide provides step-by-step instructions for configuring Google Tag Manager
 
 ✅ **Code Implementation Complete:**
 - GTM container code installed in `index.html`
+- Container ID: `GTM-5RQGG374` (already configured)
 - Analytics utilities refactored to use `dataLayer` (see `src/utils/analytics.ts`)
 - All tracking events preserved with same parameters
 
-⚠️ **Action Required:**
-You need to create and configure your GTM container (steps below).
+📋 **Action Required:**
+You need to configure your GTM container with the setup below.
 
 ---
 
-## Step 1: Create GTM Container
+## Step 1: Access Your GTM Container
 
 1. **Go to Google Tag Manager:**
    - Visit [https://tagmanager.google.com](https://tagmanager.google.com)
    - Sign in with your Google account
-
-2. **Create New Container:**
-   - Click "Create Account" (if first time) or "Create Container"
-   - Account Name: `Saunas Plus`
-   - Container Name: `saunasplus.com` (or your domain)
-   - Target Platform: **Web**
-   - Click "Create"
-
-3. **Get Your Container ID:**
-   - After creation, you'll see your container ID (format: `GTM-XXXXXXX`)
-   - **IMPORTANT:** Copy this ID
-
-4. **Update Your Code:**
-   - Open `index.html`
-   - Find line 38: `})(window,document,'script','dataLayer','GTM-XXXXXXX');</script>`
-   - Replace `GTM-XXXXXXX` with your actual container ID
-   - Also update line 156: `<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"`
+   - Select your container: `GTM-5RQGG374`
 
 ---
 
-## Step 2: Configure GA4 Tags
+## Step 2: Configure GA4 Tag
 
-### Tag 1: Primary GA4 Configuration (G-RZN58PQLNK)
+### GA4 Configuration Tag
 
 1. **In GTM, click "Tags" → "New"**
 2. **Tag Configuration:**
@@ -59,19 +42,7 @@ You need to create and configure your GTM container (steps below).
 4. **Triggering:**
    - Click "Triggering" box
    - Select "Initialization - All Pages"
-5. **Name the tag:** `GA4 Config - Primary (RZN58PQLNK)`
-6. **Click "Save"**
-
-### Tag 2: Secondary GA4 Configuration (G-ZFFW9RVTRW)
-
-1. **Create another new tag**
-2. **Tag Configuration:**
-   - Select "Google Analytics: GA4 Configuration"
-3. **Settings:**
-   - Measurement ID: `G-ZFFW9RVTRW`
-4. **Triggering:**
-   - Select "Initialization - All Pages"
-5. **Name the tag:** `GA4 Config - Secondary (ZFFW9RVTRW)`
+5. **Name the tag:** `GA4 Config - Primary`
 6. **Click "Save"**
 
 ---
@@ -82,55 +53,59 @@ Before creating event tags, set up these variables to capture data from the data
 
 1. **Go to "Variables" → "User-Defined Variables" → "New"**
 
-2. **Create the following variables (one at a time):**
+2. **Create the following 8 variables:**
 
 ### Variable 1: form_name
 - Variable Type: **Data Layer Variable**
 - Data Layer Variable Name: `form_name`
-- Name: `DLV - form_name`
+- Variable Name: `DLV - form_name`
 
 ### Variable 2: button_name
 - Variable Type: **Data Layer Variable**
 - Data Layer Variable Name: `button_name`
-- Name: `DLV - button_name`
+- Variable Name: `DLV - button_name`
 
 ### Variable 3: location
 - Variable Type: **Data Layer Variable**
 - Data Layer Variable Name: `location`
-- Name: `DLV - location`
+- Variable Name: `DLV - location`
 
 ### Variable 4: service_name
 - Variable Type: **Data Layer Variable**
 - Data Layer Variable Name: `service_name`
-- Name: `DLV - service_name`
+- Variable Name: `DLV - service_name`
 
 ### Variable 5: blog_title
 - Variable Type: **Data Layer Variable**
 - Data Layer Variable Name: `blog_title`
-- Name: `DLV - blog_title`
+- Variable Name: `DLV - blog_title`
 
 ### Variable 6: blog_slug
 - Variable Type: **Data Layer Variable**
 - Data Layer Variable Name: `blog_slug`
-- Name: `DLV - blog_slug`
+- Variable Name: `DLV - blog_slug`
 
 ### Variable 7: event_category
 - Variable Type: **Data Layer Variable**
 - Data Layer Variable Name: `event_category`
-- Name: `DLV - event_category`
+- Variable Name: `DLV - event_category`
 
 ### Variable 8: event_label
 - Variable Type: **Data Layer Variable**
 - Data Layer Variable Name: `event_label`
-- Name: `DLV - event_label`
+- Variable Name: `DLV - event_label`
+
+**Total Variables to Create: 8**
 
 ---
 
 ## Step 4: Create Custom Event Triggers
 
+These triggers listen for custom events pushed to the dataLayer by your website.
+
 1. **Go to "Triggers" → "New"**
 
-2. **Create the following triggers (one at a time):**
+2. **Create the following 6 triggers:**
 
 ### Trigger 1: Form Submission
 - Trigger Type: **Custom Event**
@@ -162,268 +137,257 @@ Before creating event tags, set up these variables to capture data from the data
 - Event name: `view_blog`
 - Name: `CE - view_blog`
 
+**Total Triggers to Create: 6**
+
 ---
 
-## Step 5: Create Event Tags (to Both GA4 Properties)
+## Step 5: Create Event Tags
 
-For each event below, you'll create **TWO tags** (one for each GA4 property).
+Now create event tags to send data to your GA4 property.
 
 ### Event 1: Form Submission
 
-**Tag 1a: Form Submission - Primary**
-1. **New Tag → Tag Configuration**
-2. **Select:** Google Analytics: GA4 Event
-3. **Configuration Tag:** Select `GA4 Config - Primary (RZN58PQLNK)`
+1. **Create new tag**
+2. **Tag Configuration:**
+   - Select "Google Analytics: GA4 Event"
+3. **Configuration Tag:** Select `GA4 Config - Primary`
 4. **Event Name:** `form_submission`
 5. **Event Parameters:**
-   - Parameter Name: `form_name`
-   - Value: `{{DLV - form_name}}`
-6. **Triggering:** `CE - form_submission`
-7. **Name:** `GA4 Event - Form Submission (Primary)`
-
-**Tag 1b: Form Submission - Secondary**
-1. Repeat steps above
-2. **Configuration Tag:** Select `GA4 Config - Secondary (ZFFW9RVTRW)`
-3. **Name:** `GA4 Event - Form Submission (Secondary)`
-
----
+   - Parameter: `form_name` | Value: `{{DLV - form_name}}`
+   - Parameter: `event_category` | Value: `{{DLV - event_category}}`
+   - Parameter: `event_label` | Value: `{{DLV - event_label}}`
+6. **Triggering:** Select `CE - form_submission`
+7. **Name:** `Form Submission - Primary`
+8. **Save**
 
 ### Event 2: Button Click
 
-**Tag 2a: Button Click - Primary**
-1. **New Tag → GA4 Event**
-2. **Configuration Tag:** Primary
-3. **Event Name:** `button_click`
-4. **Event Parameters:**
-   - Parameter Name: `button_name`, Value: `{{DLV - button_name}}`
-   - Parameter Name: `location`, Value: `{{DLV - location}}`
-5. **Triggering:** `CE - button_click`
-6. **Name:** `GA4 Event - Button Click (Primary)`
-
-**Tag 2b: Button Click - Secondary**
-1. Same as above with Secondary configuration tag
-
----
+1. **Create new tag**
+2. **Tag Configuration:** Google Analytics: GA4 Event
+3. **Configuration Tag:** `GA4 Config - Primary`
+4. **Event Name:** `button_click`
+5. **Event Parameters:**
+   - `button_name` → `{{DLV - button_name}}`
+   - `event_category` → `{{DLV - event_category}}`
+   - `event_label` → `{{DLV - event_label}}`
+6. **Triggering:** `CE - button_click`
+7. **Name:** `Button Click - Primary`
 
 ### Event 3: Phone Click
 
-**Tag 3a: Phone Click - Primary**
-1. **New Tag → GA4 Event**
-2. **Configuration Tag:** Primary
-3. **Event Name:** `phone_click`
-4. **Event Parameters:**
-   - Parameter Name: `event_category`, Value: `{{DLV - event_category}}`
-   - Parameter Name: `event_label`, Value: `{{DLV - event_label}}`
-5. **Triggering:** `CE - phone_click`
-6. **Name:** `GA4 Event - Phone Click (Primary)`
-
-**Tag 3b: Phone Click - Secondary**
-1. Same as above with Secondary configuration tag
-
----
+1. **Create new tag**
+2. **Tag Configuration:** Google Analytics: GA4 Event
+3. **Configuration Tag:** `GA4 Config - Primary`
+4. **Event Name:** `phone_click`
+5. **Event Parameters:**
+   - `location` → `{{DLV - location}}`
+   - `event_category` → `{{DLV - event_category}}`
+   - `event_label` → `{{DLV - event_label}}`
+6. **Triggering:** `CE - phone_click`
+7. **Name:** `Phone Click - Primary`
 
 ### Event 4: Email Click
 
-**Tag 4a: Email Click - Primary**
-1. **New Tag → GA4 Event**
-2. **Configuration Tag:** Primary
-3. **Event Name:** `email_click`
-4. **Event Parameters:**
-   - Parameter Name: `event_category`, Value: `{{DLV - event_category}}`
-   - Parameter Name: `event_label`, Value: `{{DLV - event_label}}`
-5. **Triggering:** `CE - email_click`
-6. **Name:** `GA4 Event - Email Click (Primary)`
-
-**Tag 4b: Email Click - Secondary**
-1. Same as above with Secondary configuration tag
-
----
+1. **Create new tag**
+2. **Tag Configuration:** Google Analytics: GA4 Event
+3. **Configuration Tag:** `GA4 Config - Primary`
+4. **Event Name:** `email_click`
+5. **Event Parameters:**
+   - `location` → `{{DLV - location}}`
+   - `event_category` → `{{DLV - event_category}}`
+   - `event_label` → `{{DLV - event_label}}`
+6. **Triggering:** `CE - email_click`
+7. **Name:** `Email Click - Primary`
 
 ### Event 5: Service View
 
-**Tag 5a: Service View - Primary**
-1. **New Tag → GA4 Event**
-2. **Configuration Tag:** Primary
-3. **Event Name:** `view_service`
-4. **Event Parameters:**
-   - Parameter Name: `service_name`, Value: `{{DLV - service_name}}`
-5. **Triggering:** `CE - view_service`
-6. **Name:** `GA4 Event - Service View (Primary)`
-
-**Tag 5b: Service View - Secondary**
-1. Same as above with Secondary configuration tag
-
----
+1. **Create new tag**
+2. **Tag Configuration:** Google Analytics: GA4 Event
+3. **Configuration Tag:** `GA4 Config - Primary`
+4. **Event Name:** `view_service`
+5. **Event Parameters:**
+   - `service_name` → `{{DLV - service_name}}`
+   - `event_category` → `{{DLV - event_category}}`
+   - `event_label` → `{{DLV - event_label}}`
+6. **Triggering:** `CE - view_service`
+7. **Name:** `Service View - Primary`
 
 ### Event 6: Blog View
 
-**Tag 6a: Blog View - Primary**
-1. **New Tag → GA4 Event**
-2. **Configuration Tag:** Primary
-3. **Event Name:** `view_blog`
-4. **Event Parameters:**
-   - Parameter Name: `blog_title`, Value: `{{DLV - blog_title}}`
-   - Parameter Name: `blog_slug`, Value: `{{DLV - blog_slug}}`
-5. **Triggering:** `CE - view_blog`
-6. **Name:** `GA4 Event - Blog View (Primary)`
+1. **Create new tag**
+2. **Tag Configuration:** Google Analytics: GA4 Event
+3. **Configuration Tag:** `GA4 Config - Primary`
+4. **Event Name:** `view_blog`
+5. **Event Parameters:**
+   - `blog_title` → `{{DLV - blog_title}}`
+   - `blog_slug` → `{{DLV - blog_slug}}`
+   - `event_category` → `{{DLV - event_category}}`
+   - `event_label` → `{{DLV - event_label}}`
+6. **Triggering:** `CE - view_blog`
+7. **Name:** `Blog View - Primary`
 
-**Tag 6b: Blog View - Secondary**
-1. Same as above with Secondary configuration tag
+**Total Event Tags to Create: 6**
 
 ---
 
-## Step 6: Publish Your Container
+## Step 6: Submit and Publish Container
 
-1. **Click "Submit" (top right)**
-2. **Version Name:** `Initial Setup - Dual GA4 + Events`
-3. **Version Description:** `Configured both GA4 properties with all custom events`
+1. **Click "Submit"** in the top right corner of GTM
+2. **Version Name:** `Initial GA4 Setup - RZN58PQLNK`
+3. **Version Description:** 
+   ```
+   - Added GA4 Configuration tag
+   - Created 8 data layer variables
+   - Created 6 custom event triggers
+   - Created 6 event tags for tracking
+   ```
 4. **Click "Publish"**
 
 ---
 
-## Step 7: Testing & Validation
+## Step 7: Test & Validate
 
 ### Method 1: GTM Preview Mode
 
-1. **In GTM, click "Preview" (top right)**
-2. **Enter your website URL**
-3. **Click "Connect"**
-4. **Test each event:**
-   - Page loads → Should see both GA4 Config tags fire
-   - Click buttons → Should see Button Click event
-   - Click phone → Should see Phone Click event
-   - Click email → Should see Email Click event
-   - Submit form → Should see Form Submission event
-   - View service page → Should see Service View event
-   - View blog post → Should see Blog View event
+1. In GTM, click **"Preview"** (top right)
+2. Enter your website URL
+3. In the new window that opens, interact with your site
+4. Check the "Tags Fired" section to verify:
+   - `GA4 Config - Primary` fires on every page
+   - Event tags fire on correct actions
 
 ### Method 2: Google Tag Assistant
 
-1. **Install Google Tag Assistant Chrome extension**
-2. **Visit your website**
-3. **Open Tag Assistant**
-4. **Verify:**
-   - Both GA4 properties appear (G-RZN58PQLNK and G-ZFFW9RVTRW)
-   - No errors shown
-   - Events are tracked correctly
+1. Install [Google Tag Assistant](https://chrome.google.com/webstore/detail/tag-assistant-legacy-by-g/kejbdjndbnbjgmefkgdddjlbokphdefk)
+2. Visit your website
+3. Click the extension icon
+4. Click "Record"
+5. Interact with your site
+6. Stop recording and review results
 
 ### Method 3: GA4 Real-Time Reports
 
-1. **Go to Google Analytics**
-2. **Open both GA4 properties**
-3. **Navigate to Reports → Realtime**
-4. **Perform actions on your site**
-5. **Verify events appear in both properties:**
-   - Page views
-   - Custom events (form_submission, button_click, etc.)
-   - Event parameters populated correctly
+1. Open Google Analytics 4
+2. Go to **Reports → Realtime**
+3. Interact with your website
+4. Events should appear within ~30 seconds
+5. Verify all parameters are captured correctly
 
 ### Method 4: Browser Console
 
-1. **Open browser Developer Tools (F12)**
-2. **Go to Console tab**
-3. **Type:** `dataLayer`
-4. **You should see an array of events pushed**
-5. **Each event should have:**
-   - `event` property (e.g., "form_submission")
-   - Relevant parameters (e.g., "form_name")
+1. Open your website
+2. Open DevTools (F12)
+3. Go to Console tab
+4. Type: `window.dataLayer`
+5. Interact with your site
+6. Check that new entries are pushed to dataLayer
 
 ---
 
 ## Troubleshooting
 
 ### Tags Not Firing
-- Check that container ID in `index.html` matches your GTM container
-- Verify triggers are set up correctly
-- Check Preview Mode to see if events are reaching GTM
+
+**Problem:** Tags don't fire in Preview Mode
+
+**Solutions:**
+- Check that trigger event name matches exactly (case-sensitive)
+- Verify trigger is attached to the tag
+- Ensure container is published
+- Clear browser cache and try again
 
 ### Events Missing Parameters
-- Verify Data Layer Variables are configured correctly
-- Check that variable names match exactly (case-sensitive)
-- Look in Preview Mode → Variables tab to see current values
 
-### Both GA4 Properties Not Receiving Data
-- Verify both Configuration tags are set to fire on "Initialization - All Pages"
-- Check that both GA4 Measurement IDs are correct
-- Ensure each event tag is linked to BOTH configuration tags
+**Problem:** Events fire but parameters are empty
 
-### No Data in GA4 Real-Time
-- Wait 1-2 minutes (slight delay is normal)
-- Check that GA4 properties are active (not deleted/suspended)
-- Verify you're looking at the correct property in GA4
+**Solutions:**
+- Verify all 8 data layer variables are created correctly
+- Check variable names match exactly (e.g., `DLV - form_name`)
+- Ensure parameters are added to tag configuration
+- Use Preview mode to inspect variable values
+
+### Data Not Reaching GA4
+
+**Problem:** Tags fire in GTM but no data in GA4
+
+**Solutions:**
+- Verify Measurement ID is correct: `G-RZN58PQLNK`
+- Check that Configuration tag fires on all pages
+- Ensure event tags reference the Configuration tag
+- Wait 24-48 hours for data to fully propagate (real-time should work immediately)
+
+### No Data in Real-Time Reports
+
+**Problem:** No events showing in GA4 Real-Time
+
+**Solutions:**
+- Verify you're looking at the correct GA4 property
+- Check that configuration tag is firing first
+- Ensure your IP isn't filtered in GA4 settings
+- Wait 30-60 seconds after interaction
+- Try in incognito mode (to bypass ad blockers)
 
 ---
 
-## Summary of Tags to Create
+## Summary
 
-| Tag Name | Type | Fires To | Trigger |
-|----------|------|----------|---------|
-| GA4 Config - Primary | GA4 Configuration | G-RZN58PQLNK | Initialization |
-| GA4 Config - Secondary | GA4 Configuration | G-ZFFW9RVTRW | Initialization |
-| GA4 Event - Form Submission (Primary) | GA4 Event | Primary | form_submission |
-| GA4 Event - Form Submission (Secondary) | GA4 Event | Secondary | form_submission |
-| GA4 Event - Button Click (Primary) | GA4 Event | Primary | button_click |
-| GA4 Event - Button Click (Secondary) | GA4 Event | Secondary | button_click |
-| GA4 Event - Phone Click (Primary) | GA4 Event | Primary | phone_click |
-| GA4 Event - Phone Click (Secondary) | GA4 Event | Secondary | phone_click |
-| GA4 Event - Email Click (Primary) | GA4 Event | Primary | email_click |
-| GA4 Event - Email Click (Secondary) | GA4 Event | Secondary | email_click |
-| GA4 Event - Service View (Primary) | GA4 Event | Primary | view_service |
-| GA4 Event - Service View (Secondary) | GA4 Event | Secondary | view_service |
-| GA4 Event - Blog View (Primary) | GA4 Event | Primary | view_blog |
-| GA4 Event - Blog View (Secondary) | GA4 Event | Secondary | view_blog |
-
-**Total: 14 tags (2 config + 12 event tags)**
+**What You Created:**
+| Type | Count | Purpose |
+|------|-------|---------|
+| Configuration Tag | 1 | Initializes GA4 on all pages |
+| Data Layer Variables | 8 | Captures event data |
+| Custom Triggers | 6 | Listens for custom events |
+| Event Tags | 6 | Sends events to GA4 |
+| **Total** | **21** | Complete tracking setup |
 
 ---
 
 ## Benefits of GTM Implementation
 
-✅ **Centralized Management:**
-- All tracking managed in one interface
-- No code deployments needed for changes
-- Version control for tracking configuration
-
-✅ **Multi-Property Support:**
-- Both GA4 properties configured simultaneously
-- Consistent tracking across both properties
-- Easy to add/remove properties
-
-✅ **Easy Testing:**
-- Preview mode for debugging
-- No need to deploy to test changes
-- Safe environment for experimentation
-
-✅ **Future Scalability:**
-- Add Facebook Pixel, LinkedIn Tag, etc. without code changes
-- A/B test tracking implementations
-- Deploy third-party tags easily
+✅ **Centralized Management:** All tracking code in one place  
+✅ **Easy Updates:** Change tracking without code deployments  
+✅ **Built-in Testing:** Preview mode for safe validation  
+✅ **Future-Ready:** Easy to add more tracking tools  
+✅ **Version Control:** Track changes and rollback if needed  
+✅ **Team Collaboration:** Multiple users can manage tags
 
 ---
 
 ## Next Steps
 
-After completing this setup:
+### 1. Monitor GA4 Data
+- Check Real-Time reports daily for first week
+- Verify all events are tracking correctly
+- Review event parameters for completeness
 
-1. **Monitor both GA4 properties for 48 hours**
-2. **Set up GA4 Conversions** (see `GA4_CONVERSION_SETUP_GUIDE.md`)
-3. **Create custom audiences** for remarketing
-4. **Set up GA4 reports** for funnel analysis
-5. **Consider adding:**
-   - Facebook Pixel (for Meta ads)
-   - LinkedIn Insight Tag (for LinkedIn ads)
-   - Hotjar or similar (for heatmaps)
+### 2. Set Up Conversions
+- In GA4, mark key events as conversions:
+  - `form_submission` (high priority)
+  - `phone_click` (high priority)
+  - `email_click` (high priority)
+
+### 3. Create Audiences
+- Use event parameters to segment users
+- Build remarketing lists for ads
+- Target high-intent visitors
+
+### 4. Add More Tools (Optional)
+- Facebook Pixel
+- LinkedIn Insight Tag
+- Twitter conversion tracking
+- All can be added through GTM without touching code!
 
 ---
 
 ## Support Resources
 
-- [Google Tag Manager Help](https://support.google.com/tagmanager)
-- [GA4 Setup Guide](https://support.google.com/analytics/answer/9304153)
+- [GTM Documentation](https://support.google.com/tagmanager)
+- [GA4 Documentation](https://support.google.com/analytics/answer/9304153)
 - [GTM Community](https://www.en.advertisercommunity.com/t5/Google-Tag-Manager/ct-p/Google-Tag-Manager)
-- [Analytics Tracking Documentation](./ANALYTICS_TRACKING.md)
+- [Saunas Plus Admin Dashboard](https://your-domain.com/admin/gtm-docs) - Interactive setup guide
 
 ---
 
-*Last Updated: November 2025*
-*Version: 1.0*
+**Last Updated:** November 2025  
+**GTM Container ID:** GTM-5RQGG374  
+**GA4 Property:** G-RZN58PQLNK

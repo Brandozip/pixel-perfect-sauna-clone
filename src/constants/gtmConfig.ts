@@ -1,6 +1,5 @@
 export const GTM_CONTAINER_ID = 'GTM-5RQGG374';
 export const GA4_PRIMARY = 'G-RZN58PQLNK';
-export const GA4_SECONDARY = 'G-ZFFW9RVTRW';
 
 export interface Variable {
   name: string;
@@ -83,42 +82,42 @@ export const TRIGGERS: Trigger[] = [
     name: 'CE - form_submission',
     type: 'Custom Event',
     eventName: 'form_submission',
-    usedBy: ['Form Submission - Primary', 'Form Submission - Secondary'],
+    usedBy: ['Form Submission - Primary'],
     description: 'Fires when any form is submitted on the site'
   },
   {
     name: 'CE - button_click',
     type: 'Custom Event',
     eventName: 'button_click',
-    usedBy: ['Button Click - Primary', 'Button Click - Secondary'],
+    usedBy: ['Button Click - Primary'],
     description: 'Fires when tracked buttons are clicked'
   },
   {
     name: 'CE - phone_click',
     type: 'Custom Event',
     eventName: 'phone_click',
-    usedBy: ['Phone Click - Primary', 'Phone Click - Secondary'],
+    usedBy: ['Phone Click - Primary'],
     description: 'Fires when phone number links are clicked'
   },
   {
     name: 'CE - email_click',
     type: 'Custom Event',
     eventName: 'email_click',
-    usedBy: ['Email Click - Primary', 'Email Click - Secondary'],
+    usedBy: ['Email Click - Primary'],
     description: 'Fires when email links are clicked'
   },
   {
     name: 'CE - view_service',
     type: 'Custom Event',
     eventName: 'view_service',
-    usedBy: ['Service View - Primary', 'Service View - Secondary'],
+    usedBy: ['Service View - Primary'],
     description: 'Fires when service pages are viewed'
   },
   {
     name: 'CE - view_blog',
     type: 'Custom Event',
     eventName: 'view_blog',
-    usedBy: ['Blog View - Primary', 'Blog View - Secondary'],
+    usedBy: ['Blog View - Primary'],
     description: 'Fires when blog posts are viewed'
   }
 ];
@@ -129,15 +128,7 @@ export const TAGS: Tag[] = [
     type: 'Google Analytics: GA4 Configuration',
     measurementId: GA4_PRIMARY,
     trigger: 'Initialization - All Pages',
-    description: 'Primary GA4 configuration tag - fires on every page',
-    isConfig: true
-  },
-  {
-    name: 'GA4 Config - Secondary',
-    type: 'Google Analytics: GA4 Configuration',
-    measurementId: GA4_SECONDARY,
-    trigger: 'Initialization - All Pages',
-    description: 'Secondary GA4 configuration tag - fires on every page',
+    description: 'GA4 configuration tag - fires on every page',
     isConfig: true
   },
   {
@@ -149,18 +140,7 @@ export const TAGS: Tag[] = [
       { name: 'event_category', value: '{{DLV - event_category}}' },
       { name: 'event_label', value: '{{DLV - event_label}}' }
     ],
-    description: 'Tracks form submissions to primary GA4 property'
-  },
-  {
-    name: 'Form Submission - Secondary',
-    type: 'Google Analytics: GA4 Event',
-    trigger: 'CE - form_submission',
-    parameters: [
-      { name: 'form_name', value: '{{DLV - form_name}}' },
-      { name: 'event_category', value: '{{DLV - event_category}}' },
-      { name: 'event_label', value: '{{DLV - event_label}}' }
-    ],
-    description: 'Tracks form submissions to secondary GA4 property'
+    description: 'Tracks form submissions to GA4 property'
   },
   {
     name: 'Button Click - Primary',
@@ -171,18 +151,7 @@ export const TAGS: Tag[] = [
       { name: 'event_category', value: '{{DLV - event_category}}' },
       { name: 'event_label', value: '{{DLV - event_label}}' }
     ],
-    description: 'Tracks button clicks to primary GA4 property'
-  },
-  {
-    name: 'Button Click - Secondary',
-    type: 'Google Analytics: GA4 Event',
-    trigger: 'CE - button_click',
-    parameters: [
-      { name: 'button_name', value: '{{DLV - button_name}}' },
-      { name: 'event_category', value: '{{DLV - event_category}}' },
-      { name: 'event_label', value: '{{DLV - event_label}}' }
-    ],
-    description: 'Tracks button clicks to secondary GA4 property'
+    description: 'Tracks button clicks to GA4 property'
   },
   {
     name: 'Phone Click - Primary',
@@ -193,18 +162,7 @@ export const TAGS: Tag[] = [
       { name: 'event_category', value: '{{DLV - event_category}}' },
       { name: 'event_label', value: '{{DLV - event_label}}' }
     ],
-    description: 'Tracks phone clicks to primary GA4 property'
-  },
-  {
-    name: 'Phone Click - Secondary',
-    type: 'Google Analytics: GA4 Event',
-    trigger: 'CE - phone_click',
-    parameters: [
-      { name: 'location', value: '{{DLV - location}}' },
-      { name: 'event_category', value: '{{DLV - event_category}}' },
-      { name: 'event_label', value: '{{DLV - event_label}}' }
-    ],
-    description: 'Tracks phone clicks to secondary GA4 property'
+    description: 'Tracks phone clicks to GA4 property'
   },
   {
     name: 'Email Click - Primary',
@@ -215,18 +173,7 @@ export const TAGS: Tag[] = [
       { name: 'event_category', value: '{{DLV - event_category}}' },
       { name: 'event_label', value: '{{DLV - event_label}}' }
     ],
-    description: 'Tracks email clicks to primary GA4 property'
-  },
-  {
-    name: 'Email Click - Secondary',
-    type: 'Google Analytics: GA4 Event',
-    trigger: 'CE - email_click',
-    parameters: [
-      { name: 'location', value: '{{DLV - location}}' },
-      { name: 'event_category', value: '{{DLV - event_category}}' },
-      { name: 'event_label', value: '{{DLV - event_label}}' }
-    ],
-    description: 'Tracks email clicks to secondary GA4 property'
+    description: 'Tracks email clicks to GA4 property'
   },
   {
     name: 'Service View - Primary',
@@ -237,18 +184,7 @@ export const TAGS: Tag[] = [
       { name: 'event_category', value: '{{DLV - event_category}}' },
       { name: 'event_label', value: '{{DLV - event_label}}' }
     ],
-    description: 'Tracks service page views to primary GA4 property'
-  },
-  {
-    name: 'Service View - Secondary',
-    type: 'Google Analytics: GA4 Event',
-    trigger: 'CE - view_service',
-    parameters: [
-      { name: 'service_name', value: '{{DLV - service_name}}' },
-      { name: 'event_category', value: '{{DLV - event_category}}' },
-      { name: 'event_label', value: '{{DLV - event_label}}' }
-    ],
-    description: 'Tracks service page views to secondary GA4 property'
+    description: 'Tracks service page views to GA4 property'
   },
   {
     name: 'Blog View - Primary',
@@ -260,19 +196,7 @@ export const TAGS: Tag[] = [
       { name: 'event_category', value: '{{DLV - event_category}}' },
       { name: 'event_label', value: '{{DLV - event_label}}' }
     ],
-    description: 'Tracks blog post views to primary GA4 property'
-  },
-  {
-    name: 'Blog View - Secondary',
-    type: 'Google Analytics: GA4 Event',
-    trigger: 'CE - view_blog',
-    parameters: [
-      { name: 'blog_title', value: '{{DLV - blog_title}}' },
-      { name: 'blog_slug', value: '{{DLV - blog_slug}}' },
-      { name: 'event_category', value: '{{DLV - event_category}}' },
-      { name: 'event_label', value: '{{DLV - event_label}}' }
-    ],
-    description: 'Tracks blog post views to secondary GA4 property'
+    description: 'Tracks blog post views to GA4 property'
   }
 ];
 
@@ -380,24 +304,10 @@ export const TROUBLESHOOTING = [
       'Event tag not linked to config tag'
     ],
     solutions: [
-      'Verify Measurement IDs: G-RZN58PQLNK and G-ZFFW9RVTRW',
-      'Check config tags fire on all pages',
+      'Verify Measurement ID: G-RZN58PQLNK',
+      'Check config tag fires on all pages',
       'Ensure event tags reference the correct config tag',
       'Check GA4 real-time reports (can take 30 seconds)'
-    ]
-  },
-  {
-    issue: 'Only one GA4 property receiving data',
-    causes: [
-      'Missing secondary configuration tag',
-      'Event tags only created for one property',
-      'Wrong trigger on secondary tags'
-    ],
-    solutions: [
-      'Create both config tags (Primary and Secondary)',
-      'Create event tags for BOTH properties (12 total)',
-      'Verify each event has 2 tags (one per property)',
-      'Check both GA4 dashboards in real-time'
     ]
   }
 ];

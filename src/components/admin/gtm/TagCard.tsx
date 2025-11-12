@@ -93,9 +93,7 @@ export function TagCard({ tag }: TagCardProps) {
                   </>
                 ) : (
                   <>
-                    <li>Select Configuration Tag: <code className="text-xs bg-muted px-1 rounded">
-                      {tag.name.includes('Primary') ? 'GA4 Config - Primary' : 'GA4 Config - Secondary'}
-                    </code></li>
+                    <li>Select Configuration Tag: <code className="text-xs bg-muted px-1 rounded">GA4 Config - Primary</code></li>
                     <li>Enter Event Name (leave it as it suggests or enter the trigger event name)</li>
                     <li>Under Event Parameters, add each parameter:
                       <ul className="ml-6 mt-1 space-y-1">

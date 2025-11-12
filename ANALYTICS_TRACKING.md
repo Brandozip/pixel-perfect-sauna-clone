@@ -2,9 +2,7 @@
 
 ## Overview
 **Tracking Method:** Google Tag Manager (GTM)  
-**GA4 Properties:**
-- Primary: `G-RZN58PQLNK`
-- Secondary: `G-ZFFW9RVTRW`
+**GA4 Property:** `G-RZN58PQLNK`
 
 This document outlines all conversion tracking events implemented across the Saunas Plus website for comprehensive funnel analysis and conversion optimization.
 
