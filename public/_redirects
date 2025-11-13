@@ -1,0 +1,7 @@
+# Sitemap rewrites to edge functions
+/sitemap.xml https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap 200
+/sitemap-images.xml https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-image-sitemap 200
+/sitemap-index.xml https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap-index 200
+
+# SPA fallback
+/* /index.html 200
