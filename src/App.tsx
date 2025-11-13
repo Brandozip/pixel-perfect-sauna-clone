@@ -51,9 +51,6 @@ const AdminGTMDocumentation = lazy(() => import("./pages/admin/GTMDocumentation"
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const Install = lazy(() => import("./pages/Install"));
-const Sitemap = lazy(() => import("./pages/Sitemap"));
-const SitemapImages = lazy(() => import("./pages/SitemapImages"));
-const SitemapIndex = lazy(() => import("./pages/SitemapIndex"));
 
 import { AdminAuthProvider } from "./hooks/useAdminAuth";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
@@ -98,11 +95,6 @@ const App = () => (
           <Route path="/outdoor-sauna-landing" element={<Suspense fallback={<PageSkeleton />}><OutdoorSaunaLanding /></Suspense>} />
           <Route path="/fast-track" element={<Suspense fallback={<PageSkeleton />}><FastTrackLanding /></Suspense>} />
           <Route path="/cost-calculator" element={<Suspense fallback={<PageSkeleton />}><CostCalculator /></Suspense>} />
-          
-          {/* Sitemap Routes */}
-          <Route path="/sitemap.xml" element={<Suspense fallback={<PageSkeleton />}><Sitemap /></Suspense>} />
-          <Route path="/sitemap-images.xml" element={<Suspense fallback={<PageSkeleton />}><SitemapImages /></Suspense>} />
-          <Route path="/sitemap-index.xml" element={<Suspense fallback={<PageSkeleton />}><SitemapIndex /></Suspense>} />
           
           {/* Blog Routes */}
           <Route path="/blog" element={<Suspense fallback={<PageSkeleton />}><Blog /></Suspense>} />

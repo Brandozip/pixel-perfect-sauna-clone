@@ -9,6 +9,23 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    proxy: {
+      '/sitemap.xml': {
+        target: 'https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap',
+        changeOrigin: true,
+        rewrite: () => '',
+      },
+      '/sitemap-images.xml': {
+        target: 'https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-image-sitemap',
+        changeOrigin: true,
+        rewrite: () => '',
+      },
+      '/sitemap-index.xml': {
+        target: 'https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap-index',
+        changeOrigin: true,
+        rewrite: () => '',
+      },
+    },
   },
   plugins: [
     react(),
