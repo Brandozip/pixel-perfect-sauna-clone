@@ -2,12 +2,16 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, FileText, MessageSquare, Star, TrendingUp, Send, Eye, AlertCircle } from 'lucide-react';
+import { Mail, FileText, MessageSquare, Star, TrendingUp, Send, Eye, AlertCircle, Calendar } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { format, startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface DashboardStats {
   subscribers: number;
@@ -36,43 +40,107 @@ interface PendingReview {
   created_at: string;
 }
 
+type DateRangePreset = 'today' | 'week' | 'month' | 'custom';
+
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentSubmissions, setRecentSubmissions] = useState<RecentSubmission[]>([]);
   const [pendingReviews, setPendingReviews] = useState<PendingReview[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [dateRangePreset, setDateRangePreset] = useState<DateRangePreset>('month');
+  const [customDateRange, setCustomDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({
+    from: undefined,
+    to: undefined,
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchAllData();
-  }, []);
+  }, [dateRangePreset, customDateRange]);
+
+  const getDateRange = () => {
+    const now = new Date();
+    let startDate: Date;
+    let endDate: Date = endOfDay(now);
+
+    switch (dateRangePreset) {
+      case 'today':
+        startDate = startOfDay(now);
+        break;
+      case 'week':
+        startDate = startOfWeek(now);
+        endDate = endOfWeek(now);
+        break;
+      case 'month':
+        startDate = startOfMonth(now);
+        endDate = endOfMonth(now);
+        break;
+      case 'custom':
+        if (customDateRange.from && customDateRange.to) {
+          startDate = startOfDay(customDateRange.from);
+          endDate = endOfDay(customDateRange.to);
+        } else {
+          startDate = startOfMonth(now);
+          endDate = endOfMonth(now);
+        }
+        break;
+      default:
+        startDate = startOfMonth(now);
+    }
+
+    return { startDate: startDate.toISOString(), endDate: endDate.toISOString() };
+  };
 
   const fetchAllData = async () => {
     try {
       setLoading(true);
+      const { startDate, endDate } = getDateRange();
       
       const [subscribersRes, submissionsRes, imagesRes, reviewsRes, blogPostsRes] = await Promise.all([
-        supabase.from('newsletter_subscribers').select('*', { count: 'exact', head: true }),
-        supabase.from('contacts').select('*', { count: 'exact', head: true }),
-        supabase.from('gallery_images').select('*', { count: 'exact', head: true }),
-        supabase.from('reviews').select('*', { count: 'exact', head: true }),
+        supabase.from('newsletter_subscribers').select('*', { count: 'exact', head: true })
+          .gte('subscribed_at', startDate)
+          .lte('subscribed_at', endDate),
+        supabase.from('contacts').select('*', { count: 'exact', head: true })
+          .gte('created_at', startDate)
+          .lte('created_at', endDate),
+        supabase.from('gallery_images').select('*', { count: 'exact', head: true })
+          .gte('created_at', startDate)
+          .lte('created_at', endDate),
+        supabase.from('reviews').select('*', { count: 'exact', head: true })
+          .gte('created_at', startDate)
+          .lte('created_at', endDate),
         supabase.from('blog_posts').select('*', { count: 'exact', head: true })
+          .gte('created_at', startDate)
+          .lte('created_at', endDate)
       ]);
 
-      const allReviews = await supabase.from('reviews').select('rating');
+      const allReviews = await supabase.from('reviews').select('rating')
+        .gte('created_at', startDate)
+        .lte('created_at', endDate);
       const avgRating = allReviews.data && allReviews.data.length > 0
         ? (allReviews.data.reduce((acc, r) => acc + r.rating, 0) / allReviews.data.length).toFixed(1)
         : '0.0';
 
-      const pendingReviewsRes = await supabase.from('reviews').select('*', { count: 'exact', head: true }).eq('status', 'pending');
-      const newSubmissionsRes = await supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('status', 'new');
-      const pendingBlogsRes = await supabase.from('blog_posts').select('*', { count: 'exact', head: true }).eq('status', 'draft');
+      const pendingReviewsRes = await supabase.from('reviews').select('*', { count: 'exact', head: true })
+        .eq('status', 'pending')
+        .gte('created_at', startDate)
+        .lte('created_at', endDate);
+      const newSubmissionsRes = await supabase.from('contacts').select('*', { count: 'exact', head: true })
+        .eq('status', 'new')
+        .gte('created_at', startDate)
+        .lte('created_at', endDate);
+      const pendingBlogsRes = await supabase.from('blog_posts').select('*', { count: 'exact', head: true })
+        .eq('status', 'draft')
+        .gte('created_at', startDate)
+        .lte('created_at', endDate);
 
       // Fetch recent submissions
       const recentSubmissionsRes = await supabase
         .from('contacts')
         .select('id, name, email, created_at, status')
+        .gte('created_at', startDate)
+        .lte('created_at', endDate)
         .order('created_at', { ascending: false })
         .limit(5);
 
@@ -81,6 +149,8 @@ export default function AdminDashboard() {
         .from('reviews')
         .select('id, author_name, rating, created_at')
         .eq('status', 'pending')
+        .gte('created_at', startDate)
+        .lte('created_at', endDate)
         .order('created_at', { ascending: false })
         .limit(5);
 
@@ -140,9 +210,82 @@ export default function AdminDashboard() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-2">Quick overview and actions</p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-muted-foreground mt-2">Quick overview and actions</p>
+        </div>
+        
+        {/* Date Range Filter */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex gap-2">
+            <Button
+              variant={dateRangePreset === 'today' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setDateRangePreset('today')}
+            >
+              Today
+            </Button>
+            <Button
+              variant={dateRangePreset === 'week' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setDateRangePreset('week')}
+            >
+              This Week
+            </Button>
+            <Button
+              variant={dateRangePreset === 'month' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setDateRangePreset('month')}
+            >
+              This Month
+            </Button>
+          </div>
+          
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={dateRangePreset === 'custom' ? 'default' : 'outline'}
+                size="sm"
+                className={cn('justify-start text-left font-normal')}
+              >
+                <Calendar className="mr-2 h-4 w-4" />
+                {dateRangePreset === 'custom' && customDateRange.from && customDateRange.to
+                  ? `${format(customDateRange.from, 'MMM dd')} - ${format(customDateRange.to, 'MMM dd')}`
+                  : 'Custom Range'}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="end">
+              <div className="p-3 space-y-3">
+                <div>
+                  <p className="text-sm font-medium mb-2">Start Date</p>
+                  <CalendarComponent
+                    mode="single"
+                    selected={customDateRange.from}
+                    onSelect={(date) => {
+                      setCustomDateRange({ ...customDateRange, from: date });
+                      if (date && customDateRange.to) setDateRangePreset('custom');
+                    }}
+                    className="pointer-events-auto"
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-medium mb-2">End Date</p>
+                  <CalendarComponent
+                    mode="single"
+                    selected={customDateRange.to}
+                    onSelect={(date) => {
+                      setCustomDateRange({ ...customDateRange, to: date });
+                      if (customDateRange.from && date) setDateRangePreset('custom');
+                    }}
+                    disabled={(date) => customDateRange.from ? date < customDateRange.from : false}
+                    className="pointer-events-auto"
+                  />
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
 
       {/* Quick Stats */}
