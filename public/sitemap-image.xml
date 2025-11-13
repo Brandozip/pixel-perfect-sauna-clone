@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Singular path support for /sitemap-image.xml -->
+  <sitemap>
+    <loc>https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-image-sitemap</loc>
+  </sitemap>
+</sitemapindex>
+

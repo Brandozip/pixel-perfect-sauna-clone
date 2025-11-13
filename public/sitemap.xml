@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Static sitemap index served from Lovable to avoid 404s.
+       Points to dynamic Supabase Edge Function sitemaps. -->
+  <sitemap>
+    <loc>https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-image-sitemap</loc>
+  </sitemap>
+</sitemapindex>
+
