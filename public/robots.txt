@@ -4,5 +4,5 @@ Allow: /
 # Disallow admin pages from crawling
 Disallow: /admin/
 
-# Sitemap
-Sitemap: https://www.saunasplus.com/sitemap.xml
+# Sitemap Index
+Sitemap: https://www.saunasplus.com/sitemap-index.xml
