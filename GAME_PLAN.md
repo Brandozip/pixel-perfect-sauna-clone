@@ -46,11 +46,10 @@
   - Custom conversion values and remarketing audiences documented
 
 ### 🚀 Next Priorities:
-1. **GTM Container Configuration** - Complete setup guide in GTM_SETUP_GUIDE.md (user action required)
-2. **Responsive Images** - Add srcset and WebP format support
-3. **Shopify Integration** (Phase 4) - E-commerce functionality
-4. **Push Notifications** - Re-engage users via PWA
-5. **SEO Enhancement** (Phase 4A-F) - Advanced optimization
+1. **Fix Custom Domain Setup** - Verify DNS points to Lovable (185.158.133.1) and SSL is provisioned
+2. **GTM Container Configuration** - Complete setup guide in GTM_SETUP_GUIDE.md (user action required)
+3. **Responsive Images** - Add srcset and WebP format support
+4. **Shopify Integration** (Phase 4) - E-commerce functionality
 
 ### 📊 System Health:
 - ✅ All admin features operational
