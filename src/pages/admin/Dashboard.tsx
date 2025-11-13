@@ -2,8 +2,12 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, FileText, Image, PenSquare, BarChart3, Star, Users, Eye, TrendingUp, Activity, Database } from 'lucide-react';
+import { Mail, FileText, MessageSquare, Star, TrendingUp, Send, Eye, AlertCircle } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/loading-spinner';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 
 interface DashboardStats {
   subscribers: number;
@@ -13,28 +17,47 @@ interface DashboardStats {
   reviews: number;
   avgRating: string;
   pendingReviews: number;
-  indexedPages: number;
-  pageTypes: number;
+  blogPosts: number;
+  pendingBlogs: number;
+}
+
+interface RecentSubmission {
+  id: string;
+  name: string;
+  email: string;
+  created_at: string;
+  status: string;
+}
+
+interface PendingReview {
+  id: string;
+  author_name: string;
+  rating: number;
+  created_at: string;
 }
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [recentSubmissions, setRecentSubmissions] = useState<RecentSubmission[]>([]);
+  const [pendingReviews, setPendingReviews] = useState<PendingReview[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchStats();
+    fetchAllData();
   }, []);
 
-  const fetchStats = async () => {
+  const fetchAllData = async () => {
     try {
       setLoading(true);
       
-      const [subscribersRes, submissionsRes, imagesRes, reviewsRes, contentRes] = await Promise.all([
+      const [subscribersRes, submissionsRes, imagesRes, reviewsRes, blogPostsRes] = await Promise.all([
         supabase.from('newsletter_subscribers').select('*', { count: 'exact', head: true }),
         supabase.from('contacts').select('*', { count: 'exact', head: true }),
         supabase.from('gallery_images').select('*', { count: 'exact', head: true }),
         supabase.from('reviews').select('*', { count: 'exact', head: true }),
-        supabase.from('site_content').select('page_type')
+        supabase.from('blog_posts').select('*', { count: 'exact', head: true })
       ]);
 
       const allReviews = await supabase.from('reviews').select('rating');
@@ -44,8 +67,22 @@ export default function AdminDashboard() {
 
       const pendingReviewsRes = await supabase.from('reviews').select('*', { count: 'exact', head: true }).eq('status', 'pending');
       const newSubmissionsRes = await supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('status', 'new');
+      const pendingBlogsRes = await supabase.from('blog_posts').select('*', { count: 'exact', head: true }).eq('status', 'draft');
 
-      const pageTypes = contentRes.data ? new Set(contentRes.data.map(c => c.page_type)).size : 0;
+      // Fetch recent submissions
+      const recentSubmissionsRes = await supabase
+        .from('contacts')
+        .select('id, name, email, created_at, status')
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      // Fetch pending reviews
+      const pendingReviewsData = await supabase
+        .from('reviews')
+        .select('id, author_name, rating, created_at')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+        .limit(5);
 
       setStats({
         subscribers: subscribersRes.count || 0,
@@ -55,13 +92,41 @@ export default function AdminDashboard() {
         reviews: reviewsRes.count || 0,
         avgRating,
         pendingReviews: pendingReviewsRes.count || 0,
-        indexedPages: contentRes.data?.length || 0,
-        pageTypes
+        blogPosts: blogPostsRes.count || 0,
+        pendingBlogs: pendingBlogsRes.count || 0
       });
+
+      setRecentSubmissions(recentSubmissionsRes.data || []);
+      setPendingReviews(pendingReviewsData.data || []);
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      console.error('Error fetching data:', error);
+      toast.error('Failed to load dashboard data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSubmitToGoogle = async () => {
+    setSubmitting(true);
+    try {
+      const urls = [
+        'https://www.saunasplus.com/',
+        'https://www.saunasplus.com/sitemap-index.xml',
+      ];
+
+      const { data, error } = await supabase.functions.invoke('submit-to-google', {
+        body: { urls, type: 'URL_UPDATED' }
+      });
+
+      if (error) throw error;
+
+      const successCount = data?.results?.filter((r: any) => r.success).length || 0;
+      toast.success(`Successfully submitted ${successCount} URLs to Google`);
+    } catch (error) {
+      console.error('Error submitting to Google:', error);
+      toast.error('Failed to submit URLs to Google');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -77,7 +142,7 @@ export default function AdminDashboard() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-2">Overview of your business metrics and admin tools</p>
+        <p className="text-muted-foreground mt-2">Quick overview and actions</p>
       </div>
 
       {/* Quick Stats */}
@@ -86,197 +151,248 @@ export default function AdminDashboard() {
           <Card className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Subscribers</p>
-                <p className="text-2xl font-bold">{stats.subscribers}</p>
+                <p className="text-sm text-muted-foreground">New Submissions</p>
+                <p className="text-2xl font-bold">{stats.newSubmissions}</p>
+                <p className="text-xs text-muted-foreground">{stats.submissions} total</p>
               </div>
-              <Mail className="h-8 w-8 text-blue-500" />
+              <MessageSquare className="h-8 w-8 text-blue-500" />
             </div>
           </Card>
 
           <Card className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Submissions</p>
-                <p className="text-2xl font-bold">{stats.submissions}</p>
-                {stats.newSubmissions > 0 && (
-                  <p className="text-xs text-orange-500">{stats.newSubmissions} new</p>
-                )}
+                <p className="text-sm text-muted-foreground">Pending Reviews</p>
+                <p className="text-2xl font-bold">{stats.pendingReviews}</p>
+                <p className="text-xs text-muted-foreground">{stats.reviews} total</p>
               </div>
-              <FileText className="h-8 w-8 text-orange-500" />
+              <Star className="h-8 w-8 text-yellow-500" />
             </div>
           </Card>
 
           <Card className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Gallery</p>
-                <p className="text-2xl font-bold">{stats.images}</p>
+                <p className="text-sm text-muted-foreground">Pending Blogs</p>
+                <p className="text-2xl font-bold">{stats.pendingBlogs}</p>
+                <p className="text-xs text-muted-foreground">{stats.blogPosts} total</p>
               </div>
-              <Image className="h-8 w-8 text-purple-500" />
+              <FileText className="h-8 w-8 text-purple-500" />
             </div>
           </Card>
 
           <Card className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Reviews</p>
-                <p className="text-2xl font-bold">{stats.reviews}</p>
-                <p className="text-xs text-yellow-500">{stats.avgRating} ★ avg</p>
+                <p className="text-sm text-muted-foreground">Avg Rating</p>
+                <p className="text-2xl font-bold">{stats.avgRating}</p>
+                <p className="text-xs text-muted-foreground">{stats.subscribers} subscribers</p>
               </div>
-              <Star className="h-8 w-8 text-yellow-500 fill-yellow-500" />
+              <TrendingUp className="h-8 w-8 text-green-500" />
             </div>
           </Card>
         </div>
       )}
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Newsletter Management */}
-          <Card 
-            className="hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => window.location.href = '/admin/newsletters'}
-          >
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <Mail className="w-8 h-8 text-primary" />
-              </div>
-              <CardTitle className="mt-4">Newsletter Subscribers</CardTitle>
-              <CardDescription>
-                View and manage newsletter subscriptions
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full">
-                Manage Subscribers
-              </Button>
-            </CardContent>
-          </Card>
 
-          {/* Form Submissions */}
-          <Card 
-            className="hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => window.location.href = '/admin/submissions'}
-          >
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <FileText className="w-8 h-8 text-primary" />
+      {/* Quick Actions Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Google Indexing Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Send className="h-5 w-5" />
+              Google Indexing
+            </CardTitle>
+            <CardDescription>Submit your site to Google Search</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Ready to submit</p>
+                <p className="text-xs text-muted-foreground">Homepage + Sitemap</p>
               </div>
-              <CardTitle className="mt-4">Form Submissions</CardTitle>
-              <CardDescription>
-                Review and respond to contact forms
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full">
-                Manage Submissions
+              <Button 
+                onClick={handleSubmitToGoogle}
+                disabled={submitting}
+                size="sm"
+              >
+                {submitting ? 'Submitting...' : 'Submit All'}
               </Button>
-            </CardContent>
-          </Card>
+            </div>
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => navigate('/admin/google-indexing')}
+            >
+              View Full Details
+            </Button>
+          </CardContent>
+        </Card>
 
-          {/* Gallery Management */}
-          <Card 
-            className="hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => window.location.href = '/admin/gallery'}
-          >
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <Image className="w-8 h-8 text-primary" />
+        {/* Pending Reviews Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Star className="h-5 w-5" />
+              Pending Reviews
+            </CardTitle>
+            <CardDescription>Reviews waiting for approval</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {pendingReviews.length > 0 ? (
+              <>
+                <div className="space-y-2">
+                  {pendingReviews.slice(0, 3).map((review) => (
+                    <div key={review.id} className="flex items-center justify-between text-sm">
+                      <span className="truncate">{review.author_name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-yellow-500">{'★'.repeat(review.rating)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => navigate('/admin/reviews')}
+                >
+                  Review All ({stats?.pendingReviews})
+                </Button>
+              </>
+            ) : (
+              <div className="text-center py-4 text-muted-foreground">
+                <AlertCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">No pending reviews</p>
               </div>
-              <CardTitle className="mt-4">Gallery Management</CardTitle>
-              <CardDescription>
-                Upload and manage gallery images with SEO
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full">
-                Manage Gallery
-              </Button>
-            </CardContent>
-          </Card>
+            )}
+          </CardContent>
+        </Card>
 
-          {/* Reviews Management */}
-          <Card 
-            className="hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => window.location.href = '/admin/reviews'}
-          >
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <Star className="w-8 h-8 text-primary" />
+        {/* Pending Blogs Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Pending Blog Posts
+            </CardTitle>
+            <CardDescription>Drafts waiting for review</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {stats && stats.pendingBlogs > 0 ? (
+              <>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-2xl font-bold">{stats.pendingBlogs}</p>
+                    <p className="text-xs text-muted-foreground">Draft posts</p>
+                  </div>
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => navigate('/admin/blog')}
+                >
+                  Review Drafts
+                </Button>
+              </>
+            ) : (
+              <div className="text-center py-4 text-muted-foreground">
+                <AlertCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">No pending blog posts</p>
               </div>
-              <CardTitle className="mt-4">Reviews & Testimonials</CardTitle>
-              <CardDescription>
-                Manage customer reviews and ratings
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full">
-                Manage Reviews
-              </Button>
-            </CardContent>
-          </Card>
+            )}
+          </CardContent>
+        </Card>
 
-          {/* Analytics */}
-          <Card 
-            className="hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => window.location.href = '/admin/analytics'}
-          >
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <BarChart3 className="w-8 h-8 text-primary" />
+        {/* Analytics Overview */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Eye className="h-5 w-5" />
+              Quick Analytics
+            </CardTitle>
+            <CardDescription>Key metrics at a glance</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Gallery</p>
+                <p className="text-xl font-bold">{stats?.images}</p>
               </div>
-              <CardTitle className="mt-4">Analytics</CardTitle>
-              <CardDescription>
-                View insights and performance metrics
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full">
-                View Analytics
-              </Button>
-            </CardContent>
-          </Card>
+              <div>
+                <p className="text-sm text-muted-foreground">Blog Posts</p>
+                <p className="text-xl font-bold">{stats?.blogPosts}</p>
+              </div>
+            </div>
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => navigate('/admin/analytics')}
+            >
+              View Full Analytics
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
 
-          {/* Blog Management */}
-          <Card 
-            className="hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => window.location.href = '/admin/blog'}
-          >
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <PenSquare className="w-8 h-8 text-primary" />
-              </div>
-              <CardTitle className="mt-4">Blog Posts</CardTitle>
-              <CardDescription>
-                Create and manage blog content
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full">
-                Manage Blog
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Content Knowledge Base */}
-          <Card 
-            className="hover:shadow-lg transition-shadow cursor-pointer"
-            onClick={() => window.location.href = '/admin/content-knowledge'}
-          >
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <Database className="w-8 h-8 text-primary" />
-              </div>
-              <CardTitle className="mt-4">Content Knowledge</CardTitle>
-              <CardDescription>
-                {stats ? `${stats.indexedPages} indexed pages across ${stats.pageTypes} types` : 'Manage content indexing and context'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full">
-                View Knowledge Base
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+      {/* Recent Submissions Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Form Submissions</CardTitle>
+          <CardDescription>Latest customer inquiries</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {recentSubmissions.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {recentSubmissions.map((submission) => (
+                  <TableRow key={submission.id}>
+                    <TableCell className="font-medium">{submission.name}</TableCell>
+                    <TableCell>{submission.email}</TableCell>
+                    <TableCell>
+                      <Badge variant={submission.status === 'new' ? 'default' : 'secondary'}>
+                        {submission.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{new Date(submission.created_at).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-right">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => navigate('/admin/submissions')}
+                      >
+                        View
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>No recent submissions</p>
+            </div>
+          )}
+          <div className="mt-4">
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => navigate('/admin/submissions')}
+            >
+              View All Submissions
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
