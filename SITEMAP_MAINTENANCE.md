@@ -1,25 +1,27 @@
 # XML Sitemap Maintenance Guide
 
 ## Overview
-The Saunas Plus website uses both static and dynamic sitemap generation for optimal SEO.
+The Saunas Plus website uses a simple static sitemap for optimal SEO and reliability.
 
 ---
 
-## Static Sitemap (Current Implementation)
+## Current Implementation: Static Sitemap
 
 ### Location
 - **File:** `public/sitemap.xml`
 - **URL:** `https://www.saunasplus.com/sitemap.xml`
 - **Referenced in:** `public/robots.txt`
 
-### Current Pages (30 URLs)
-✅ All main navigation pages
-✅ All service detail pages (6 pages)
-✅ All health benefit pages (7 pages)
-✅ Gallery, About, FAQ, Contact
-✅ Utility pages (Calculator, Commercial)
-✅ Landing pages (Outdoor Sauna, Fast Track)
-✅ Legal pages (Privacy, Terms)
+### Current Pages
+✅ Homepage  
+✅ Main category pages (Services, Health Benefits, Blog)  
+✅ All service detail pages (6 pages)  
+✅ All health benefit pages (7 pages)  
+✅ Gallery, About, FAQ, Contact  
+✅ Utility pages (Cost Calculator, Commercial Projects)  
+✅ Legal pages (Privacy Policy, Terms of Service)  
+
+**Total: 27 URLs**
 
 ### When to Update Static Sitemap
 
@@ -30,76 +32,17 @@ The Saunas Plus website uses both static and dynamic sitemap generation for opti
 4. Adding new utility pages (tools, resources)
 5. Creating new top-level pages
 
-**Update `<lastmod>` dates when:**
-- Making significant content changes to a page
-- Redesigning a page
-- Adding new features to a page
-- At least once per quarter for main pages
-
 **How to Update:**
 1. Open `public/sitemap.xml`
 2. Add new `<url>` entry following the existing pattern:
 ```xml
 <url>
   <loc>https://www.saunasplus.com/your-new-page</loc>
-  <lastmod>YYYY-MM-DD</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.7</priority>
 </url>
 ```
-
-3. Update the lastmod date in the XML comment at the top
-4. Commit and deploy
-
----
-
-## Dynamic Sitemap (Future Enhancement)
-
-### Edge Function
-- **File:** `supabase/functions/generate-sitemap/index.ts`
-- **URL:** `https://your-project.supabase.co/functions/v1/generate-sitemap`
-
-### Purpose
-Automatically generate sitemap including:
-- All static pages (same as static sitemap)
-- Dynamic blog posts (when Phase 2E is implemented)
-- Dynamic content from database
-- Always up-to-date without manual intervention
-
-### When to Switch to Dynamic Sitemap
-
-**Switch from static to dynamic when:**
-1. ✅ **Blog is implemented** (Phase 2E) - Most important trigger
-2. Creating frequently-added dynamic pages
-3. Having more than 50 dynamic URLs
-4. Wanting automatic updates without manual editing
-
-### How to Switch to Dynamic Sitemap
-
-**Step 1: Deploy the Edge Function**
-The edge function is already created at `supabase/functions/generate-sitemap/index.ts`. It will be deployed automatically.
-
-**Step 2: Test the Dynamic Sitemap**
-```bash
-# Visit in browser or curl:
-https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap
-```
-
-**Step 3: Update robots.txt**
-Change `public/robots.txt` to point to the edge function:
-```
-Sitemap: https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap
-```
-
-**Step 4: Optional - Custom Domain**
-If you want to serve it from `/sitemap.xml` on your main domain:
-- Set up a URL rewrite in your hosting configuration
-- Or use a serverless function proxy
-
-**Step 5: Remove Static Sitemap (Optional)**
-Once dynamic sitemap is working, you can:
-- Delete `public/sitemap.xml` (but keep it as backup)
-- Or keep both and use static as fallback
+3. Commit and publish the changes
 
 ---
 
