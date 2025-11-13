@@ -100,13 +100,57 @@ export default function BlogPosts() {
   };
 
   const handleGenerateBlog = async () => {
+    console.log('[Blog Generation] Starting blog generation process...');
     setIsGenerating(true);
+    
     try {
+      // Check authentication status
+      const { data: { session }, error: authError } = await supabase.auth.getSession();
+      console.log('[Blog Generation] Auth check:', {
+        hasSession: !!session,
+        userId: session?.user?.id,
+        authError: authError?.message
+      });
+
+      if (authError || !session) {
+        throw new Error('Not authenticated. Please log in again.');
+      }
+
+      console.log('[Blog Generation] Invoking generate-blog function...');
+      const startTime = Date.now();
+      
       const { data, error } = await supabase.functions.invoke('generate-blog', {
         body: { manual: true }
       });
 
-      if (error) throw error;
+      const duration = Date.now() - startTime;
+      console.log('[Blog Generation] Function call completed:', {
+        duration: `${duration}ms`,
+        hasData: !!data,
+        hasError: !!error,
+        data: data,
+        error: error
+      });
+
+      if (error) {
+        console.error('[Blog Generation] Function returned error:', {
+          message: error.message,
+          details: error,
+          stack: error.stack
+        });
+        throw new Error(error.message || 'Unknown error from blog generation function');
+      }
+
+      if (!data || !data.post) {
+        console.error('[Blog Generation] Invalid response data:', data);
+        throw new Error('Invalid response from blog generation function');
+      }
+
+      console.log('[Blog Generation] Success! Post created:', {
+        title: data.post.title,
+        id: data.post.id,
+        slug: data.post.slug
+      });
 
       toast({
         title: 'Success!',
@@ -114,14 +158,24 @@ export default function BlogPosts() {
       });
 
       fetchPosts();
-    } catch (error) {
+    } catch (error: any) {
+      console.error('[Blog Generation] Error caught:', {
+        message: error?.message,
+        name: error?.name,
+        stack: error?.stack,
+        fullError: error
+      });
+
+      const errorMessage = error?.message || 'Failed to generate blog post. Please try again.';
+      
       toast({
         title: 'Error',
-        description: 'Failed to generate blog post. Please try again.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
       setIsGenerating(false);
+      console.log('[Blog Generation] Process completed');
     }
   };
 
