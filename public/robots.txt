@@ -17,9 +17,7 @@ Allow: /
 Disallow: /admin/
 Disallow: /portal/
 
-# Sitemap index (contains all sitemaps)
-Sitemap: https://www.saunasplus.com/sitemap-index.xml
-
-# Individual sitemaps
-Sitemap: https://www.saunasplus.com/sitemap.xml
-Sitemap: https://www.saunasplus.com/sitemap-images.xml
+# Sitemaps (hosted on Lovable Cloud backend for dynamic updates)
+Sitemap: https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap
+Sitemap: https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-image-sitemap
+Sitemap: https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap-index
