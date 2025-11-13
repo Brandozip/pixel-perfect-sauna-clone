@@ -6,6 +6,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Content-Type': 'application/xml; charset=utf-8',
 };
@@ -33,6 +34,14 @@ Deno.serve(async (req) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
+  }
+
+  // Only allow GET requests
+  if (req.method !== 'GET') {
+    return new Response('Method not allowed', { 
+      status: 405, 
+      headers: { ...corsHeaders, 'Allow': 'GET, OPTIONS' }
+    });
   }
 
   try {
