@@ -17,5 +17,9 @@ Allow: /
 Disallow: /admin/
 Disallow: /portal/
 
-# Dynamic sitemap with all pages and blog posts
+# Sitemap index (contains all sitemaps)
+Sitemap: https://www.saunasplus.com/sitemap-index.xml
+
+# Individual sitemaps
 Sitemap: https://www.saunasplus.com/sitemap.xml
+Sitemap: https://www.saunasplus.com/sitemap-images.xml
