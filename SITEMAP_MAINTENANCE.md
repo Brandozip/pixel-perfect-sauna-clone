@@ -185,6 +185,23 @@ After updating sitemap:
 - Verify database queries are correct
 - Check RLS policies allow public access to published content
 
+### Live Domain Shows "Account Suspended" Page
+- Symptom: `robots.txt`, `/sitemap-index.xml`, or `/sitemap-images.xml` return an HTML page saying "Account Suspended".
+- Cause: Production hosting account or DNS misconfiguration; not a code issue.
+- Impact: Search engines cannot read robots.txt or sitemaps reliably.
+- Fix:
+  - Verify the domain points to the active deployment (Lovable or your chosen host).
+  - Resolve any hosting account suspension with the provider.
+  - Re-publish the frontend so `public/robots.txt` and sitemap files are live.
+  - Re-test: https://www.saunasplus.com/robots.txt and https://www.saunasplus.com/sitemap.xml
+
+### Cross-Host Sitemap Limitations (Google Search Console)
+- Google requires sitemaps to be on the same host as the site (or both hosts verified in GSC).
+- Direct Supabase function URLs in robots.txt work for discovery, but GSC may reject submission if cross-host isn’t verified.
+- Recommended now:
+  - Submit only `https://www.saunasplus.com/sitemap.xml` in GSC (static index lives on same host).
+  - That index points to dynamic function sitemaps. If GSC flags cross-host, ensure all sitemap endpoints resolve on the main domain via hosting rewrites, or keep a static sitemap on the main domain until routing is fixed.
+
 ---
 
 ## Future Enhancements (Phase 2E - Blog)

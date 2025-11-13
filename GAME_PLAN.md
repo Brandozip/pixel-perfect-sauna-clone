@@ -62,6 +62,15 @@
 - ✅ Automated blog generation running
 - ✅ US geo-restriction active for forms
 
+## Blocking Issues (Nov 2025)
+- Production domain intermittently serves an "Account Suspended" page for `robots.txt` and some sitemap endpoints.
+- Impact: Search engines can’t reliably fetch robots.txt and certain sitemaps; indexing/sitemap validation may fail.
+- Ownership: Hosting/DNS configuration (not a code issue).
+- Actions Needed:
+  1) Resolve hosting account status and/or fix DNS to point to the active deployment.
+  2) Publish the frontend so updated `public/robots.txt` and sitemap files go live.
+  3) In Google Search Console, submit `https://www.saunasplus.com/sitemap.xml` and re-validate.
+
 ---
 
 ## Project Overview
