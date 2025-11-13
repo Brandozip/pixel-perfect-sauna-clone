@@ -42,6 +42,7 @@ const AdminSubmissions = lazy(() => import("./pages/admin/Submissions"));
 const AdminGallery = lazy(() => import("./pages/admin/Gallery"));
 const AdminReviews = lazy(() => import("./pages/admin/Reviews"));
 const AdminAnalytics = lazy(() => import("./pages/admin/Analytics"));
+const AdminGoogleIndexing = lazy(() => import("./pages/admin/GoogleIndexing"));
 const AdminBlogPosts = lazy(() => import("./pages/admin/BlogPosts"));
 const AdminBlogEditor = lazy(() => import("./pages/admin/BlogEditor"));
 const AdminBlogGeneratorSettings = lazy(() => import("./pages/admin/BlogGeneratorSettings"));
@@ -178,7 +179,19 @@ const App = () => (
             } 
           />
           <Route 
-            path="/admin/blog" 
+            path="/admin/google-indexing" 
+            element={
+              <Suspense fallback={<PageSkeleton />}>
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AdminGoogleIndexing />
+                  </AdminLayout>
+                </ProtectedRoute>
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/admin/blog"
             element={
               <Suspense fallback={<PageSkeleton />}>
                 <ProtectedRoute>

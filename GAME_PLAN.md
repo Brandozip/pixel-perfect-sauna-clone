@@ -13,6 +13,12 @@
   - Graceful degradation (allows access on detection failure)
   - Visual indicators for restricted users
   - Uses Cloudflare headers or ip-api.com fallback
+- **Google Indexing API Integration:**
+  - Automatic sitemap and URL submission to Google Search Console
+  - Edge function with Google Service Account authentication
+  - Admin page for manual submissions with real-time status
+  - Optional cron job setup for daily automated submissions
+  - Tracks success/failure for each URL submitted
 - **GTM Documentation Admin Page:**
   - Interactive setup guide organized like GTM interface
   - All 8 variables, 6 triggers, and 7 tags documented
