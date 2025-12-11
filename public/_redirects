@@ -1,6 +1,7 @@
-# Sitemap routes - proxy to edge functions
+# Sitemap routes - proxy to Supabase edge functions
+/sitemap.xml https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap 200
 /sitemap-index.xml https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-sitemap-index 200
 /sitemap-images.xml https://damitvvtyphjaeyvzyen.supabase.co/functions/v1/generate-image-sitemap 200
 
-# SPA fallback
+# SPA fallback - must be last
 /* /index.html 200

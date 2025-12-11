@@ -1,8 +1,8 @@
 User-agent: *
 Allow: /
 
-# Disallow admin pages from crawling
+# Disallow admin-only routes
 Disallow: /admin/
 
-# Sitemap Index
+# Canonical sitemap index
 Sitemap: https://www.saunasplus.com/sitemap-index.xml

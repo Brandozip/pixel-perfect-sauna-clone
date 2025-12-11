@@ -52,6 +52,7 @@ const AdminGTMDocumentation = lazy(() => import("./pages/admin/GTMDocumentation"
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const Install = lazy(() => import("./pages/Install"));
+const SiteMap = lazy(() => import("./pages/SiteMap"));
 
 import { AdminAuthProvider } from "./hooks/useAdminAuth";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
@@ -103,6 +104,9 @@ const App = () => (
           
           {/* PWA Install Page */}
           <Route path="/install" element={<Suspense fallback={<PageSkeleton />}><Install /></Suspense>} />
+          
+          {/* HTML Sitemap Page */}
+          <Route path="/site-map" element={<Suspense fallback={<PageSkeleton />}><SiteMap /></Suspense>} />
           
           {/* Admin Routes */}
           <Route path="/admin/login" element={<Suspense fallback={<PageSkeleton />}><AdminLogin /></Suspense>} />
