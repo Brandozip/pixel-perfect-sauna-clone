@@ -90,6 +90,7 @@ Deno.serve(async (req) => {
       { loc: '/commercial-projects', lastmod: getDaysAgo(30), changefreq: 'monthly', priority: 0.5 },
       { loc: '/outdoor-sauna-landing', lastmod: getDaysAgo(28), changefreq: 'monthly', priority: 0.5 },
       { loc: '/fast-track', lastmod: getDaysAgo(26), changefreq: 'monthly', priority: 0.5 },
+      { loc: '/site-map', lastmod: today, changefreq: 'weekly', priority: 0.5 },
       
       // Legal pages - Priority 0.4
       { loc: '/privacy-policy', lastmod: getDaysAgo(90), changefreq: 'yearly', priority: 0.4 },

@@ -115,6 +115,11 @@ export const Footer = () => {
                     Terms of Service
                   </Link>
                 </li>
+                <li>
+                  <Link to="/site-map" className="text-background/80 hover:text-primary transition-colors text-sm">
+                    Site Map
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
