@@ -2,7 +2,9 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { trackButtonClick } from "@/utils/analytics";
-import heroImage from "@/assets/hero-sauna.jpg";
+
+// Use public path for LCP image to ensure it's discoverable in initial HTML
+const heroImage = "/images/hero-sauna.jpg";
 
 export const Hero = () => {
   return (
