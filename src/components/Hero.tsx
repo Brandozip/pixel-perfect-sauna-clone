@@ -21,25 +21,23 @@ export const Hero = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Link to="/contact">
-            <Button 
-              size="lg" 
-              className="bg-primary hover:bg-primary-emphasis text-primary-foreground text-lg px-8 py-6 shadow-elevated"
-              onClick={() => trackButtonClick('Free Consultation', 'Hero')}
-            >
-              Free Consultation
-            </Button>
-          </Link>
-          <Link to="/gallery">
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="bg-white/10 hover:bg-white/20 text-white border-white/30 text-lg px-8 py-6 backdrop-blur-sm"
-              onClick={() => trackButtonClick('Explore Our Work', 'Hero')}
-            >
-              Explore Our Work
-            </Button>
-          </Link>
+          <Button 
+            size="lg" 
+            className="bg-primary hover:bg-primary-emphasis text-primary-foreground text-lg px-8 py-6 shadow-elevated"
+            onClick={() => trackButtonClick('Free Consultation', 'Hero')}
+            asChild
+          >
+            <Link to="/contact">Free Consultation</Link>
+          </Button>
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="bg-white/10 hover:bg-white/20 text-white border-white/30 text-lg px-8 py-6 backdrop-blur-sm"
+            onClick={() => trackButtonClick('Explore Our Work', 'Hero')}
+            asChild
+          >
+            <Link to="/gallery">Explore Our Work</Link>
+          </Button>
         </div>
         
         <div className="flex flex-wrap justify-center gap-6 md:gap-8">
