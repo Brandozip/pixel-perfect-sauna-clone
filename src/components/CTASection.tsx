@@ -13,25 +13,23 @@ export const CTASection = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/contact">
-              <Button 
-                size="lg" 
-                className="bg-primary hover:bg-primary-emphasis text-primary-foreground text-lg px-8 py-6 shadow-elevated"
-                onClick={() => trackButtonClick('Get Free Consultation', 'CTA Section')}
-              >
-                Get Free Consultation
-              </Button>
-            </Link>
-            <Link to="/gallery">
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="text-lg px-8 py-6 border-2"
-                onClick={() => trackButtonClick('View Our Projects', 'CTA Section')}
-              >
-                View Our Projects
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              className="bg-primary hover:bg-primary-emphasis text-primary-foreground text-lg px-8 py-6 shadow-elevated"
+              onClick={() => trackButtonClick('Get Free Consultation', 'CTA Section')}
+              asChild
+            >
+              <Link to="/contact">Get Free Consultation</Link>
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="text-lg px-8 py-6 border-2"
+              onClick={() => trackButtonClick('View Our Projects', 'CTA Section')}
+              asChild
+            >
+              <Link to="/gallery">View Our Projects</Link>
+            </Button>
           </div>
         </div>
       </div>
