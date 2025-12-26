@@ -128,5 +128,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     // Avoid treating large bundles as build errors in CI by raising the warning limit
     chunkSizeWarningLimit: 2000,
+    // Enable source maps for production debugging and Lighthouse insights
+    sourcemap: true,
   }
 }));
