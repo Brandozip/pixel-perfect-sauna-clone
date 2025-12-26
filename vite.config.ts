@@ -32,6 +32,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'script-defer',
       includeAssets: ['favicon.ico', 'robots.txt', 'sitemap.xml'],
       manifest: {
         name: 'Saunas Plus - Premium Custom Sauna Solutions',
