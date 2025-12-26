@@ -21,11 +21,11 @@
     --popover: 0 0% 100%;
     --popover-foreground: 30 8% 20%;
 
-    /* Primary Brand Colors */
-    --primary: 28 65% 53%;              /* Main brand color: #D2691E */
-    --primary-foreground: 30 33% 100%;  /* #FFFFFF */
+    /* Primary Brand Colors - WCAG AA compliant (4.5:1 contrast) */
+    --primary: 28 65% 38%;              /* Main brand color: #A05A1A - WCAG AA compliant */
+    --primary-foreground: 0 0% 100%;    /* #FFFFFF */
     --primary-muted: 28 65% 95%;        /* #FBF5F0 - Subtle backgrounds */
-    --primary-emphasis: 28 75% 45%;     /* #B85A13 - Hover states */
+    --primary-emphasis: 28 75% 32%;     /* #8C4A12 - Hover states */
 
     /* Secondary & Neutral */
     --secondary: 30 18% 94%;            /* #F5F2EF - Secondary buttons */
@@ -37,7 +37,7 @@
     /* Borders & Inputs */
     --border: 30 15% 90%;               /* #E8E4E1 - Borders, dividers */
     --input: 30 15% 90%;
-    --ring: 28 65% 53%;
+    --ring: 28 65% 38%;
 
     /* Status Colors */
     --success: 142 76% 36%;             /* #16A34A - Success messages */
@@ -50,29 +50,29 @@
     --destructive-foreground: 0 0% 100%;
 
     /* Accent (using primary for consistency) */
-    --accent: 28 65% 53%;
-    --accent-foreground: 30 33% 100%;
+    --accent: 28 65% 38%;
+    --accent-foreground: 0 0% 100%;
 
     /* Radius */
     --radius: 0.5rem;
     
     /* Custom Gradients */
     --hero-gradient: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%);
-    --primary-gradient: linear-gradient(135deg, hsl(28 75% 45%) 0%, hsl(28 65% 53%) 100%);
+    --primary-gradient: linear-gradient(135deg, hsl(28 75% 32%) 0%, hsl(28 65% 38%) 100%);
     
     /* Custom Shadows */
     --shadow-custom: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-elevated: 0 10px 30px -10px rgba(210, 105, 30, 0.2);
+    --shadow-elevated: 0 10px 30px -10px rgba(160, 90, 26, 0.2);
 
     /* Sidebar Colors */
     --sidebar-background: 30 18% 98%;
     --sidebar-foreground: 30 8% 20%;
-    --sidebar-primary: 28 65% 53%;
+    --sidebar-primary: 28 65% 38%;
     --sidebar-primary-foreground: 30 33% 100%;
     --sidebar-accent: 28 65% 95%;
-    --sidebar-accent-foreground: 28 75% 45%;
+    --sidebar-accent-foreground: 28 75% 32%;
     --sidebar-border: 30 15% 90%;
-    --sidebar-ring: 28 65% 53%;
+    --sidebar-ring: 28 65% 38%;
   }
 
   .dark {
@@ -88,11 +88,11 @@
     --popover: 24 20% 12%;
     --popover-foreground: 30 10% 92%;
 
-    /* Primary (Same in dark mode) */
-    --primary: 28 65% 53%;              /* #D2691E */
-    --primary-foreground: 30 33% 100%;
+    /* Primary (brighter in dark mode for contrast) */
+    --primary: 28 65% 50%;              /* Brighter for dark backgrounds */
+    --primary-foreground: 0 0% 100%;
     --primary-muted: 28 65% 15%;        /* Darker version for dark mode */
-    --primary-emphasis: 28 75% 55%;     /* Brighter for dark mode */
+    --primary-emphasis: 28 75% 45%;     /* Brighter for dark mode */
 
     /* Secondary & Neutral (Dark) */
     --secondary: 24 20% 15%;
@@ -104,7 +104,7 @@
     /* Borders & Inputs (Dark) */
     --border: 24 20% 20%;
     --input: 24 20% 20%;
-    --ring: 28 65% 53%;
+    --ring: 28 65% 50%;
 
     /* Status Colors (Same) */
     --success: 142 76% 36%;
@@ -115,22 +115,22 @@
     --destructive-foreground: 0 0% 100%;
 
     /* Accent */
-    --accent: 28 65% 53%;
-    --accent-foreground: 30 33% 100%;
+    --accent: 28 65% 50%;
+    --accent-foreground: 0 0% 100%;
     
     /* Custom Shadows (Dark) */
     --shadow-custom: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-    --shadow-elevated: 0 10px 30px -10px rgba(210, 105, 30, 0.3);
+    --shadow-elevated: 0 10px 30px -10px rgba(160, 90, 26, 0.3);
     
     /* Sidebar (Dark) */
     --sidebar-background: 24 20% 10%;
     --sidebar-foreground: 30 10% 92%;
-    --sidebar-primary: 28 65% 53%;
+    --sidebar-primary: 28 65% 50%;
     --sidebar-primary-foreground: 30 33% 100%;
     --sidebar-accent: 24 20% 15%;
-    --sidebar-accent-foreground: 28 65% 53%;
+    --sidebar-accent-foreground: 28 65% 50%;
     --sidebar-border: 24 20% 20%;
-    --sidebar-ring: 28 65% 53%;
+    --sidebar-ring: 28 65% 50%;
   }
 }
 
