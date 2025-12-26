@@ -130,5 +130,16 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 2000,
     // Enable source maps for production debugging and Lighthouse insights
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split vendor chunks for better caching and reduced initial bundle
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs', '@radix-ui/react-accordion'],
+          'query-vendor': ['@tanstack/react-query'],
+          'supabase-vendor': ['@supabase/supabase-js'],
+        }
+      }
+    }
   }
 }));
