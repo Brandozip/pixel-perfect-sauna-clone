@@ -24,7 +24,7 @@ export const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-heading font-semibold mb-4 text-background">Quick Links</h4>
+            <h3 className="text-lg font-heading font-semibold mb-4 text-background">Quick Links</h3>
             <ul className="space-y-3">
               <li>
                 <Link to="/" className="flex items-center space-x-2 text-background/80 hover:text-primary transition-colors group">
@@ -73,7 +73,7 @@ export const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="text-lg font-heading font-semibold mb-4 text-background">Contact Info</h4>
+            <h3 className="text-lg font-heading font-semibold mb-4 text-background">Contact Info</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0 text-primary" />
@@ -103,7 +103,7 @@ export const Footer = () => {
             
             {/* Legal Links */}
             <div className="mt-8">
-              <h4 className="text-lg font-heading font-semibold mb-3 text-background">Legal</h4>
+              <h3 className="text-lg font-heading font-semibold mb-3 text-background">Legal</h3>
               <ul className="space-y-2">
                 <li>
                   <Link to="/privacy-policy" className="text-background/80 hover:text-primary transition-colors text-sm">
