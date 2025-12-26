@@ -27,17 +27,19 @@ const Index = () => {
       <ReviewSchema />
       <div className="min-h-screen">
         <CleanNavbar />
-        <Hero />
-        <Services />
-        <Suspense fallback={<div className="h-20" />}>
-          <MeetTheOwner />
-          <HealthBenefits />
-          <WhyChooseUs />
-          <Testimonials />
-          <BlogPreview />
-          <Newsletter />
-          <CTASection />
-        </Suspense>
+        <main>
+          <Hero />
+          <Services />
+          <Suspense fallback={<div className="h-20" />}>
+            <MeetTheOwner />
+            <HealthBenefits />
+            <WhyChooseUs />
+            <Testimonials />
+            <BlogPreview />
+            <Newsletter />
+            <CTASection />
+          </Suspense>
+        </main>
         <Footer />
       </div>
     </ThemeProvider>
