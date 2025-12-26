@@ -7,11 +7,23 @@ import heroImage from "@/assets/hero-sauna.jpg";
 export const Hero = () => {
   return (
     <section 
-      className="relative h-[700px] flex items-center justify-center text-white bg-cover bg-center"
-      style={{
-        backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%), url(${heroImage})`,
-      }}
+      className="relative h-[700px] flex items-center justify-center text-white overflow-hidden"
     >
+      {/* LCP image with fetchpriority for better performance */}
+      <img 
+        src={heroImage}
+        alt="Premium custom sauna interior"
+        fetchPriority="high"
+        decoding="async"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      {/* Gradient overlay */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: 'linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%)'
+        }}
+      />
       <div className="container relative z-10 text-center max-w-4xl">
         <h1 className="heading-1 text-white mb-6">
           Elevate Your Wellness Journey with Custom Saunas
