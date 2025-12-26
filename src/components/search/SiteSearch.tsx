@@ -100,6 +100,7 @@ const SiteSearch: React.FC = () => {
         size="icon"
         onClick={() => setIsOpen(!isOpen)}
         className="relative"
+        aria-label="Search site"
       >
         <Search className="h-5 w-5" />
       </Button>
@@ -121,6 +122,7 @@ const SiteSearch: React.FC = () => {
                 <button
                   onClick={() => setQuery('')}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                  aria-label="Clear search"
                 >
                   <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
                 </button>
