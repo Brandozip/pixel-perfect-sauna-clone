@@ -100,11 +100,11 @@ const Services = () => {
                           </li>
                         ))}
                       </ul>
-                      <a href={service.link}>
+                      <Link to={service.link}>
                         <Button className="bg-primary hover:bg-primary-emphasis text-primary-foreground w-fit">
-                          Learn More <ArrowRight className="ml-2 h-4 w-4" />
+                          Learn More About {service.title} <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </Card>
