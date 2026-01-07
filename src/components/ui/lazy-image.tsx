@@ -20,6 +20,9 @@ export const LazyImage = ({
 }: LazyImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
+  
+  // Sanitize src to create a valid element ID
+  const sanitizedId = `lazy-${src.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
   useEffect(() => {
     if (loading === 'eager') {
@@ -38,7 +41,7 @@ export const LazyImage = ({
       { rootMargin: '50px' }
     );
 
-    const element = document.getElementById(`lazy-${src}`);
+    const element = document.getElementById(sanitizedId);
     if (element) {
       observer.observe(element);
     }
@@ -48,11 +51,11 @@ export const LazyImage = ({
         observer.unobserve(element);
       }
     };
-  }, [src, loading]);
+  }, [sanitizedId, loading]);
 
   return (
     <div
-      id={`lazy-${src}`}
+      id={sanitizedId}
       className={cn('relative overflow-hidden bg-muted', wrapperClassName)}
       style={aspectRatio ? { aspectRatio } : undefined}
     >
