@@ -63,6 +63,24 @@ export function useNewsletterSignup() {
           throw error;
         }
       } else {
+        // Also submit to Formspree for email notifications
+        try {
+          const formspreeData = new FormData();
+          formspreeData.append('email', email);
+          formspreeData.append('source', 'newsletter_signup');
+
+          await fetch('https://formspree.io/f/mkgrprdn', {
+            method: 'POST',
+            body: formspreeData,
+            headers: {
+              'Accept': 'application/json'
+            }
+          });
+        } catch (formspreeError) {
+          console.error('Formspree submission failed:', formspreeError);
+          // Don't block success if Formspree fails
+        }
+
         toast({
           title: 'Success!',
           description: 'Successfully subscribed to newsletter!',
